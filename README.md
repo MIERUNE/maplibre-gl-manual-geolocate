@@ -333,7 +333,7 @@ This pattern enables reliable testing with mock data while using real GPS in pro
 
 ## License
 
-MIT
+[MIT](LICENSE)
 
 ---
 
