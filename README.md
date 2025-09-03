@@ -286,46 +286,86 @@ map.addControl(geolocateControl, 'top-right');
 
 This pattern enables reliable testing with mock data while using real geolocation in production.
 
+See the [Comparison with GeolocateControl](#️-comparison-with-geolocatecontrol) section below for detailed differences between the two controls.
+
 ---
 
 ## ⚖️ Comparison with GeolocateControl
 
+MockGeolocateControl is designed to be a drop-in replacement for MapLibre GL JS's built-in [`GeolocateControl`](https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/), which provides a button that uses the browser's Geolocation API to locate the user on the map.
+
 ### Key Differences
 
-| Aspect | GeolocateControl | MockGeolocateControl |
-|--------|------------------|----------------------|
-| **Data Source** | Browser Geolocation API | Predefined coordinates |
-| **Permissions** | Requires location access | ✅ None required |
-| **HTTPS Requirement** | Required for security | ✅ Works on HTTP |
-| **Reliability** | Depends on location sources | ✅ Always consistent |
-| **Privacy** | Shares real location | ✅ Uses mock coordinates |
+While MockGeolocateControl maintains the same visual appearance and core functionality as the original GeolocateControl, there are important differences in how they operate:
 
-### API Compatibility
+**Data Source:** The original GeolocateControl uses the browser's Geolocation API to obtain real-time location data from various sources (GPS, WiFi, cell towers, IP addresses). MockGeolocateControl uses predefined coordinates that you specify, giving you complete control over the displayed position.
 
-| Feature | GeolocateControl | MockGeolocateControl | Notes |
-|---------|:----------------:|:--------------------:|-------|
-| **Options** | | | |
-| `fitBoundsOptions` | ✅ | ✅ | Identical behavior |
-| `position` | ❌ | ✅ | Mock-specific |
-| `accuracy` | ❌ | ✅ | Mock-specific |
-| `showAccuracyCircle` | ❌ | ✅ | Mock-specific |
-| `positionOptions` | ✅ | ❌ | Geolocation-specific |
-| `trackUserLocation` | ✅ | ❌ | Geolocation-specific |
-| **Methods** | | | |
-| `trigger()` | ✅ | ✅ | Identical behavior |
-| `setPosition()` | ❌ | ✅ | Mock-specific |
-| `setAccuracy()` | ❌ | ✅ | Mock-specific |
-| `setShowAccuracyCircle()` | ❌ | ✅ | Mock-specific |
-| `setFitBoundsOptions()` | ❌ | ✅ | Mock-specific |
-| **Events** | | | |
-| `geolocate` | ✅ | ✅ | Same event data |
-| `outofmaxbounds` | ✅ | ✅ | Same behavior |
-| `error` | ✅ | ❌ | No geolocation errors |
-| Tracking events | ✅ | ❌ | No tracking mode |
-| **Visual** | | | |
-| Blue dot marker | ✅ | ✅ | Identical appearance |
-| Accuracy circle | ✅ | ✅ | Same styling |
-| Button icon | ✅ | ✅ | Same UI |
+**Permissions & Privacy:** GeolocateControl requires users to grant location permissions through a browser prompt, which some users may decline for privacy reasons. MockGeolocateControl requires no permissions at all, making it ideal for privacy-conscious applications or scenarios where you want to show approximate locations without accessing actual user data.
+
+**Reliability & Consistency:** GeolocateControl's accuracy depends on available location sources and can fail in various scenarios (poor signal, indoor environments, permission denied). MockGeolocateControl always works consistently with your specified coordinates, making it perfect for demos, testing, and predictable behavior.
+
+**Security Requirements:** GeolocateControl requires HTTPS in modern browsers for security reasons. MockGeolocateControl works on both HTTP and HTTPS, simplifying local development and testing.
+
+**Tracking Mode:** GeolocateControl offers a tracking mode (when `trackUserLocation: true`) that continuously monitors the user's position and updates the map in real-time as they move. This creates an active state where the control acts as a toggle button, maintaining a lock on the user's location. MockGeolocateControl does not support tracking mode since it works with static, predefined coordinates. Each trigger simply centers the map on the mock position without continuous updates.
+
+### Compatibility Tables
+
+#### Options Compatibility
+
+For comparison with the original control, see [`GeolocateControlOptions`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/GeolocateControlOptions/) in the MapLibre GL JS documentation. MockGeolocateControl uses [`MockGeolocateControlOptions`](#mockgeolocatecontroloptions) instead.
+
+| Option | GeolocateControl | MockGeolocateControl | Description |
+|--------|:----------------:|:--------------------:|-------------|
+| `fitBoundsOptions` | ✅ | ✅ | Auto-zoom configuration (identical behavior) |
+| `positionOptions` | ✅ | ❌ | Geolocation API options (not needed for mock) |
+| `showAccuracyCircle` | ✅ | ✅ | Accuracy circle visibility |
+| `showUserLocation` | ✅ | ❌ | Always shows location in mock |
+| `trackUserLocation` | ✅ | ❌ | Real-time tracking (not supported in mock) |
+| **Mock-specific** | | | |
+| `position` | ❌ | ✅ | Required: Coordinates to display |
+| `accuracy` | ❌ | ✅ | Optional: Accuracy radius in meters |
+
+#### Methods Compatibility
+
+| Method | GeolocateControl | MockGeolocateControl | Description |
+|--------|:----------------:|:--------------------:|-------------|
+| `trigger()` | ✅ | ✅ | Center map on position (identical) |
+| **Mock-specific** | | | |
+| `setPosition()` | ❌ | ✅ | Update mock coordinates |
+| `setAccuracy()` | ❌ | ✅ | Update accuracy radius |
+| `setShowAccuracyCircle()` | ❌ | ✅ | Toggle accuracy circle |
+| `setFitBoundsOptions()` | ❌ | ✅ | Update zoom behavior |
+
+#### Events Compatibility
+
+| Event | GeolocateControl | MockGeolocateControl | Description |
+|-------|:----------------:|:--------------------:|-------------|
+| `geolocate` | ✅ | ✅ | Position update (same payload structure) |
+| `outofmaxbounds` | ✅ | ✅ | Position outside map bounds |
+| `error` | ✅ | ❌ | Geolocation API errors (not applicable) |
+| `trackuserlocationstart` | ✅ | ❌ | Tracking mode started |
+| `trackuserlocationend` | ✅ | ❌ | Tracking mode ended |
+| `userlocationfocus` | ✅ | ❌ | Return to tracking mode |
+| `userlocationlostfocus` | ✅ | ❌ | Exit tracking mode |
+
+#### Visual Compatibility
+
+| Element | GeolocateControl | MockGeolocateControl | Description |
+|---------|:----------------:|:--------------------:|-------------|
+| Control button | ✅ | ✅ | Same button appearance and position |
+| Default icon | ✅ | ✅ | Same geolocate icon in default state |
+| Position marker | ✅ | ✅ | Blue dot with white border |
+| Accuracy circle | ✅ | ✅ | Semi-transparent blue circle |
+| CSS classes | ✅ | ✅ | Uses same MapLibre classes for markers |
+| **Button States** | | | |
+| Default (inactive) | ✅ | ✅ | Same appearance when not activated |
+| Active (tracking) | ✅ | ❌ | No persistent active state in mock |
+| Background | ✅ | ❌ | No background tracking state |
+| Disabled | ✅ | ❌ | Mock is always enabled |
+| Error | ✅ | ❌ | No error state (always succeeds) |
+| **Visual Feedback** | | | |
+| Click animation | ✅ | ✅ | Button press feedback |
+| Location pulse | ✅ | ❌ | No pulsing animation for live tracking |
 
 ---
 
