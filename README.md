@@ -378,6 +378,54 @@ For comparison with the original control, see [`GeolocateControlOptions`](https:
 
 ---
 
+## 🚀 Development
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/MIERUNE/maplibre-gl-mock-geolocate.git
+cd maplibre-gl-mock-geolocate
+
+# Install dependencies with pnpm
+pnpm install
+```
+
+### Development Commands
+
+```bash
+# Type check the code
+pnpm typecheck
+
+# Build the library (ESM + UMD)
+pnpm build
+
+# Start development server with example
+pnpm dev
+
+# Preview built library
+pnpm preview
+```
+
+### Project Structure
+
+```
+src/
+├── index.ts                 # Main library export
+├── MockGeolocateControl.ts  # Core control implementation
+└── types.ts                # TypeScript type definitions
+```
+
+### Build Output
+
+The library is built in multiple formats for maximum compatibility:
+
+- **ESM**: `dist/maplibre-gl-mock-geolocate.js` - Modern ES modules
+- **UMD**: `dist/maplibre-gl-mock-geolocate.umd.cjs` - Universal module definition
+- **Types**: `dist/index.d.ts` - TypeScript declarations
+
+---
+
 ## License
 
 [MIT](LICENSE)
