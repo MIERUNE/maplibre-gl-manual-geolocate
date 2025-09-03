@@ -47,7 +47,13 @@ map.addControl(mockGeolocateControl, 'top-right');
 
 ## 📚 API Reference
 
-### Types
+### Constructor
+
+```typescript
+new MockGeolocateControl(options: MockGeolocateControlOptions)
+```
+
+Creates a new mock geolocate control with the specified options.
 
 #### `MockGeolocateControlOptions`
 
@@ -62,16 +68,19 @@ type MockGeolocateControlOptions = {
    * - `LngLat` instance
    */
   position: LngLatLike;
+  
   /**
    * Accuracy circle radius in meters
    * @default 50
    */
   accuracy?: number;
+  
   /**
    * Whether to show the transparent circle around the position indicating the accuracy
    * @default true
    */
   showAccuracyCircle?: boolean;
+  
   /**
    * A `FitBoundsOptions` object to use when the map is panned and zoomed to the mock location.
    * The default is to use a `maxZoom` of 15 to limit how far the map will zoom in for very accurate locations.
@@ -81,25 +90,9 @@ type MockGeolocateControlOptions = {
 }
 ```
 
-**References**
-
-- [LngLatLike - MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/LngLatLike/)
-- [FitBoundsOptions - MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FitBoundsOptions/)
-
-### Constructor
-
-```typescript
-new MockGeolocateControl(options: MockGeolocateControlOptions)
-```
-
-#### Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| **`position`** | `LngLatLike` | **Required** | Mock coordinates to display (supports multiple formats) - See [LngLatLike - MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/LngLatLike/) for details |
-| `accuracy` | `number` | `50` | Accuracy circle radius in meters |
-| `showAccuracyCircle` | `boolean` | `true` | Whether to show the accuracy circle |
-| `fitBoundsOptions` | `FitBoundsOptions` | `{maxZoom: 15}` | Options for auto-zoom behavior (same as GeolocateControl) - See [FitBoundsOptions - MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FitBoundsOptions/) for details |
+**Type References:**
+- [`LngLatLike`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/LngLatLike/) - Flexible coordinate input formats
+- [`FitBoundsOptions`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/FitBoundsOptions/) - Auto-zoom behavior options
 
 ### Methods
 
