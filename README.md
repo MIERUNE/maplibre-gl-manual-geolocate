@@ -4,13 +4,13 @@ A MapLibre GL JS control that displays a user position marker at specified coord
 
 ## Why Use Mock Geolocate?
 
-Perfect for scenarios where you need location visualization without actual GPS:
+Perfect for scenarios where you need location visualization without actual geolocation:
 
 - **🧪 Development & Testing** - Test location features with predictable coordinates
 - **🎯 Demos & Presentations** - Reliable positioning that works every time  
 - **🔒 Privacy-Conscious Apps** - Show approximate location without requesting permissions
-- **📱 Offline & Indoor Use** - Display position when GPS is unavailable
-- **🏗️ Development Workflow** - Seamlessly switch between mock and real GPS for testing
+- **📱 Offline & Indoor Use** - Display position when geolocation is unavailable
+- **🏗️ Development Workflow** - Seamlessly switch between mock and real geolocation for testing
 
 ## Installation
 
@@ -271,7 +271,7 @@ See [FitBoundsOptions - MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs
 
 ### Development vs Production
 
-Seamlessly switch between mock and real GPS based on environment:
+Seamlessly switch between mock and real geolocation based on environment:
 
 ```typescript
 // Environment-based control selection
@@ -291,7 +291,7 @@ const geolocateControl = isDevelopment
 map.addControl(geolocateControl, 'top-right');
 ```
 
-This pattern enables reliable testing with mock data while using real GPS in production.
+This pattern enables reliable testing with mock data while using real geolocation in production.
 
 ---
 
@@ -304,7 +304,7 @@ This pattern enables reliable testing with mock data while using real GPS in pro
 | **Data Source** | Browser Geolocation API | Predefined coordinates |
 | **Permissions** | Requires location access | ✅ None required |
 | **HTTPS Requirement** | Required for security | ✅ Works on HTTP |
-| **Reliability** | Depends on GPS signal | ✅ Always consistent |
+| **Reliability** | Depends on location sources | ✅ Always consistent |
 | **Privacy** | Shares real location | ✅ Uses mock coordinates |
 
 ### API Compatibility
@@ -316,8 +316,8 @@ This pattern enables reliable testing with mock data while using real GPS in pro
 | `position` | ❌ | ✅ | Mock-specific |
 | `accuracy` | ❌ | ✅ | Mock-specific |
 | `showAccuracyCircle` | ❌ | ✅ | Mock-specific |
-| `positionOptions` | ✅ | ❌ | GPS-specific |
-| `trackUserLocation` | ✅ | ❌ | GPS-specific |
+| `positionOptions` | ✅ | ❌ | Geolocation-specific |
+| `trackUserLocation` | ✅ | ❌ | Geolocation-specific |
 | **Methods** | | | |
 | `trigger()` | ✅ | ✅ | Identical behavior |
 | `setPosition()` | ❌ | ✅ | Mock-specific |
@@ -327,7 +327,7 @@ This pattern enables reliable testing with mock data while using real GPS in pro
 | **Events** | | | |
 | `geolocate` | ✅ | ✅ | Same event data |
 | `outofmaxbounds` | ✅ | ✅ | Same behavior |
-| `error` | ✅ | ❌ | No GPS errors |
+| `error` | ✅ | ❌ | No geolocation errors |
 | Tracking events | ✅ | ❌ | No tracking mode |
 | **Visual** | | | |
 | Blue dot marker | ✅ | ✅ | Identical appearance |
