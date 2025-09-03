@@ -128,6 +128,18 @@ Controls the visibility of the accuracy circle.
 mockControl.setShowAccuracyCircle(false); // Hide accuracy circle
 ```
 
+#### `setFitBoundsOptions(options: FitBoundsOptions): void`
+
+Updates the auto-zoom behavior options.
+
+```typescript
+mockControl.setFitBoundsOptions({
+  maxZoom: 18,
+  padding: 100,
+  linear: true
+});
+```
+
 #### `trigger(): void`
 
 Programmatically centers the map on the mock position with automatic zoom-to-accuracy.
@@ -310,6 +322,8 @@ This pattern enables reliable testing with mock data while using real GPS in pro
 | `trigger()` | ✅ | ✅ | Identical behavior |
 | `setPosition()` | ❌ | ✅ | Mock-specific |
 | `setAccuracy()` | ❌ | ✅ | Mock-specific |
+| `setShowAccuracyCircle()` | ❌ | ✅ | Mock-specific |
+| `setFitBoundsOptions()` | ❌ | ✅ | Mock-specific |
 | **Events** | | | |
 | `geolocate` | ✅ | ✅ | Same event data |
 | `outofmaxbounds` | ✅ | ✅ | Same behavior |
