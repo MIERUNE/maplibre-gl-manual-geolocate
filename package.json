@@ -23,7 +23,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
     "typescript": "~5.8.3",
