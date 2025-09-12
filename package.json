@@ -1,11 +1,21 @@
 {
   "name": "maplibre-gl-mock-geolocate",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/maplibre-gl-mock-geolocate.umd.cjs",
+  "module": "./dist/maplibre-gl-mock-geolocate.js",
+  "exports": {
+    ".": {
+      "import": "./dist/maplibre-gl-mock-geolocate.js",
+      "require": "./dist/maplibre-gl-mock-geolocate.umd.cjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
