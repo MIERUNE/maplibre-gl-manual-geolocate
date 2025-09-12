@@ -7,6 +7,7 @@
   ],
   "main": "./dist/maplibre-gl-mock-geolocate.umd.cjs",
   "module": "./dist/maplibre-gl-mock-geolocate.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/maplibre-gl-mock-geolocate.js",
