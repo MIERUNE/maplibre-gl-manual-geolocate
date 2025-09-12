@@ -1,0 +1,32 @@
+{
+  "name": "maplibre-gl-mock-geolocate",
+  "version": "0.1.0",
+  "description": "A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's geolocation API",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MIERUNE/maplibre-gl-mock-geolocate.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/maplibre-gl-mock-geolocate.umd.cjs",
+  "module": "./dist/maplibre-gl-mock-geolocate.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/maplibre-gl-mock-geolocate.js",
+      "require": "./dist/maplibre-gl-mock-geolocate.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vite": "^7.1.2"
+  }
+}
