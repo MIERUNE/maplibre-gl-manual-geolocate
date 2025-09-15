@@ -2,7 +2,8 @@
 // This file is loaded by `/index.html` when running the dev server
 // Usage: `pnpm dev` then open http://localhost:5173
 import "./style.css";
-import { hello } from "./index";
+import { MockGeolocateControl } from "./index";
 
 // Demo usage
-console.log(hello("MapLibre GL Mock Geolocate"));
+console.log("MapLibre GL Mock Geolocate library loaded");
+console.log("MockGeolocateControl class available:", MockGeolocateControl);
