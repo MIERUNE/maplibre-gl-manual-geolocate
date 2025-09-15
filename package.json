@@ -25,7 +25,11 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },
+  "peerDependencies": {
+    "maplibre-gl": ">=5.0.0"
+  },
   "devDependencies": {
+    "maplibre-gl": "^5.7.1",
     "typescript": "~5.8.3",
     "vite": "^7.1.2"
   }
