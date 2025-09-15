@@ -17,15 +17,16 @@ document.body.appendChild(mapContainer);
 // Initialize MapLibre GL JS map
 const map = new Map({
   container: "map",
-  style: "https://demotiles.maplibre.org/style.json",
-  center: [139.6917, 35.6895], // Tokyo
+  style:
+    "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
+  center: [139.74136111, 35.68111667], // Tokyo
   zoom: 12,
 });
 
 // Create MockGeolocateControl with Tokyo coordinates
 const mockGeolocateControl = new MockGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 }, // Tokyo coordinates
-  accuracy: 50, // 50-meter accuracy circle
+  accuracy: 100, // 50-meter accuracy circle
   showAccuracyCircle: true,
 });
 
