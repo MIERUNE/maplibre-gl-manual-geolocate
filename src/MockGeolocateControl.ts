@@ -115,6 +115,27 @@ export class MockGeolocateControl implements IControl {
    */
   setShowAccuracyCircle(show: boolean): void {
     this._showAccuracyCircle = show;
+    
+    if (!this._map || !this._map.isStyleLoaded()) return;
+    
+    // Add or remove accuracy layer based on the new setting
+    if (show && !this._map.getLayer(this._accuracyLayerId)) {
+      // Add accuracy layer if it doesn't exist
+      this._map.addLayer({
+        id: this._accuracyLayerId,
+        type: 'fill',
+        source: this._sourceId,
+        filter: ['==', ['get', 'type'], 'accuracy'],
+        paint: {
+          'fill-color': '#1e90ff',
+          'fill-opacity': 0.2
+        }
+      }, this._positionLayerId); // Add before position layer
+    } else if (!show && this._map.getLayer(this._accuracyLayerId)) {
+      // Remove accuracy layer if it exists
+      this._map.removeLayer(this._accuracyLayerId);
+    }
+    
     this._updateMapElements();
   }
   
@@ -225,6 +246,21 @@ export class MockGeolocateControl implements IControl {
    */
   private _addMapElements(): void {
     if (!this._map) return;
+    
+    // Check if style is loaded, if not wait for it
+    if (!this._map.isStyleLoaded()) {
+      this._map.once('styledata', () => {
+        this._addMapElements();
+      });
+      return;
+    }
+    
+    // Check if source already exists
+    if (this._map.getSource(this._sourceId)) {
+      // Source already exists, just update it
+      this._updateMapElements();
+      return;
+    }
     
     // Add source for position data
     this._map.addSource(this._sourceId, {

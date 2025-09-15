@@ -29,9 +29,6 @@ const mockGeolocateControl = new MockGeolocateControl({
   showAccuracyCircle: true
 });
 
-// Add control to map
-map.addControl(mockGeolocateControl, 'top-right');
-
 // Demo event listeners
 mockGeolocateControl.on('geolocate', (event: MockGeolocateEvent) => {
   console.log('Mock geolocate triggered!', event.coords);
@@ -94,8 +91,11 @@ const createDemoButtons = () => {
   document.body.appendChild(buttonContainer);
 };
 
-// Initialize demo buttons when map loads
+// Initialize demo buttons and control when map loads
 map.on('load', () => {
+  // Add control to map after style is loaded
+  map.addControl(mockGeolocateControl, 'top-right');
+  
   createDemoButtons();
   console.log('🗺️ MockGeolocateControl Demo Ready!');
   console.log('• Click the location button in top-right to center on Tokyo');
