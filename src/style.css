@@ -1,0 +1,65 @@
+/* MockGeolocateControl Styles */
+/* These styles ensure the mock control matches MapLibre's built-in GeolocateControl appearance */
+
+.maplibregl-ctrl-geolocate {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Ctitle%3EGeolocate Control%3C/title%3E%3Cpath d="m10.4 1.6c0-.4-.4-.8-.9-.8-.4 0-.8.3-.8.8v1.4c-3.3.4-6 3.1-6.4 6.4h-1.4c-.4 0-.8.4-.8.8s.3.8.8.8h1.4c.4 3.3 3.1 6 6.4 6.4v1.4c0 .4.4.8.8.8s.8-.3.8-.8v-1.4c3.3-.4 6-3.1 6.4-6.4h1.4c.4 0 .8-.4.8-.8s-.3-.8-.8-.8h-1.4c-.4-3.3-3.1-6-6.4-6.4zm1.1 7.9c0 .8-.6 1.4-1.4 1.4s-1.4-.6-1.4-1.4.6-1.4 1.4-1.4 1.4.6 1.4 1.4z"/%3E%3C/svg%3E');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.maplibregl-ctrl-geolocate:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.maplibregl-ctrl-geolocate:focus {
+  box-shadow: 0 0 2px 2px rgba(0, 122, 255, 0.5);
+  outline: none;
+}
+
+.maplibregl-ctrl-geolocate:active {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: translateY(1px);
+}
+
+.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active {
+  background-color: #007AFF;
+  color: #fff;
+}
+
+.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active:hover {
+  background-color: #0056CC;
+}
+
+/* Demo button styles */
+.demo-buttons {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.demo-button {
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.demo-button:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.demo-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
