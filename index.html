@@ -9,208 +9,66 @@
         />
         <link rel="icon" href="https://mierune.co.jp/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>MockGeolocateControl Demo - MapLibre GL JS</title>
-        <style>
-            /* Header styles */
-            .header {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 1000;
-                background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
-                padding: 15px 20px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                backdrop-filter: blur(10px);
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            }
-            
-            .header h1 {
-                margin: 0;
-                font-size: 24px;
-                color: #333;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                font-weight: 600;
-                flex: 1;
-            }
-            
-            .header .subtitle {
-                color: #666;
-                font-size: 14px;
-                margin-left: 10px;
-                font-weight: normal;
-            }
-            
-            /* Info button styles */
-            .info-button {
-                background: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                padding: 8px 12px;
-                font-size: 14px;
-                cursor: pointer;
-                transition: all 0.2s;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                color: #555;
-            }
-            
-            .info-button:hover {
-                background: #f5f5f5;
-                border-color: #999;
-                transform: translateY(-1px);
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            
-            /* Adjust map controls position to account for header */
-            .maplibregl-ctrl-top-left {
-                top: 70px;
-            }
-            
-            .maplibregl-ctrl-top-right {
-                top: 70px;
-            }
-            
-            /* Modal styles */
-            .info-modal {
-                display: none;
-                position: fixed;
-                z-index: 2000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0,0,0,0.5);
-                animation: fadeIn 0.3s;
-            }
-            
-            .info-modal.show {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            .modal-content {
-                background-color: white;
-                padding: 30px;
-                border-radius: 8px;
-                max-width: 600px;
-                max-height: 80vh;
-                overflow-y: auto;
-                box-shadow: 0 5px 30px rgba(0,0,0,0.3);
-                animation: slideIn 0.3s;
-                position: relative;
-            }
-            
-            .modal-close {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 28px;
-                font-weight: bold;
-                color: #aaa;
-                cursor: pointer;
-                transition: color 0.2s;
-            }
-            
-            .modal-close:hover {
-                color: #000;
-            }
-            
-            .modal-content h1 {
-                margin-top: 0;
-                color: #333;
-            }
-            
-            .modal-content p {
-                line-height: 1.6;
-                color: #555;
-            }
-            
-            .modal-content a {
-                color: #1da1f2;
-                text-decoration: none;
-            }
-            
-            .modal-content a:hover {
-                text-decoration: underline;
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            
-            @keyframes slideIn {
-                from { 
-                    transform: translateY(-50px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-        </style>
+        <title>maplibre-gl-mock-geolocate Demo</title>
     </head>
     <body>
         <!-- Header -->
-        <div class="header">
-            <h1>
-                maplibre-gl-mock-geolocate
-                <span class="subtitle">Demo</span>
-            </h1>
-            <button class="info-button" onclick="document.getElementById('infoModal').classList.add('show')" title="About this demo">
-                <span>ℹ️</span>
-                <span>About</span>
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">maplibre-gl-mock-geolocate</h1>
+                <p class="header-subtitle">A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's geolocation API</p>
+            </div>
+            <button class="about-button" onclick="document.getElementById('aboutModal').classList.add('show')">
+                About
             </button>
-        </div>
-        
-        <!-- Info modal -->
-        <div id="infoModal" class="info-modal" onclick="if(event.target === this) this.classList.remove('show')">
+        </header>
+
+        <!-- Map container -->
+        <div id="map"></div>
+
+        <!-- About modal -->
+        <div id="aboutModal" class="modal" onclick="if(event.target === this) this.classList.remove('show')">
             <div class="modal-content">
-                <span class="modal-close" onclick="document.getElementById('infoModal').classList.remove('show')">&times;</span>
-                <h1>MockGeolocateControl Demo</h1>
+                <button class="modal-close" onclick="document.getElementById('aboutModal').classList.remove('show')">&times;</button>
+                <h2>About MockGeolocateControl</h2>
                 <p>
-                    A MapLibre GL JS control that displays a user position marker at
-                    specified coordinates without requiring the browser's
-                    <a
-                        href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API"
-                        target="_blank"
-                        rel="noopener"
-                        >geolocation API</a
-                    >. Provides the same visual appearance as the built-in
-                    <a
-                        href="https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/"
-                        target="_blank"
-                        rel="noopener"
-                        >GeolocateControl</a
-                    >
-                    with complete control over positioning.
+                    This demo shows the MockGeolocateControl in action. It provides the same visual appearance as MapLibre's built-in
+                    <a href="https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/" target="_blank" rel="noopener">GeolocateControl</a>
+                    but displays a user position at predefined coordinates without requiring browser geolocation permissions.
                 </p>
+                
+                <h3>Features</h3>
+                <ul>
+                    <li>No browser permissions required</li>
+                    <li>Predictable positioning for demos and testing</li>
+                    <li>Same visual appearance as native control</li>
+                    <li>Full API compatibility</li>
+                </ul>
+                
+                <h3>Current Status</h3>
                 <p>
-                    <strong>🎯 Current Implementation Status:</strong><br>
-                    The control button is visible in the top-right corner. Clicking it will log to the console.
-                    Position marker and other features are coming soon!
+                    <strong>🎯 Implementation Progress:</strong><br>
+                    ✅ Control button appears in top-right corner<br>
+                    ✅ Click handler logs to console<br>
+                    🔄 Position marker (coming soon)<br>
+                    🔄 Accuracy circle (coming soon)<br>
+                    🔄 Auto-zoom functionality (coming soon)
                 </p>
+                
                 <p>
-                    <strong>📍 Mock Position:</strong> Tokyo (139.741, 35.658)
+                    <strong>📍 Mock Position:</strong> Tokyo Station (139.741, 35.658)
                 </p>
+                
+                <h3>Resources</h3>
                 <p>
-                    See
-                    <a
-                        href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate"
-                        target="_blank"
-                        rel="noopener"
-                        >github.com/MIERUNE/maplibre-gl-mock-geolocate</a
-                    >
-                    for more details.
+                    <a href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate" target="_blank" rel="noopener">GitHub Repository</a> |
+                    <a href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate#readme" target="_blank" rel="noopener">Documentation</a> |
+                    <a href="https://www.npmjs.com/package/maplibre-gl-mock-geolocate" target="_blank" rel="noopener">NPM Package</a>
                 </p>
             </div>
         </div>
+        
+        <!-- Load the demo application -->
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>

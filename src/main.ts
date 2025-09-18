@@ -6,13 +6,6 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { MockGeolocateControl } from "./index";
 
-// Create map container
-const mapContainer = document.createElement('div');
-mapContainer.id = 'map';
-mapContainer.style.width = '100vw';
-mapContainer.style.height = '100vh';
-document.body.appendChild(mapContainer);
-
 // Initialize the map
 const map = new maplibregl.Map({
   container: 'map',
