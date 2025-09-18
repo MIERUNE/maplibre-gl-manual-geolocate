@@ -1,4 +1,4 @@
-import { LngLat, type IControl, type Map, type FitBoundsOptions, type ControlPosition, type LngLatLike } from 'maplibre-gl';
+import { LngLat, type IControl, type Map, type FitBoundsOptions, type LngLatLike } from 'maplibre-gl';
 import type { MockGeolocateControlOptions } from './types';
 
 /**
@@ -99,12 +99,6 @@ export class MockGeolocateControl implements IControl {
     this._button = undefined;
     this._map = undefined;
   }
-
-  /**
-   * Get the default position for the control
-   * @returns The default position for this control (not implemented, returns undefined)
-   */
-  getDefaultPosition?: () => ControlPosition;
 
   /**
    * Handle button click event (placeholder - will be implemented in Step 4)
