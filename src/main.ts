@@ -9,7 +9,7 @@ import { MockGeolocateControl } from "./index";
 // Initialize the map
 const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json', // CARTO Positron - clean, light basemap
+  style: 'https://api.protomaps.com/styles/v2/light.json', // Protomaps Light - clean, free, no API key needed
   center: [139.74135747, 35.65809922], // Tokyo Station
   zoom: 14 // Slightly closer for better detail
 });
