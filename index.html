@@ -9,36 +9,159 @@
         />
         <link rel="icon" href="https://mierune.co.jp/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>maplibre-gl-mock-geolocate</title>
+        <title>MockGeolocateControl Demo - MapLibre GL JS</title>
+        <style>
+            /* Info button styles */
+            .info-button {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                z-index: 1000;
+                background: white;
+                border: none;
+                border-radius: 4px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                cursor: pointer;
+                box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                transition: all 0.2s;
+            }
+            .info-button:hover {
+                box-shadow: 0 0 15px rgba(0,0,0,0.3);
+                transform: scale(1.05);
+            }
+            
+            /* Modal styles */
+            .info-modal {
+                display: none;
+                position: fixed;
+                z-index: 2000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.5);
+                animation: fadeIn 0.3s;
+            }
+            
+            .info-modal.show {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .modal-content {
+                background-color: white;
+                padding: 30px;
+                border-radius: 8px;
+                max-width: 600px;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s;
+                position: relative;
+            }
+            
+            .modal-close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 28px;
+                font-weight: bold;
+                color: #aaa;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+            
+            .modal-close:hover {
+                color: #000;
+            }
+            
+            .modal-content h1 {
+                margin-top: 0;
+                color: #333;
+            }
+            
+            .modal-content p {
+                line-height: 1.6;
+                color: #555;
+            }
+            
+            .modal-content a {
+                color: #1da1f2;
+                text-decoration: none;
+            }
+            
+            .modal-content a:hover {
+                text-decoration: underline;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes slideIn {
+                from { 
+                    transform: translateY(-50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        </style>
     </head>
     <body>
-        <p>
-            A MapLibre GL JS control that displays a user position marker at
-            specified coordinates without requiring the browser's
-            <a
-                href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API"
-                target="_blank"
-                rel="noopener"
-                >geolocation API</a
-            >. Provides the same visual appearance as the built-in
-            <a
-                href="https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/"
-                target="_blank"
-                rel="noopener"
-                >`GeolocateControl`</a
-            >
-            with complete control over positioning.
-        </p>
-        <p>
-            See
-            <a
-                href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate"
-                target="_blank"
-                rel="noopener"
-                >github.com/MIERUNE/maplibre-gl-mock-geolocate</a
-            >
-            for more details.
-        </p>
+        <!-- Info button -->
+        <button class="info-button" onclick="document.getElementById('infoModal').classList.add('show')" title="About this demo">
+            ℹ️
+        </button>
+        
+        <!-- Info modal -->
+        <div id="infoModal" class="info-modal" onclick="if(event.target === this) this.classList.remove('show')">
+            <div class="modal-content">
+                <span class="modal-close" onclick="document.getElementById('infoModal').classList.remove('show')">&times;</span>
+                <h1>MockGeolocateControl Demo</h1>
+                <p>
+                    A MapLibre GL JS control that displays a user position marker at
+                    specified coordinates without requiring the browser's
+                    <a
+                        href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API"
+                        target="_blank"
+                        rel="noopener"
+                        >geolocation API</a
+                    >. Provides the same visual appearance as the built-in
+                    <a
+                        href="https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/"
+                        target="_blank"
+                        rel="noopener"
+                        >GeolocateControl</a
+                    >
+                    with complete control over positioning.
+                </p>
+                <p>
+                    <strong>🎯 Current Implementation Status:</strong><br>
+                    The control button is visible in the top-right corner. Clicking it will log to the console.
+                    Position marker and other features are coming soon!
+                </p>
+                <p>
+                    <strong>📍 Mock Position:</strong> Tokyo (139.741, 35.658)
+                </p>
+                <p>
+                    See
+                    <a
+                        href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate"
+                        target="_blank"
+                        rel="noopener"
+                        >github.com/MIERUNE/maplibre-gl-mock-geolocate</a
+                    >
+                    for more details.
+                </p>
+            </div>
+        </div>
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>
