@@ -8,7 +8,7 @@ import type { MockGeolocateControlOptions } from './types';
  * @example
  * ```typescript
  * const mockGeolocateControl = new MockGeolocateControl({
- *   position: { lng: 139.6917, lat: 35.6895 },
+ *   position: { lng: 139.74135747, lat: 35.65809922 },
  *   accuracy: 50
  * });
  * map.addControl(mockGeolocateControl, 'top-right');
