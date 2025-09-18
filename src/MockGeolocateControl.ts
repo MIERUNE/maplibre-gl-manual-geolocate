@@ -1,4 +1,4 @@
-import { LngLat, type IControl, type Map, type FitBoundsOptions, type ControlPosition } from 'maplibre-gl';
+import { LngLat, type IControl, type Map, type FitBoundsOptions, type ControlPosition, type LngLatLike } from 'maplibre-gl';
 import type { MockGeolocateControlOptions } from './types';
 
 /**
@@ -35,9 +35,8 @@ export class MockGeolocateControl implements IControl {
       throw new Error('MockGeolocateControl: position option is required');
     }
 
-    // Initialize position (will be properly converted in a later step)
-    // For now, we'll do a simple conversion
-    this._position = this._convertToLngLat(options.position);
+    // Convert position using MapLibre's built-in converter
+    this._position = LngLat.convert(options.position);
     
     // Set defaults for optional properties
     this._accuracy = options.accuracy ?? 50;
@@ -59,11 +58,17 @@ export class MockGeolocateControl implements IControl {
     this._container = document.createElement('div');
     this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
     
-    // Create button element (will be properly styled in Step 3)
+    // Create button element
     this._button = document.createElement('button');
     this._button.type = 'button';
     this._button.className = 'maplibregl-ctrl-geolocate';
     this._button.title = 'Find my location';
+    
+    // Add icon span (required for MapLibre GL styles)
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'maplibregl-ctrl-icon';
+    iconSpan.setAttribute('aria-hidden', 'true');
+    this._button.appendChild(iconSpan);
     
     // Add button to container
     this._container.appendChild(this._button);
@@ -117,27 +122,6 @@ export class MockGeolocateControl implements IControl {
     void this._fitBoundsOptions;
   }
 
-  /**
-   * Convert various coordinate formats to LngLat (simplified version)
-   * Full implementation will be done in Step 16
-   * @private
-   */
-  private _convertToLngLat(position: any): LngLat {
-    // Simple conversion for now - will be enhanced in Step 16
-    if (position instanceof LngLat) {
-      return position;
-    } else if (Array.isArray(position) && position.length === 2) {
-      return new LngLat(position[0], position[1]);
-    } else if (typeof position === 'object' && position !== null) {
-      if ('lng' in position && 'lat' in position) {
-        return new LngLat(position.lng, position.lat);
-      } else if ('lon' in position && 'lat' in position) {
-        return new LngLat(position.lon, position.lat);
-      }
-    }
-    
-    throw new Error('Invalid position format');
-  }
 
   /**
    * Programmatically trigger the geolocate control
@@ -153,8 +137,8 @@ export class MockGeolocateControl implements IControl {
    * Update the mock position
    * (Placeholder - will be implemented in Step 9)
    */
-  setPosition(coordinates: any): void {
-    this._position = this._convertToLngLat(coordinates);
+  setPosition(coordinates: LngLatLike): void {
+    this._position = LngLat.convert(coordinates);
     // Will update marker position in Step 9
   }
 
