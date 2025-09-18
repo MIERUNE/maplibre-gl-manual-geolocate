@@ -18,55 +18,16 @@
                 <h1 class="header-title">maplibre-gl-mock-geolocate</h1>
                 <p class="header-subtitle">A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's geolocation API</p>
             </div>
-            <button class="about-button" onclick="document.getElementById('aboutModal').classList.add('show')">
-                About
-            </button>
+            <a href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate" target="_blank" rel="noopener" class="github-link">
+                <svg class="github-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                GitHub
+            </a>
         </header>
 
         <!-- Map container -->
         <div id="map"></div>
-
-        <!-- About modal -->
-        <div id="aboutModal" class="modal" onclick="if(event.target === this) this.classList.remove('show')">
-            <div class="modal-content">
-                <button class="modal-close" onclick="document.getElementById('aboutModal').classList.remove('show')">&times;</button>
-                <h2>About MockGeolocateControl</h2>
-                <p>
-                    This demo shows the MockGeolocateControl in action. It provides the same visual appearance as MapLibre's built-in
-                    <a href="https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/" target="_blank" rel="noopener">GeolocateControl</a>
-                    but displays a user position at predefined coordinates without requiring browser geolocation permissions.
-                </p>
-                
-                <h3>Features</h3>
-                <ul>
-                    <li>No browser permissions required</li>
-                    <li>Predictable positioning for demos and testing</li>
-                    <li>Same visual appearance as native control</li>
-                    <li>Full API compatibility</li>
-                </ul>
-                
-                <h3>Current Status</h3>
-                <p>
-                    <strong>🎯 Implementation Progress:</strong><br>
-                    ✅ Control button appears in top-right corner<br>
-                    ✅ Click handler logs to console<br>
-                    🔄 Position marker (coming soon)<br>
-                    🔄 Accuracy circle (coming soon)<br>
-                    🔄 Auto-zoom functionality (coming soon)
-                </p>
-                
-                <p>
-                    <strong>📍 Mock Position:</strong> Tokyo Station (139.741, 35.658)
-                </p>
-                
-                <h3>Resources</h3>
-                <p>
-                    <a href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate" target="_blank" rel="noopener">GitHub Repository</a> |
-                    <a href="https://github.com/MIERUNE/maplibre-gl-mock-geolocate#readme" target="_blank" rel="noopener">Documentation</a> |
-                    <a href="https://www.npmjs.com/package/maplibre-gl-mock-geolocate" target="_blank" rel="noopener">NPM Package</a>
-                </p>
-            </div>
-        </div>
         
         <!-- Load the demo application -->
         <script type="module" src="/src/main.ts"></script>
