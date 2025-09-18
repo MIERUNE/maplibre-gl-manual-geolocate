@@ -11,25 +11,67 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>MockGeolocateControl Demo - MapLibre GL JS</title>
         <style>
+            /* Header styles */
+            .header {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+                padding: 15px 20px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                backdrop-filter: blur(10px);
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+                color: #333;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                font-weight: 600;
+                flex: 1;
+            }
+            
+            .header .subtitle {
+                color: #666;
+                font-size: 14px;
+                margin-left: 10px;
+                font-weight: normal;
+            }
+            
             /* Info button styles */
             .info-button {
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                z-index: 1000;
                 background: white;
-                border: none;
+                border: 1px solid #ddd;
                 border-radius: 4px;
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
+                padding: 8px 12px;
+                font-size: 14px;
                 cursor: pointer;
-                box-shadow: 0 0 10px rgba(0,0,0,0.2);
                 transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: #555;
             }
+            
             .info-button:hover {
-                box-shadow: 0 0 15px rgba(0,0,0,0.3);
-                transform: scale(1.05);
+                background: #f5f5f5;
+                border-color: #999;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            
+            /* Adjust map controls position to account for header */
+            .maplibregl-ctrl-top-left {
+                top: 70px;
+            }
+            
+            .maplibregl-ctrl-top-right {
+                top: 70px;
             }
             
             /* Modal styles */
@@ -115,10 +157,17 @@
         </style>
     </head>
     <body>
-        <!-- Info button -->
-        <button class="info-button" onclick="document.getElementById('infoModal').classList.add('show')" title="About this demo">
-            ℹ️
-        </button>
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                maplibre-gl-mock-geolocate
+                <span class="subtitle">Demo</span>
+            </h1>
+            <button class="info-button" onclick="document.getElementById('infoModal').classList.add('show')" title="About this demo">
+                <span>ℹ️</span>
+                <span>About</span>
+            </button>
+        </div>
         
         <!-- Info modal -->
         <div id="infoModal" class="info-modal" onclick="if(event.target === this) this.classList.remove('show')">
