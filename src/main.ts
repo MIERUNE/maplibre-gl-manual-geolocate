@@ -9,9 +9,9 @@ import { MockGeolocateControl } from "./index";
 // Initialize the map
 const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://demotiles.maplibre.org/style.json',
-  center: [139.74135747, 35.65809922], // Tokyo
-  zoom: 12
+  style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json', // CARTO Positron - clean, light basemap
+  center: [139.74135747, 35.65809922], // Tokyo Station
+  zoom: 14 // Slightly closer for better detail
 });
 
 // Create mock geolocate control
