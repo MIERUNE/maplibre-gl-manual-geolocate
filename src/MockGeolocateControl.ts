@@ -202,31 +202,22 @@ export class MockGeolocateControl implements IControl {
    * @private
    */
   private _updateAccuracyCircle(): void {
-    if (!this._map || !this._accuracyMarker) return;
+    if (!this._map || !this._accuracyMarker || !this._showAccuracyCircle) {
+      return;
+    }
 
-    const metersPerPixel = this._getMetersPerPixelAtLatitude(
-      this._position.lat,
-      this._map.getZoom(),
-    );
-
-    const pixelRadius = this._accuracy / metersPerPixel;
-    const diameter = pixelRadius * 2;
+    // Use MapLibre's projection methods for accurate pixel-to-meter conversion
+    const screenPosition = this._map.project(this._position);
+    const positionWith100Px = this._map.unproject([
+      screenPosition.x + 100,
+      screenPosition.y,
+    ]);
+    const pixelsToMeters = this._position.distanceTo(positionWith100Px) / 100;
+    const circleDiameter = (2 * this._accuracy) / pixelsToMeters;
 
     const element = this._accuracyMarker.getElement();
-    element.style.width = `${diameter}px`;
-    element.style.height = `${diameter}px`;
-  }
-
-  /**
-   * Calculate meters per pixel at a given latitude and zoom level
-   * @private
-   */
-  private _getMetersPerPixelAtLatitude(latitude: number, zoom: number): number {
-    const earthCircumference = 40075017; // meters at equator
-    const latitudeRadians = (latitude * Math.PI) / 180;
-    return (
-      (earthCircumference * Math.cos(latitudeRadians)) / Math.pow(2, zoom + 8)
-    );
+    element.style.width = `${circleDiameter.toFixed(2)}px`;
+    element.style.height = `${circleDiameter.toFixed(2)}px`;
   }
 
   /**
