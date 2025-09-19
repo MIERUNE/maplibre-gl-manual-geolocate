@@ -142,43 +142,27 @@ export class MockGeolocateControl implements IControl {
 
     // Create accuracy circle marker (appears behind position marker)
     const accuracyEl = document.createElement("div");
-    accuracyEl.style.width = "24px";
-    accuracyEl.style.height = "24px";
-    accuracyEl.style.borderRadius = "50%";
-    accuracyEl.style.backgroundColor = "rgba(33, 150, 243, 0.2)";
-    accuracyEl.style.border = "1px solid rgba(33, 150, 243, 0.3)";
-    accuracyEl.style.boxSizing = "border-box";
+    accuracyEl.className = "maplibregl-user-location-accuracy-circle";
 
     this._accuracyMarker = new Marker({
       element: accuracyEl,
       anchor: "center",
       pitchAlignment: "map",
       rotationAlignment: "map",
-    })
-      .setLngLat(this._position)
-      .addTo(this._map);
+    }).setLngLat(this._position);
+    // Note: Not adding to map yet - will be added when showing
 
-    // Create position marker (blue dot with white border)
+    // Create position marker (blue dot with white border and pulse animation)
     const positionEl = document.createElement("div");
-    positionEl.style.width = "16px";
-    positionEl.style.height = "16px";
-    positionEl.style.borderRadius = "50%";
-    positionEl.style.backgroundColor = "#2196F3";
-    positionEl.style.border = "2px solid white";
-    positionEl.style.boxShadow = "0 1px 4px rgba(0, 0, 0, 0.3)";
-    positionEl.style.boxSizing = "border-box";
+    positionEl.className = "maplibregl-user-location-dot";
 
     this._positionMarker = new Marker({
       element: positionEl,
       anchor: "center",
       pitchAlignment: "map",
       rotationAlignment: "map",
-    })
-      .setLngLat(this._position)
-      .addTo(this._map);
-
-    // Initially hide markers until triggered
-    this._hideMarkers();
+    }).setLngLat(this._position);
+    // Note: Not adding to map yet - will be added when showing
   }
 
   /**
@@ -186,11 +170,17 @@ export class MockGeolocateControl implements IControl {
    * @private
    */
   private _showMarkers(): void {
-    if (this._positionMarker) {
-      this._positionMarker.getElement().style.display = "block";
-    }
+    if (!this._map) return;
+
+    // Add accuracy circle first (so it appears behind the dot)
     if (this._accuracyMarker && this._showAccuracyCircle) {
-      this._accuracyMarker.getElement().style.display = "block";
+      this._accuracyMarker.addTo(this._map);
+      this._updateAccuracyCircle();
+    }
+
+    // Add position dot on top
+    if (this._positionMarker) {
+      this._positionMarker.addTo(this._map);
     }
   }
 
@@ -200,11 +190,43 @@ export class MockGeolocateControl implements IControl {
    */
   private _hideMarkers(): void {
     if (this._positionMarker) {
-      this._positionMarker.getElement().style.display = "none";
+      this._positionMarker.remove();
     }
     if (this._accuracyMarker) {
-      this._accuracyMarker.getElement().style.display = "none";
+      this._accuracyMarker.remove();
     }
+  }
+
+  /**
+   * Update the accuracy circle size based on current zoom and accuracy
+   * @private
+   */
+  private _updateAccuracyCircle(): void {
+    if (!this._map || !this._accuracyMarker) return;
+
+    const metersPerPixel = this._getMetersPerPixelAtLatitude(
+      this._position.lat,
+      this._map.getZoom(),
+    );
+
+    const pixelRadius = this._accuracy / metersPerPixel;
+    const diameter = pixelRadius * 2;
+
+    const element = this._accuracyMarker.getElement();
+    element.style.width = `${diameter}px`;
+    element.style.height = `${diameter}px`;
+  }
+
+  /**
+   * Calculate meters per pixel at a given latitude and zoom level
+   * @private
+   */
+  private _getMetersPerPixelAtLatitude(latitude: number, zoom: number): number {
+    const earthCircumference = 40075017; // meters at equator
+    const latitudeRadians = (latitude * Math.PI) / 180;
+    return (
+      (earthCircumference * Math.cos(latitudeRadians)) / Math.pow(2, zoom + 8)
+    );
   }
 
   /**
@@ -217,6 +239,11 @@ export class MockGeolocateControl implements IControl {
 
     // Show markers when clicked (temporary - full implementation in next PR)
     this._showMarkers();
+
+    // Update accuracy circle on zoom changes
+    if (this._map && this._showAccuracyCircle) {
+      this._map.on("zoom", () => this._updateAccuracyCircle());
+    }
 
     // Test event firing (temporary - will be properly implemented later)
     const testData: GeolocateEventData = {
