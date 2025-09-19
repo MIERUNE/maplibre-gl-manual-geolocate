@@ -245,19 +245,6 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Hide the position markers
-   * @private
-   */
-  private _hideMarkers(): void {
-    if (this._positionMarker) {
-      this._positionMarker.remove();
-    }
-    if (this._accuracyMarker) {
-      this._accuracyMarker.remove();
-    }
-  }
-
-  /**
    * Update the accuracy circle size based on current zoom and accuracy
    * @private
    */
