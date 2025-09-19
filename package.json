@@ -23,7 +23,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "build:demo": "vite build --mode demo",
+    "preview": "vite preview",
+    "preview:demo": "vite preview --outDir demo-dist"
   },
   "peerDependencies": {
     "maplibre-gl": ">=5.0.0"
