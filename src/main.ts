@@ -20,14 +20,14 @@ const mockGeolocateControl = new MockGeolocateControl({
   accuracy: 50 // 50-meter accuracy circle
 });
 
-// Add control to map
-map.addControl(mockGeolocateControl, 'top-right');
-
 // Add navigation control for comparison
 map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
 // Add scale control
 map.addControl(new maplibregl.ScaleControl(), 'bottom-left');
+
+// Add control to map
+map.addControl(mockGeolocateControl, 'top-right');
 
 // Log when map is loaded
 map.on('load', () => {
