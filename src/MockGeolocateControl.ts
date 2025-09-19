@@ -44,6 +44,9 @@ export class MockGeolocateControl implements IControl {
   private _positionMarker?: Marker;
   private _accuracyMarker?: Marker;
 
+  // Track if we've set up map event listeners
+  private _mapEventListenersSetup = false;
+
   /**
    * Creates a new MockGeolocateControl instance
    * @param options - Configuration options for the control
@@ -106,6 +109,9 @@ export class MockGeolocateControl implements IControl {
    * and resources. This method is called by Map#removeControl.
    */
   onRemove(): void {
+    // Remove map event listeners first
+    this._removeMapEventListeners();
+
     // Clean up event listeners
     if (this._button) {
       this._button.removeEventListener("click", this._onClick.bind(this));
@@ -146,9 +152,7 @@ export class MockGeolocateControl implements IControl {
 
     this._accuracyMarker = new Marker({
       element: accuracyEl,
-      anchor: "center",
-      pitchAlignment: "map",
-      rotationAlignment: "map",
+      pitchAlignment: "map", // Only accuracy circle needs pitch alignment
     }).setLngLat(this._position);
     // Note: Not adding to map yet - will be added when showing
 
@@ -158,9 +162,7 @@ export class MockGeolocateControl implements IControl {
 
     this._positionMarker = new Marker({
       element: positionEl,
-      anchor: "center",
-      pitchAlignment: "map",
-      rotationAlignment: "map",
+      // No special alignment for dot marker - matches original
     }).setLngLat(this._position);
     // Note: Not adding to map yet - will be added when showing
   }
@@ -182,6 +184,48 @@ export class MockGeolocateControl implements IControl {
     if (this._positionMarker) {
       this._positionMarker.addTo(this._map);
     }
+
+    // Setup map event listeners for accuracy circle updates
+    this._setupMapEventListeners();
+  }
+
+  /**
+   * Setup map event listeners for updating accuracy circle
+   * @private
+   */
+  private _setupMapEventListeners(): void {
+    if (
+      !this._map ||
+      this._mapEventListenersSetup ||
+      !this._showAccuracyCircle
+    ) {
+      return;
+    }
+
+    // Update accuracy circle on map changes (matches original implementation)
+    this._map.on("zoom", this._updateAccuracyCircle.bind(this));
+    this._map.on("move", this._updateAccuracyCircle.bind(this));
+    this._map.on("rotate", this._updateAccuracyCircle.bind(this));
+    this._map.on("pitch", this._updateAccuracyCircle.bind(this));
+
+    this._mapEventListenersSetup = true;
+  }
+
+  /**
+   * Remove map event listeners
+   * @private
+   */
+  private _removeMapEventListeners(): void {
+    if (!this._map || !this._mapEventListenersSetup) {
+      return;
+    }
+
+    this._map.off("zoom", this._updateAccuracyCircle.bind(this));
+    this._map.off("move", this._updateAccuracyCircle.bind(this));
+    this._map.off("rotate", this._updateAccuracyCircle.bind(this));
+    this._map.off("pitch", this._updateAccuracyCircle.bind(this));
+
+    this._mapEventListenersSetup = false;
   }
 
   /**
@@ -230,11 +274,6 @@ export class MockGeolocateControl implements IControl {
 
     // Show markers when clicked (temporary - full implementation in next PR)
     this._showMarkers();
-
-    // Update accuracy circle on zoom changes
-    if (this._map && this._showAccuracyCircle) {
-      this._map.on("zoom", () => this._updateAccuracyCircle());
-    }
 
     // Test event firing (temporary - will be properly implemented later)
     const testData: GeolocateEventData = {
