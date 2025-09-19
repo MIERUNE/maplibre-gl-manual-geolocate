@@ -47,6 +47,12 @@ export class MockGeolocateControl implements IControl {
   // Track if we've set up map event listeners
   private _mapEventListenersSetup = false;
 
+  // Bound update function for event listeners (stored to ensure proper removal)
+  private _updateCircleHandler?: () => void;
+
+  // Bound click handler (stored to ensure proper removal)
+  private _onClickHandler?: () => void;
+
   /**
    * Creates a new MockGeolocateControl instance
    * @param options - Configuration options for the control
@@ -95,8 +101,9 @@ export class MockGeolocateControl implements IControl {
     // Add button to container
     this._container.appendChild(this._button);
 
-    // Placeholder for click handler (will be implemented in Step 4)
-    this._button.addEventListener("click", this._onClick.bind(this));
+    // Store bound click handler to enable proper removal
+    this._onClickHandler = this._onClick.bind(this);
+    this._button.addEventListener("click", this._onClickHandler);
 
     // Create markers
     this._createMarkers();
@@ -113,8 +120,9 @@ export class MockGeolocateControl implements IControl {
     this._removeMapEventListeners();
 
     // Clean up event listeners
-    if (this._button) {
-      this._button.removeEventListener("click", this._onClick.bind(this));
+    if (this._button && this._onClickHandler) {
+      this._button.removeEventListener("click", this._onClickHandler);
+      this._onClickHandler = undefined;
     }
 
     // Remove DOM elements
@@ -202,11 +210,14 @@ export class MockGeolocateControl implements IControl {
       return;
     }
 
+    // Create and store the bound handler
+    this._updateCircleHandler = this._updateAccuracyCircle.bind(this);
+
     // Update accuracy circle on map changes (matches original implementation)
-    this._map.on("zoom", this._updateAccuracyCircle.bind(this));
-    this._map.on("move", this._updateAccuracyCircle.bind(this));
-    this._map.on("rotate", this._updateAccuracyCircle.bind(this));
-    this._map.on("pitch", this._updateAccuracyCircle.bind(this));
+    this._map.on("zoom", this._updateCircleHandler);
+    this._map.on("move", this._updateCircleHandler);
+    this._map.on("rotate", this._updateCircleHandler);
+    this._map.on("pitch", this._updateCircleHandler);
 
     this._mapEventListenersSetup = true;
   }
@@ -216,15 +227,20 @@ export class MockGeolocateControl implements IControl {
    * @private
    */
   private _removeMapEventListeners(): void {
-    if (!this._map || !this._mapEventListenersSetup) {
+    if (
+      !this._map ||
+      !this._mapEventListenersSetup ||
+      !this._updateCircleHandler
+    ) {
       return;
     }
 
-    this._map.off("zoom", this._updateAccuracyCircle.bind(this));
-    this._map.off("move", this._updateAccuracyCircle.bind(this));
-    this._map.off("rotate", this._updateAccuracyCircle.bind(this));
-    this._map.off("pitch", this._updateAccuracyCircle.bind(this));
+    this._map.off("zoom", this._updateCircleHandler);
+    this._map.off("move", this._updateCircleHandler);
+    this._map.off("rotate", this._updateCircleHandler);
+    this._map.off("pitch", this._updateCircleHandler);
 
+    this._updateCircleHandler = undefined;
     this._mapEventListenersSetup = false;
   }
 
