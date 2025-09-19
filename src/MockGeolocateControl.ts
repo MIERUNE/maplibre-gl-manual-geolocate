@@ -1,5 +1,6 @@
 import {
   LngLat,
+  Marker,
   type IControl,
   type Map,
   type FitBoundsOptions,
@@ -38,6 +39,10 @@ export class MockGeolocateControl implements IControl {
 
   // Event handlers storage
   private _eventHandlers: EventHandlers = {};
+
+  // Markers for position and accuracy
+  private _positionMarker?: Marker;
+  private _accuracyMarker?: Marker;
 
   /**
    * Creates a new MockGeolocateControl instance
@@ -90,6 +95,9 @@ export class MockGeolocateControl implements IControl {
     // Placeholder for click handler (will be implemented in Step 4)
     this._button.addEventListener("click", this._onClick.bind(this));
 
+    // Create markers
+    this._createMarkers();
+
     return this._container;
   }
 
@@ -108,10 +116,95 @@ export class MockGeolocateControl implements IControl {
       this._container.parentNode.removeChild(this._container);
     }
 
+    // Remove markers from map
+    if (this._positionMarker) {
+      this._positionMarker.remove();
+      this._positionMarker = undefined;
+    }
+
+    if (this._accuracyMarker) {
+      this._accuracyMarker.remove();
+      this._accuracyMarker = undefined;
+    }
+
     // Clean up references
     this._container = undefined;
     this._button = undefined;
     this._map = undefined;
+  }
+
+  /**
+   * Create the position and accuracy markers
+   * @private
+   */
+  private _createMarkers(): void {
+    if (!this._map) return;
+
+    // Create accuracy circle marker (appears behind position marker)
+    const accuracyEl = document.createElement("div");
+    accuracyEl.style.width = "24px";
+    accuracyEl.style.height = "24px";
+    accuracyEl.style.borderRadius = "50%";
+    accuracyEl.style.backgroundColor = "rgba(33, 150, 243, 0.2)";
+    accuracyEl.style.border = "1px solid rgba(33, 150, 243, 0.3)";
+    accuracyEl.style.boxSizing = "border-box";
+
+    this._accuracyMarker = new Marker({
+      element: accuracyEl,
+      anchor: "center",
+      pitchAlignment: "map",
+      rotationAlignment: "map",
+    })
+      .setLngLat(this._position)
+      .addTo(this._map);
+
+    // Create position marker (blue dot with white border)
+    const positionEl = document.createElement("div");
+    positionEl.style.width = "16px";
+    positionEl.style.height = "16px";
+    positionEl.style.borderRadius = "50%";
+    positionEl.style.backgroundColor = "#2196F3";
+    positionEl.style.border = "2px solid white";
+    positionEl.style.boxShadow = "0 1px 4px rgba(0, 0, 0, 0.3)";
+    positionEl.style.boxSizing = "border-box";
+
+    this._positionMarker = new Marker({
+      element: positionEl,
+      anchor: "center",
+      pitchAlignment: "map",
+      rotationAlignment: "map",
+    })
+      .setLngLat(this._position)
+      .addTo(this._map);
+
+    // Initially hide markers until triggered
+    this._hideMarkers();
+  }
+
+  /**
+   * Show the position markers
+   * @private
+   */
+  private _showMarkers(): void {
+    if (this._positionMarker) {
+      this._positionMarker.getElement().style.display = "block";
+    }
+    if (this._accuracyMarker && this._showAccuracyCircle) {
+      this._accuracyMarker.getElement().style.display = "block";
+    }
+  }
+
+  /**
+   * Hide the position markers
+   * @private
+   */
+  private _hideMarkers(): void {
+    if (this._positionMarker) {
+      this._positionMarker.getElement().style.display = "none";
+    }
+    if (this._accuracyMarker) {
+      this._accuracyMarker.getElement().style.display = "none";
+    }
   }
 
   /**
@@ -120,7 +213,10 @@ export class MockGeolocateControl implements IControl {
    */
   private _onClick(): void {
     // Placeholder implementation - will be properly implemented in next PR
-    console.log("MockGeolocateControl button clicked");
+    console.log("MockGeolocateControl button clicked - showing markers");
+
+    // Show markers when clicked (temporary - full implementation in next PR)
+    this._showMarkers();
 
     // Test event firing (temporary - will be properly implemented later)
     const testData: GeolocateEventData = {
