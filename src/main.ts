@@ -29,8 +29,13 @@ map.addControl(new maplibregl.ScaleControl(), "bottom-left");
 // Add control to map
 map.addControl(mockGeolocateControl, "top-right");
 
+// Test event system (will be enhanced in later PR)
+mockGeolocateControl.on("geolocate", (e) => {
+  console.log("📍 Geolocate event fired:", e.coords);
+});
+
 // Log when map is loaded
 map.on("load", () => {
   console.log("Map loaded! MockGeolocateControl is in the top-right corner.");
-  console.log("Try clicking the geolocate button to see the placeholder log.");
+  console.log("Try clicking the geolocate button to test the event system.");
 });
