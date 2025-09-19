@@ -22,10 +22,10 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "build:demo": "vite build --mode demo",
+    "build": "tsc --noEmit && vite build --config vite.config.lib.ts",
+    "build:demo": "vite build --config vite.config.demo.ts",
     "preview": "vite preview",
-    "preview:demo": "vite preview --outDir demo-dist"
+    "preview:demo": "vite preview --config vite.config.demo.ts"
   },
   "peerDependencies": {
     "maplibre-gl": ">=5.0.0"
