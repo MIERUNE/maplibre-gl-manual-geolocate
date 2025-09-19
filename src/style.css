@@ -61,15 +61,29 @@ body {
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .github-link:hover {
-  background: #1a1e22;
+  background: #0d1117;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.github-link:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .github-icon {
   display: block;
+  transition: transform 0.2s ease;
+}
+
+.github-link:hover .github-icon {
+  transform: scale(1.1);
 }
 
 /* ===== Map Container ===== */
