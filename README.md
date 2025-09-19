@@ -378,6 +378,28 @@ For comparison with the original control, see [`GeolocateControlOptions`](https:
 
 ---
 
+## 🛠️ Development
+
+This project uses separate Vite configurations for different build targets:
+
+### Build Commands
+
+```bash
+pnpm dev          # Development server
+pnpm build        # Build library for npm (→ dist/)
+pnpm build:demo   # Build demo site for GitHub Pages (→ demo-dist/)
+pnpm preview      # Preview library build
+pnpm preview:demo # Preview demo site
+```
+
+### Configuration Files
+
+- `vite.config.ts` - Development server configuration
+- `vite.config.lib.ts` - Library build (ES/UMD modules for npm)
+- `vite.config.demo.ts` - Demo site build (GitHub Pages deployment)
+
+---
+
 ## License
 
 [MIT](LICENSE)
