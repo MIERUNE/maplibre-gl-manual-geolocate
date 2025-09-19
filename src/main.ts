@@ -37,5 +37,8 @@ mockGeolocateControl.on("geolocate", (e) => {
 // Log when map is loaded
 map.on("load", () => {
   console.log("Map loaded! MockGeolocateControl is in the top-right corner.");
-  console.log("Try clicking the geolocate button to test the event system.");
+  console.log("Try clicking the geolocate button to see:");
+  console.log("  - Blue position marker with white border");
+  console.log("  - Semi-transparent accuracy circle");
+  console.log("  - Event logs in console");
 });
