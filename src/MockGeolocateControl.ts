@@ -152,8 +152,6 @@ export class MockGeolocateControl implements IControl {
    * @private
    */
   private _createMarkers(): void {
-    if (!this._map) return;
-
     // Create accuracy circle marker (appears behind position marker)
     const accuracyEl = document.createElement("div");
     accuracyEl.className = "maplibregl-user-location-accuracy-circle";

@@ -9,7 +9,8 @@ import { MockGeolocateControl } from "./index";
 // Initialize the map
 const map = new maplibregl.Map({
   container: "map",
-  style: "https://demotiles.maplibre.org/style.json", // MapLibre demo tiles - officially free for demos
+  style:
+    "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json", // MapLibre demo tiles - officially free for demos
   center: [139.74135747, 35.65809922], // Tokyo
   zoom: 14, // Slightly closer for better detail
 });
