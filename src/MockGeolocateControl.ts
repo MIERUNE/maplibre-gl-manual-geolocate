@@ -49,6 +49,9 @@ export class MockGeolocateControl implements IControl {
   private _positionMarker?: Marker;
   private _accuracyMarker?: Marker;
 
+  // Track if markers are shown on the map
+  private _markersOnMap = false;
+
   // Track if we've set up map event listeners
   private _mapEventListenersSetup = false;
 
@@ -146,6 +149,9 @@ export class MockGeolocateControl implements IControl {
       this._accuracyMarker = undefined;
     }
 
+    // Reset marker state
+    this._markersOnMap = false;
+
     // Clean up references
     this._container = undefined;
     this._button = undefined;
@@ -185,15 +191,24 @@ export class MockGeolocateControl implements IControl {
   private _showMarkers(): void {
     if (!this._map) return;
 
-    // Add accuracy circle first (so it appears behind the dot)
-    if (this._accuracyMarker && this._showAccuracyCircle) {
-      this._accuracyMarker.addTo(this._map);
-      this._updateAccuracyCircle();
+    // Only add markers if they're not already on the map
+    if (!this._markersOnMap) {
+      // Add accuracy circle first (so it appears behind the dot)
+      if (this._accuracyMarker && this._showAccuracyCircle) {
+        this._accuracyMarker.addTo(this._map);
+      }
+
+      // Add position dot on top
+      if (this._positionMarker) {
+        this._positionMarker.addTo(this._map);
+      }
+
+      this._markersOnMap = true;
     }
 
-    // Add position dot on top
-    if (this._positionMarker) {
-      this._positionMarker.addTo(this._map);
+    // Always update accuracy circle size (in case zoom changed)
+    if (this._accuracyMarker && this._showAccuracyCircle) {
+      this._updateAccuracyCircle();
     }
 
     // Setup map event listeners for accuracy circle updates
