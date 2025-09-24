@@ -1,5 +1,6 @@
 import {
   LngLat,
+  LngLatBounds,
   Marker,
   type IControl,
   type Map,
@@ -270,12 +271,15 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Handle button click event - shows/updates marker position
+   * Handle button click event - shows/updates marker position and zooms to location
    * @private
    */
   private _onClick(): void {
     // Show markers (or update their position if already shown)
     this._showMarkers();
+
+    // Zoom to the mock location with accuracy
+    this._zoomToPosition();
 
     // Fire geolocate event
     const eventData: GeolocateEventData = {
@@ -286,6 +290,20 @@ export class MockGeolocateControl implements IControl {
       },
     };
     this._fire("geolocate", eventData);
+  }
+
+  /**
+   * Zoom the map to the mock position with accuracy radius
+   * @private
+   */
+  private _zoomToPosition(): void {
+    if (!this._map) return;
+
+    // Create bounds from position and accuracy radius
+    const bounds = LngLatBounds.fromLngLat(this._position, this._accuracy);
+
+    // Fit the map to the bounds with configured options
+    this._map.fitBounds(bounds, this._fitBoundsOptions);
   }
 
   /**
