@@ -4,4 +4,5 @@ export type {
   MockGeolocateControlOptions,
   GeolocateEventData,
   OutOfMaxBoundsEventData,
+  WatchState,
 } from "./types";

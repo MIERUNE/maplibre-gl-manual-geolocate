@@ -1,4 +1,9 @@
-import type { FitBoundsOptions, LngLatLike } from 'maplibre-gl';
+import type { FitBoundsOptions, LngLatLike } from "maplibre-gl";
+
+/**
+ * State of the geolocate control
+ */
+export type WatchState = "OFF" | "WAITING_ACTIVE" | "ACTIVE_LOCK";
 
 /**
  * Options for the MockGeolocateControl
@@ -53,7 +58,7 @@ export interface OutOfMaxBoundsEventData extends GeolocateEventData {}
 /**
  * Event types supported by MockGeolocateControl
  */
-export type MockGeolocateEventType = 'geolocate' | 'outofmaxbounds';
+export type MockGeolocateEventType = "geolocate" | "outofmaxbounds";
 
 /**
  * Event handler function type

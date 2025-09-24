@@ -39,7 +39,11 @@ describe("MockGeolocateControl", () => {
     // Create mock map
     mockMap = {
       project: vi.fn(() => ({ x: 100, y: 100 })),
-      unproject: vi.fn(() => ({ lng: 139.75, lat: 35.66, distanceTo: vi.fn(() => 100) })),
+      unproject: vi.fn(() => ({
+        lng: 139.75,
+        lat: 35.66,
+        distanceTo: vi.fn(() => 100),
+      })),
       on: vi.fn(),
       off: vi.fn(),
       fitBounds: vi.fn(),
@@ -117,7 +121,7 @@ describe("MockGeolocateControl", () => {
             longitude: expect.any(Number),
             accuracy: 50,
           }),
-        })
+        }),
       );
     });
 
@@ -153,7 +157,9 @@ describe("MockGeolocateControl", () => {
 
       // Should be off now
       const button = control["_button"];
-      expect(button?.classList.contains("maplibregl-ctrl-geolocate-active")).toBe(false);
+      expect(
+        button?.classList.contains("maplibregl-ctrl-geolocate-active"),
+      ).toBe(false);
     });
   });
 
@@ -220,7 +226,7 @@ describe("MockGeolocateControl", () => {
           coords: expect.objectContaining({
             accuracy: 100,
           }),
-        })
+        }),
       );
 
       vi.useRealTimers();
@@ -251,6 +257,52 @@ describe("MockGeolocateControl", () => {
     });
   });
 
+  describe("getter methods", () => {
+    it("should get current position", () => {
+      const position = control.getPosition();
+      expect(position).toBeDefined();
+      expect(position.lng).toBe(139.74135747);
+      expect(position.lat).toBe(35.65809922);
+    });
+
+    it("should get current accuracy", () => {
+      const accuracy = control.getAccuracy();
+      expect(accuracy).toBe(50);
+    });
+
+    it("should get current watch state", () => {
+      const state = control.getWatchState();
+      expect(state).toBe("OFF");
+    });
+
+    it("should return updated values after setters", () => {
+      control.setPosition({ lng: 140, lat: 36 });
+      const position = control.getPosition();
+      expect(position.lng).toBe(140);
+      expect(position.lat).toBe(36);
+
+      control.setAccuracy(100);
+      const accuracy = control.getAccuracy();
+      expect(accuracy).toBe(100);
+    });
+
+    it("should return updated state after trigger", () => {
+      control.onAdd(mockMap);
+      vi.useFakeTimers();
+
+      control.trigger();
+      expect(control.getWatchState()).toBe("WAITING_ACTIVE");
+
+      vi.advanceTimersByTime(300);
+      expect(control.getWatchState()).toBe("ACTIVE_LOCK");
+
+      control.trigger();
+      expect(control.getWatchState()).toBe("OFF");
+
+      vi.useRealTimers();
+    });
+  });
+
   describe("event system", () => {
     it("should register and fire geolocate events", () => {
       const handler = vi.fn();
@@ -272,7 +324,7 @@ describe("MockGeolocateControl", () => {
             longitude: 139.74,
             accuracy: 50,
           }),
-        })
+        }),
       );
     });
 

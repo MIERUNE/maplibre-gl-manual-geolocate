@@ -12,6 +12,7 @@ import type {
   EventHandlers,
   GeolocateEventData,
   OutOfMaxBoundsEventData,
+  WatchState,
 } from "./types";
 
 /**
@@ -32,7 +33,7 @@ export class MockGeolocateControl implements IControl {
   private _container?: HTMLElement;
   private _button?: HTMLButtonElement;
 
-  // Options (will be used in future steps)
+  // Configuration options
   private _position: LngLat;
   private _accuracy: number;
   private _showAccuracyCircle: boolean;
@@ -55,7 +56,10 @@ export class MockGeolocateControl implements IControl {
   private _onClickHandler?: () => void;
 
   // State management
-  private _watchState: "OFF" | "WAITING_ACTIVE" | "ACTIVE_LOCK" = "OFF";
+  private _watchState: WatchState = "OFF";
+
+  // Timeout for simulated geolocation delay
+  private _geolocateTimeoutId?: ReturnType<typeof setTimeout>;
 
   /**
    * Creates a new MockGeolocateControl instance
@@ -120,6 +124,12 @@ export class MockGeolocateControl implements IControl {
    * and resources. This method is called by Map#removeControl.
    */
   onRemove(): void {
+    // Clear any pending timeouts
+    if (this._geolocateTimeoutId) {
+      clearTimeout(this._geolocateTimeoutId);
+      this._geolocateTimeoutId = undefined;
+    }
+
     // Remove map event listeners first
     this._removeMapEventListeners();
 
@@ -351,8 +361,13 @@ export class MockGeolocateControl implements IControl {
         this._watchState = "WAITING_ACTIVE";
         this._updateButtonClasses();
 
+        // Clear any existing timeout
+        if (this._geolocateTimeoutId) {
+          clearTimeout(this._geolocateTimeoutId);
+        }
+
         // Simulate a short delay for "locating" (like the real control)
-        setTimeout(() => {
+        this._geolocateTimeoutId = setTimeout(() => {
           if (this._watchState !== "WAITING_ACTIVE") return;
 
           // Check if position is within bounds
@@ -390,11 +405,17 @@ export class MockGeolocateControl implements IControl {
             };
             this._fire("geolocate", eventData);
           }
+
+          this._geolocateTimeoutId = undefined;
         }, 250); // Simulate geolocation delay
         break;
 
       case "WAITING_ACTIVE":
         // Cancel waiting and return to OFF
+        if (this._geolocateTimeoutId) {
+          clearTimeout(this._geolocateTimeoutId);
+          this._geolocateTimeoutId = undefined;
+        }
         this._watchState = "OFF";
         this._updateButtonClasses();
         break;
@@ -519,6 +540,30 @@ export class MockGeolocateControl implements IControl {
    */
   setFitBoundsOptions(options: FitBoundsOptions): void {
     this._fitBoundsOptions = options;
+  }
+
+  /**
+   * Get the current mock position
+   * @returns The current position as LngLat
+   */
+  getPosition(): LngLat {
+    return this._position;
+  }
+
+  /**
+   * Get the current accuracy radius
+   * @returns The current accuracy in meters
+   */
+  getAccuracy(): number {
+    return this._accuracy;
+  }
+
+  /**
+   * Get the current control state
+   * @returns The current watch state
+   */
+  getWatchState(): WatchState {
+    return this._watchState;
   }
 
   /**
