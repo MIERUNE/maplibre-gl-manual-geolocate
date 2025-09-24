@@ -43,8 +43,94 @@
             </a>
         </header>
 
-        <!-- Map container -->
-        <div id="map"></div>
+        <!-- Main content wrapper -->
+        <div class="main-content">
+            <!-- Map container -->
+            <div id="map"></div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h3>Interactive Controls</h3>
+
+                <!-- Position controls -->
+                <div class="control-group">
+                    <label>Position</label>
+                    <div class="position-inputs">
+                        <input
+                            type="number"
+                            id="lat"
+                            placeholder="Latitude"
+                            step="0.00001"
+                            value="35.65809922"
+                        />
+                        <input
+                            type="number"
+                            id="lng"
+                            placeholder="Longitude"
+                            step="0.00001"
+                            value="139.74135747"
+                        />
+                    </div>
+                    <button id="updatePosition" class="btn btn-primary">
+                        Update Position
+                    </button>
+                </div>
+
+                <!-- Preset locations -->
+                <div class="control-group">
+                    <label>Preset Locations</label>
+                    <select id="presetLocations">
+                        <option value="">Select a location...</option>
+                        <option value="35.65809922,139.74135747">
+                            Tokyo, Japan
+                        </option>
+                        <option value="40.7128,-74.0060">New York, USA</option>
+                        <option value="51.5074,-0.1278">London, UK</option>
+                        <option value="48.8566,2.3522">Paris, France</option>
+                        <option value="-33.8688,151.2093">
+                            Sydney, Australia
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Accuracy control -->
+                <div class="control-group">
+                    <label>Accuracy: <span id="accuracyValue">50</span>m</label>
+                    <input
+                        type="range"
+                        id="accuracy"
+                        min="10"
+                        max="500"
+                        value="50"
+                        step="10"
+                    />
+                </div>
+
+                <!-- Show/hide accuracy circle -->
+                <div class="control-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showAccuracy" checked />
+                        Show Accuracy Circle
+                    </label>
+                </div>
+
+                <!-- Control actions -->
+                <div class="control-group">
+                    <button id="triggerControl" class="btn btn-secondary">
+                        Trigger Control
+                    </button>
+                </div>
+
+                <!-- Event log -->
+                <div class="control-group">
+                    <label>Event Log</label>
+                    <div id="eventLog" class="event-log"></div>
+                    <button id="clearLog" class="btn btn-small">
+                        Clear Log
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Load the demo application -->
         <script type="module" src="/src/main.ts"></script>

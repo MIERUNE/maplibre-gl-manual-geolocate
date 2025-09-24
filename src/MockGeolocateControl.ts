@@ -1,5 +1,6 @@
 import {
   LngLat,
+  LngLatBounds,
   Marker,
   type IControl,
   type Map,
@@ -52,6 +53,9 @@ export class MockGeolocateControl implements IControl {
 
   // Bound click handler (stored to ensure proper removal)
   private _onClickHandler?: () => void;
+
+  // State management
+  private _watchState: "OFF" | "WAITING_ACTIVE" | "ACTIVE_LOCK" = "OFF";
 
   /**
    * Creates a new MockGeolocateControl instance
@@ -266,67 +270,252 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Handle button click event (placeholder - will be implemented in Step 4)
+   * Handle button click event - toggles between states
    * @private
    */
   private _onClick(): void {
-    // Placeholder implementation - will be properly implemented in next PR
-    console.log("MockGeolocateControl button clicked - showing markers");
+    this.trigger();
+  }
 
-    // Show markers when clicked (temporary - full implementation in next PR)
-    this._showMarkers();
+  /**
+   * Update button CSS classes based on current state
+   * @private
+   */
+  private _updateButtonClasses(): void {
+    if (!this._button) return;
 
-    // Test event firing (temporary - will be properly implemented later)
-    const testData: GeolocateEventData = {
-      coords: {
-        latitude: this._position.lat,
-        longitude: this._position.lng,
-        accuracy: this._accuracy,
-      },
-    };
-    this._fire("geolocate", testData);
+    // Remove all state classes
+    this._button.classList.remove(
+      "maplibregl-ctrl-geolocate-waiting",
+      "maplibregl-ctrl-geolocate-active",
+      "maplibregl-ctrl-geolocate-active-error",
+      "maplibregl-ctrl-geolocate-background",
+      "maplibregl-ctrl-geolocate-background-error",
+    );
+
+    // Add appropriate class based on state
+    switch (this._watchState) {
+      case "WAITING_ACTIVE":
+        this._button.classList.add("maplibregl-ctrl-geolocate-waiting");
+        break;
+      case "ACTIVE_LOCK":
+        this._button.classList.add("maplibregl-ctrl-geolocate-active");
+        break;
+    }
+  }
+
+  /**
+   * Check if position is outside map's max bounds
+   * @private
+   */
+  private _isOutOfMapMaxBounds(): boolean {
+    if (!this._map) return false;
+
+    const bounds = this._map.getMaxBounds();
+    if (!bounds) return false;
+
+    return (
+      this._position.lng < bounds.getWest() ||
+      this._position.lng > bounds.getEast() ||
+      this._position.lat < bounds.getSouth() ||
+      this._position.lat > bounds.getNorth()
+    );
+  }
+
+  /**
+   * Update camera to center on position with accuracy
+   * @private
+   */
+  private _updateCamera(): void {
+    if (!this._map) return;
+
+    // Create bounds from position and accuracy radius
+    const bounds = LngLatBounds.fromLngLat(this._position, this._accuracy);
+
+    // Fit bounds with configured options
+    this._map.fitBounds(bounds, this._fitBoundsOptions, {
+      geolocateSource: true,
+    });
   }
 
   /**
    * Programmatically trigger the geolocate control
-   * (Placeholder - will be implemented in Step 7)
+   * Toggles between OFF and ACTIVE_LOCK states
    */
   trigger(): void {
-    // Placeholder implementation
-    console.log("MockGeolocateControl.trigger() called");
-    // Will be properly implemented in Step 7
+    if (!this._map) return;
+
+    switch (this._watchState) {
+      case "OFF":
+        // Transition from OFF to WAITING_ACTIVE
+        this._watchState = "WAITING_ACTIVE";
+        this._updateButtonClasses();
+
+        // Simulate a short delay for "locating" (like the real control)
+        setTimeout(() => {
+          if (this._watchState !== "WAITING_ACTIVE") return;
+
+          // Check if position is within bounds
+          if (this._isOutOfMapMaxBounds()) {
+            // Position is out of bounds - fire error event and return to OFF state
+            this._watchState = "OFF";
+            this._updateButtonClasses();
+
+            const eventData: OutOfMaxBoundsEventData = {
+              coords: {
+                latitude: this._position.lat,
+                longitude: this._position.lng,
+                accuracy: this._accuracy,
+              },
+            };
+            this._fire("outofmaxbounds", eventData);
+          } else {
+            // Position is within bounds - activate
+            this._watchState = "ACTIVE_LOCK";
+            this._updateButtonClasses();
+
+            // Show markers
+            this._showMarkers();
+
+            // Update camera to zoom to position
+            this._updateCamera();
+
+            // Fire geolocate event
+            const eventData: GeolocateEventData = {
+              coords: {
+                latitude: this._position.lat,
+                longitude: this._position.lng,
+                accuracy: this._accuracy,
+              },
+            };
+            this._fire("geolocate", eventData);
+          }
+        }, 250); // Simulate geolocation delay
+        break;
+
+      case "WAITING_ACTIVE":
+        // Cancel waiting and return to OFF
+        this._watchState = "OFF";
+        this._updateButtonClasses();
+        break;
+
+      case "ACTIVE_LOCK":
+        // Deactivate and hide markers
+        this._watchState = "OFF";
+        this._updateButtonClasses();
+        this._hideMarkers();
+        break;
+    }
   }
 
   /**
-   * Update the mock position
-   * (Placeholder - will be implemented in Step 9)
+   * Hide the position markers
+   * @private
+   */
+  private _hideMarkers(): void {
+    // Remove markers from map
+    if (this._positionMarker) {
+      this._positionMarker.remove();
+    }
+    if (this._accuracyMarker) {
+      this._accuracyMarker.remove();
+    }
+
+    // Remove map event listeners
+    this._removeMapEventListeners();
+  }
+
+  /**
+   * Update the mock position dynamically
+   * @param coordinates - The new coordinates for the mock position
    */
   setPosition(coordinates: LngLatLike): void {
     this._position = LngLat.convert(coordinates);
-    // Will update marker position in Step 9
+
+    // Update marker positions if they exist
+    if (this._positionMarker) {
+      this._positionMarker.setLngLat(this._position);
+    }
+    if (this._accuracyMarker) {
+      this._accuracyMarker.setLngLat(this._position);
+      this._updateAccuracyCircle();
+    }
+
+    // If active, check bounds again and potentially fire events
+    if (this._watchState === "ACTIVE_LOCK") {
+      if (this._isOutOfMapMaxBounds()) {
+        // Position moved out of bounds
+        const eventData: OutOfMaxBoundsEventData = {
+          coords: {
+            latitude: this._position.lat,
+            longitude: this._position.lng,
+            accuracy: this._accuracy,
+          },
+        };
+        this._fire("outofmaxbounds", eventData);
+      } else {
+        // Fire geolocate event with new position
+        const eventData: GeolocateEventData = {
+          coords: {
+            latitude: this._position.lat,
+            longitude: this._position.lng,
+            accuracy: this._accuracy,
+          },
+        };
+        this._fire("geolocate", eventData);
+      }
+    }
   }
 
   /**
    * Update the accuracy radius
-   * (Placeholder - will be implemented in Step 10)
+   * @param accuracy - The new accuracy radius in meters
    */
   setAccuracy(accuracy: number): void {
     this._accuracy = accuracy;
-    // Will update accuracy circle in Step 10
+
+    // Update accuracy circle if visible
+    if (this._accuracyMarker && this._showAccuracyCircle) {
+      this._updateAccuracyCircle();
+    }
+
+    // Fire geolocate event with updated accuracy if active
+    if (this._watchState === "ACTIVE_LOCK") {
+      const eventData: GeolocateEventData = {
+        coords: {
+          latitude: this._position.lat,
+          longitude: this._position.lng,
+          accuracy: this._accuracy,
+        },
+      };
+      this._fire("geolocate", eventData);
+    }
   }
 
   /**
    * Toggle the accuracy circle visibility
-   * (Placeholder - will be implemented in Step 11)
+   * @param show - Whether to show the accuracy circle
    */
   setShowAccuracyCircle(show: boolean): void {
     this._showAccuracyCircle = show;
-    // Will toggle circle visibility in Step 11
+
+    if (!this._map || !this._accuracyMarker) return;
+
+    if (show && this._watchState === "ACTIVE_LOCK") {
+      // Show the accuracy circle if we're active
+      this._accuracyMarker.addTo(this._map);
+      this._updateAccuracyCircle();
+      this._setupMapEventListeners();
+    } else if (!show) {
+      // Hide the accuracy circle
+      this._accuracyMarker.remove();
+      this._removeMapEventListeners();
+    }
   }
 
   /**
    * Update the fit bounds options
-   * (Placeholder - will be implemented in Step 12)
+   * @param options - New fit bounds options
    */
   setFitBoundsOptions(options: FitBoundsOptions): void {
     this._fitBoundsOptions = options;
