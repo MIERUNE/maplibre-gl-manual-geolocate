@@ -1,5 +1,6 @@
 import {
   LngLat,
+  Marker,
   type IControl,
   type Map,
   type FitBoundsOptions,
@@ -38,6 +39,19 @@ export class MockGeolocateControl implements IControl {
 
   // Event handlers storage
   private _eventHandlers: EventHandlers = {};
+
+  // Markers for position and accuracy
+  private _positionMarker?: Marker;
+  private _accuracyMarker?: Marker;
+
+  // Track if we've set up map event listeners
+  private _mapEventListenersSetup = false;
+
+  // Bound update function for event listeners (stored to ensure proper removal)
+  private _updateCircleHandler?: () => void;
+
+  // Bound click handler (stored to ensure proper removal)
+  private _onClickHandler?: () => void;
 
   /**
    * Creates a new MockGeolocateControl instance
@@ -87,8 +101,12 @@ export class MockGeolocateControl implements IControl {
     // Add button to container
     this._container.appendChild(this._button);
 
-    // Placeholder for click handler (will be implemented in Step 4)
-    this._button.addEventListener("click", this._onClick.bind(this));
+    // Store bound click handler to enable proper removal
+    this._onClickHandler = this._onClick.bind(this);
+    this._button.addEventListener("click", this._onClickHandler);
+
+    // Create markers
+    this._createMarkers();
 
     return this._container;
   }
@@ -98,14 +116,29 @@ export class MockGeolocateControl implements IControl {
    * and resources. This method is called by Map#removeControl.
    */
   onRemove(): void {
+    // Remove map event listeners first
+    this._removeMapEventListeners();
+
     // Clean up event listeners
-    if (this._button) {
-      this._button.removeEventListener("click", this._onClick.bind(this));
+    if (this._button && this._onClickHandler) {
+      this._button.removeEventListener("click", this._onClickHandler);
+      this._onClickHandler = undefined;
     }
 
     // Remove DOM elements
     if (this._container && this._container.parentNode) {
       this._container.parentNode.removeChild(this._container);
+    }
+
+    // Remove markers from map
+    if (this._positionMarker) {
+      this._positionMarker.remove();
+      this._positionMarker = undefined;
+    }
+
+    if (this._accuracyMarker) {
+      this._accuracyMarker.remove();
+      this._accuracyMarker = undefined;
     }
 
     // Clean up references
@@ -115,12 +148,133 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
+   * Create the position and accuracy markers
+   * @private
+   */
+  private _createMarkers(): void {
+    // Create accuracy circle marker (appears behind position marker)
+    const accuracyEl = document.createElement("div");
+    accuracyEl.className = "maplibregl-user-location-accuracy-circle";
+
+    this._accuracyMarker = new Marker({
+      element: accuracyEl,
+      pitchAlignment: "map", // Only accuracy circle needs pitch alignment
+    }).setLngLat(this._position);
+    // Note: Not adding to map yet - will be added when showing
+
+    // Create position marker (blue dot with white border and pulse animation)
+    const positionEl = document.createElement("div");
+    positionEl.className = "maplibregl-user-location-dot";
+
+    this._positionMarker = new Marker({
+      element: positionEl,
+      // No special alignment for dot marker - matches original
+    }).setLngLat(this._position);
+    // Note: Not adding to map yet - will be added when showing
+  }
+
+  /**
+   * Show the position markers
+   * @private
+   */
+  private _showMarkers(): void {
+    if (!this._map) return;
+
+    // Add accuracy circle first (so it appears behind the dot)
+    if (this._accuracyMarker && this._showAccuracyCircle) {
+      this._accuracyMarker.addTo(this._map);
+      this._updateAccuracyCircle();
+    }
+
+    // Add position dot on top
+    if (this._positionMarker) {
+      this._positionMarker.addTo(this._map);
+    }
+
+    // Setup map event listeners for accuracy circle updates
+    this._setupMapEventListeners();
+  }
+
+  /**
+   * Setup map event listeners for updating accuracy circle
+   * @private
+   */
+  private _setupMapEventListeners(): void {
+    if (
+      !this._map ||
+      this._mapEventListenersSetup ||
+      !this._showAccuracyCircle
+    ) {
+      return;
+    }
+
+    // Create and store the bound handler
+    this._updateCircleHandler = this._updateAccuracyCircle.bind(this);
+
+    // Update accuracy circle on map changes (matches original implementation)
+    this._map.on("zoom", this._updateCircleHandler);
+    this._map.on("move", this._updateCircleHandler);
+    this._map.on("rotate", this._updateCircleHandler);
+    this._map.on("pitch", this._updateCircleHandler);
+
+    this._mapEventListenersSetup = true;
+  }
+
+  /**
+   * Remove map event listeners
+   * @private
+   */
+  private _removeMapEventListeners(): void {
+    if (
+      !this._map ||
+      !this._mapEventListenersSetup ||
+      !this._updateCircleHandler
+    ) {
+      return;
+    }
+
+    this._map.off("zoom", this._updateCircleHandler);
+    this._map.off("move", this._updateCircleHandler);
+    this._map.off("rotate", this._updateCircleHandler);
+    this._map.off("pitch", this._updateCircleHandler);
+
+    this._updateCircleHandler = undefined;
+    this._mapEventListenersSetup = false;
+  }
+
+  /**
+   * Update the accuracy circle size based on current zoom and accuracy
+   * @private
+   */
+  private _updateAccuracyCircle(): void {
+    if (!this._map || !this._accuracyMarker || !this._showAccuracyCircle) {
+      return;
+    }
+
+    // Use MapLibre's projection methods for accurate pixel-to-meter conversion
+    const screenPosition = this._map.project(this._position);
+    const positionWith100Px = this._map.unproject([
+      screenPosition.x + 100,
+      screenPosition.y,
+    ]);
+    const pixelsToMeters = this._position.distanceTo(positionWith100Px) / 100;
+    const circleDiameter = (2 * this._accuracy) / pixelsToMeters;
+
+    const element = this._accuracyMarker.getElement();
+    element.style.width = `${circleDiameter.toFixed(2)}px`;
+    element.style.height = `${circleDiameter.toFixed(2)}px`;
+  }
+
+  /**
    * Handle button click event (placeholder - will be implemented in Step 4)
    * @private
    */
   private _onClick(): void {
     // Placeholder implementation - will be properly implemented in next PR
-    console.log("MockGeolocateControl button clicked");
+    console.log("MockGeolocateControl button clicked - showing markers");
+
+    // Show markers when clicked (temporary - full implementation in next PR)
+    this._showMarkers();
 
     // Test event firing (temporary - will be properly implemented later)
     const testData: GeolocateEventData = {

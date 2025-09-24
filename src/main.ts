@@ -9,7 +9,8 @@ import { MockGeolocateControl } from "./index";
 // Initialize the map
 const map = new maplibregl.Map({
   container: "map",
-  style: "https://demotiles.maplibre.org/style.json", // MapLibre demo tiles - officially free for demos
+  style:
+    "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
   center: [139.74135747, 35.65809922], // Tokyo
   zoom: 14, // Slightly closer for better detail
 });
@@ -37,5 +38,8 @@ mockGeolocateControl.on("geolocate", (e) => {
 // Log when map is loaded
 map.on("load", () => {
   console.log("Map loaded! MockGeolocateControl is in the top-right corner.");
-  console.log("Try clicking the geolocate button to test the event system.");
+  console.log("Try clicking the geolocate button to see:");
+  console.log("  - Blue position marker with white border");
+  console.log("  - Semi-transparent accuracy circle");
+  console.log("  - Event logs in console");
 });
