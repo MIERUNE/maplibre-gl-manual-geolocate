@@ -1,5 +1,6 @@
 import {
   LngLat,
+  LngLatBounds,
   Marker,
   type IControl,
   type Map,
@@ -266,35 +267,54 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Handle button click event (placeholder - will be implemented in Step 4)
+   * Handle button click event. This simply calls the trigger method.
    * @private
    */
   private _onClick(): void {
-    // Placeholder implementation - will be properly implemented in next PR
-    console.log("MockGeolocateControl button clicked - showing markers");
+    this.trigger();
+  }
 
-    // Show markers when clicked (temporary - full implementation in next PR)
+  /**
+   * Programmatically trigger the geolocate control.
+   * This moves the map to the mock location, fires events, and shows markers.
+   */
+  trigger(): void {
+    if (!this._map) {
+      return;
+    }
+
+    // Check if position is out of map maxBounds
+    const maxBounds = this._map.getMaxBounds();
+    if (maxBounds && !maxBounds.contains(this._position)) {
+      const outOfBoundsData: OutOfMaxBoundsEventData = {
+        coords: {
+          latitude: this._position.lat,
+          longitude: this._position.lng,
+          accuracy: this._accuracy,
+        },
+      };
+      this._fire("outofmaxbounds", outOfBoundsData);
+      return;
+    }
+
+    // Show markers
     this._showMarkers();
 
-    // Test event firing (temporary - will be properly implemented later)
-    const testData: GeolocateEventData = {
+    // Calculate bounds for fitBounds based on accuracy
+    const bounds = this._position.toBounds(this._accuracy);
+
+    // Pan and zoom to the position
+    this._map.fitBounds(bounds, this._fitBoundsOptions);
+
+    // Fire geolocate event
+    const geolocateData: GeolocateEventData = {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
         accuracy: this._accuracy,
       },
     };
-    this._fire("geolocate", testData);
-  }
-
-  /**
-   * Programmatically trigger the geolocate control
-   * (Placeholder - will be implemented in Step 7)
-   */
-  trigger(): void {
-    // Placeholder implementation
-    console.log("MockGeolocateControl.trigger() called");
-    // Will be properly implemented in Step 7
+    this._fire("geolocate", geolocateData);
   }
 
   /**
