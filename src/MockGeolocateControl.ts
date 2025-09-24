@@ -17,6 +17,10 @@ import type {
  * A MapLibre GL control that displays a user position marker at specified coordinates
  * without requiring the browser's geolocation API.
  *
+ * Unlike the native GeolocateControl, this mock version does not support tracking mode
+ * since it works with static, predefined coordinates. Each trigger simply shows/updates
+ * the marker position without continuous location updates.
+ *
  * @example
  * ```typescript
  * const mockGeolocateControl = new MockGeolocateControl({
@@ -266,35 +270,30 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Handle button click event (placeholder - will be implemented in Step 4)
+   * Handle button click event - shows/updates marker position
    * @private
    */
   private _onClick(): void {
-    // Placeholder implementation - will be properly implemented in next PR
-    console.log("MockGeolocateControl button clicked - showing markers");
-
-    // Show markers when clicked (temporary - full implementation in next PR)
+    // Show markers (or update their position if already shown)
     this._showMarkers();
 
-    // Test event firing (temporary - will be properly implemented later)
-    const testData: GeolocateEventData = {
+    // Fire geolocate event
+    const eventData: GeolocateEventData = {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
         accuracy: this._accuracy,
       },
     };
-    this._fire("geolocate", testData);
+    this._fire("geolocate", eventData);
   }
 
   /**
    * Programmatically trigger the geolocate control
-   * (Placeholder - will be implemented in Step 7)
+   * Shows or updates the marker position
    */
   trigger(): void {
-    // Placeholder implementation
-    console.log("MockGeolocateControl.trigger() called");
-    // Will be properly implemented in Step 7
+    this._onClick();
   }
 
   /**
