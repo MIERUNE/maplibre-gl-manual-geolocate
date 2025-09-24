@@ -16,16 +16,32 @@ import type {
 } from "./types";
 
 /**
- * A MapLibre GL control that displays a user position marker at specified coordinates
- * without requiring the browser's geolocation API.
+ * A MapLibre GL control that simulates geolocation functionality with mock coordinates.
  *
- * @example
+ * This control mimics the behavior of MapLibre's native GeolocateControl but uses
+ * predefined coordinates instead of the browser's Geolocation API. Perfect for:
+ * - Development and testing without GPS/location permissions
+ * - Demos with predictable positioning
+ * - Offline or indoor environments
+ * - Privacy-conscious applications
+ *
+ * @example Basic usage
  * ```typescript
- * const mockGeolocateControl = new MockGeolocateControl({
- *   position: { lng: 139.74135747, lat: 35.65809922 },
- *   accuracy: 50
+ * const mockGeolocate = new MockGeolocateControl({
+ *   position: { lng: 139.74135747, lat: 35.65809922 }, // Tokyo
+ *   accuracy: 50 // 50-meter accuracy radius
  * });
- * map.addControl(mockGeolocateControl, 'top-right');
+ * map.addControl(mockGeolocate, 'top-right');
+ * ```
+ *
+ * @example With event handling
+ * ```typescript
+ * mockGeolocate.on('geolocate', (e) => {
+ *   console.log('Position:', e.coords);
+ * });
+ * mockGeolocate.on('outofmaxbounds', (e) => {
+ *   console.warn('Position outside bounds');
+ * });
  * ```
  */
 export class MockGeolocateControl implements IControl {
@@ -62,8 +78,14 @@ export class MockGeolocateControl implements IControl {
   private _geolocateTimeoutId?: ReturnType<typeof setTimeout>;
 
   /**
-   * Creates a new MockGeolocateControl instance
+   * Creates a new MockGeolocateControl instance.
+   *
    * @param options - Configuration options for the control
+   * @param options.position - Required mock coordinates (LngLatLike)
+   * @param options.accuracy - Accuracy radius in meters (default: 50)
+   * @param options.showAccuracyCircle - Whether to display accuracy circle (default: true)
+   * @param options.fitBoundsOptions - Options for map.fitBounds() when centering (default: {maxZoom: 15})
+   * @throws {Error} If position option is not provided
    */
   constructor(options: MockGeolocateControlOptions) {
     // Validate required position option
@@ -81,11 +103,12 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Register a control on the map and give it a chance to register event listeners
-   * and resources. This method is called by Map#addControl.
+   * Adds the control to the map and initializes its resources.
+   * Creates the button element, sets up event listeners, and prepares markers.
+   * Called automatically by map.addControl().
    *
-   * @param map - The Map instance to add the control to
-   * @returns The control's container element
+   * @param map - The MapLibre Map instance
+   * @returns The control's container DOM element
    */
   onAdd(map: Map): HTMLElement {
     this._map = map;
@@ -120,8 +143,9 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Unregister a control on the map and give it a chance to detach event listeners
-   * and resources. This method is called by Map#removeControl.
+   * Removes the control from the map and cleans up all resources.
+   * Clears timeouts, removes event listeners, destroys markers, and releases references.
+   * Called automatically by map.removeControl().
    */
   onRemove(): void {
     // Clear any pending timeouts
@@ -162,7 +186,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Create the position and accuracy markers
+   * Creates the visual markers for user position and accuracy radius.
+   * Markers are created but not added to the map until activated.
    * @private
    */
   private _createMarkers(): void {
@@ -188,7 +213,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Show the position markers
+   * Displays the position dot and accuracy circle on the map.
+   * Accuracy circle is added first to appear behind the position dot.
    * @private
    */
   private _showMarkers(): void {
@@ -210,7 +236,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Setup map event listeners for updating accuracy circle
+   * Sets up map event listeners to keep accuracy circle size synchronized
+   * with map zoom, rotation, and pitch changes.
    * @private
    */
   private _setupMapEventListeners(): void {
@@ -257,7 +284,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update the accuracy circle size based on current zoom and accuracy
+   * Recalculates and updates the accuracy circle diameter based on current
+   * map zoom level and accuracy radius. Converts meters to screen pixels.
    * @private
    */
   private _updateAccuracyCircle(): void {
@@ -280,7 +308,7 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Handle button click event - toggles between states
+   * Handles geolocate button clicks by delegating to trigger().
    * @private
    */
   private _onClick(): void {
@@ -288,7 +316,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update button CSS classes based on current state
+   * Updates the button's CSS classes to reflect the current state.
+   * Manages visual feedback for waiting, active, and error states.
    * @private
    */
   private _updateButtonClasses(): void {
@@ -315,8 +344,10 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Check if position is outside map's max bounds
+   * Checks whether the current position is outside the map's maximum bounds.
+   * Used to determine if outofmaxbounds event should be fired.
    * @private
+   * @returns true if position is outside bounds, false otherwise
    */
   private _isOutOfMapMaxBounds(): boolean {
     if (!this._map) return false;
@@ -333,7 +364,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update camera to center on position with accuracy
+   * Centers and zooms the map to show the current position and accuracy radius.
+   * Uses fitBounds with configured options to frame the location appropriately.
    * @private
    */
   private _updateCamera(): void {
@@ -349,8 +381,18 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Programmatically trigger the geolocate control
-   * Toggles between OFF and ACTIVE_LOCK states
+   * Programmatically activates or deactivates the geolocate control.
+   *
+   * State transitions:
+   * - OFF → WAITING_ACTIVE → ACTIVE_LOCK (activate and show location)
+   * - ACTIVE_LOCK → OFF (deactivate and hide markers)
+   * - WAITING_ACTIVE → OFF (cancel activation)
+   *
+   * When activating from OFF:
+   * 1. Shows waiting state with loading animation
+   * 2. After 250ms delay (simulating geolocation):
+   *    - If position is within bounds: shows markers, zooms to location, fires 'geolocate'
+   *    - If position is outside bounds: returns to OFF, fires 'outofmaxbounds'
    */
   trigger(): void {
     if (!this._map) return;
@@ -430,7 +472,8 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Hide the position markers
+   * Removes position and accuracy markers from the map.
+   * Also cleans up associated event listeners.
    * @private
    */
   private _hideMarkers(): void {
@@ -447,8 +490,12 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update the mock position dynamically
-   * @param coordinates - The new coordinates for the mock position
+   * Updates the mock position dynamically.
+   * If control is active, updates marker positions and fires appropriate events.
+   *
+   * @param coordinates - New coordinates as LngLatLike (e.g., {lng, lat} or [lng, lat])
+   * @fires geolocate - If active and position is within bounds
+   * @fires outofmaxbounds - If active and position moves outside bounds
    */
   setPosition(coordinates: LngLatLike): void {
     this._position = LngLat.convert(coordinates);
@@ -489,8 +536,11 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update the accuracy radius
-   * @param accuracy - The new accuracy radius in meters
+   * Updates the accuracy radius of the mock location.
+   * If control is active, updates the accuracy circle and fires geolocate event.
+   *
+   * @param accuracy - New accuracy radius in meters
+   * @fires geolocate - If control is currently active
    */
   setAccuracy(accuracy: number): void {
     this._accuracy = accuracy;
@@ -514,8 +564,10 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Toggle the accuracy circle visibility
-   * @param show - Whether to show the accuracy circle
+   * Shows or hides the accuracy circle visualization.
+   * Only affects visual display; accuracy value remains unchanged.
+   *
+   * @param show - true to show accuracy circle, false to hide
    */
   setShowAccuracyCircle(show: boolean): void {
     this._showAccuracyCircle = show;
@@ -535,41 +587,47 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update the fit bounds options
-   * @param options - New fit bounds options
+   * Updates options used when the map zooms to the mock location.
+   * These options are passed to map.fitBounds() when centering on position.
+   *
+   * @param options - MapLibre FitBoundsOptions (e.g., {maxZoom, padding, duration})
    */
   setFitBoundsOptions(options: FitBoundsOptions): void {
     this._fitBoundsOptions = options;
   }
 
   /**
-   * Get the current mock position
-   * @returns The current position as LngLat
+   * Gets the current mock position.
+   * @returns Current position as MapLibre LngLat object
    */
   getPosition(): LngLat {
     return this._position;
   }
 
   /**
-   * Get the current accuracy radius
-   * @returns The current accuracy in meters
+   * Gets the current accuracy radius.
+   * @returns Current accuracy radius in meters
    */
   getAccuracy(): number {
     return this._accuracy;
   }
 
   /**
-   * Get the current control state
-   * @returns The current watch state
+   * Gets the current state of the control.
+   * @returns Current state: 'OFF', 'WAITING_ACTIVE', or 'ACTIVE_LOCK'
    */
   getWatchState(): WatchState {
     return this._watchState;
   }
 
   /**
-   * Register an event handler
-   * @param type - The event type ('geolocate' or 'outofmaxbounds')
-   * @param listener - The event handler function
+   * Registers an event listener for control events.
+   *
+   * @param type - Event type to listen for:
+   *   - 'geolocate': Fired when position is successfully shown
+   *   - 'outofmaxbounds': Fired when position is outside map bounds
+   * @param listener - Callback function to handle the event
+   * @returns this - For method chaining
    */
   on(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
   on(
@@ -585,9 +643,11 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Remove an event handler
-   * @param type - The event type
-   * @param listener - The event handler function to remove
+   * Removes a previously registered event listener.
+   *
+   * @param type - Event type of the listener to remove
+   * @param listener - The exact function reference that was registered
+   * @returns this - For method chaining
    */
   off(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
   off(
@@ -609,8 +669,10 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Fire an event
+   * Dispatches an event to all registered listeners.
    * @private
+   * @param type - Event type to fire
+   * @param data - Event data to pass to listeners
    */
   private _fire(type: "geolocate", data: GeolocateEventData): void;
   private _fire(type: "outofmaxbounds", data: OutOfMaxBoundsEventData): void;
