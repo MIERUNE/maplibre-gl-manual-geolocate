@@ -271,25 +271,11 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Handle button click event - shows/updates marker position and zooms to location
+   * Handle button click event
    * @private
    */
   private _onClick(): void {
-    // Show markers (or update their position if already shown)
-    this._showMarkers();
-
-    // Zoom to the mock location with accuracy
-    this._zoomToPosition();
-
-    // Fire geolocate event
-    const eventData: GeolocateEventData = {
-      coords: {
-        latitude: this._position.lat,
-        longitude: this._position.lng,
-        accuracy: this._accuracy,
-      },
-    };
-    this._fire("geolocate", eventData);
+    this.trigger();
   }
 
   /**
@@ -308,10 +294,24 @@ export class MockGeolocateControl implements IControl {
 
   /**
    * Programmatically trigger the geolocate control
-   * Shows or updates the marker position
+   * Shows markers and centers the map on the mock position
    */
   trigger(): void {
-    this._onClick();
+    // Show markers (or update their position if already shown)
+    this._showMarkers();
+
+    // Zoom to the mock location with accuracy
+    this._zoomToPosition();
+
+    // Fire geolocate event
+    const eventData: GeolocateEventData = {
+      coords: {
+        latitude: this._position.lat,
+        longitude: this._position.lng,
+        accuracy: this._accuracy,
+      },
+    };
+    this._fire("geolocate", eventData);
   }
 
   /**
