@@ -356,7 +356,7 @@ export class MockGeolocateControl implements IControl {
    * @param options - The FitBoundsOptions to use for map.fitBounds() calls
    */
   setFitBoundsOptions(options: FitBoundsOptions): void {
-    this._fitBoundsOptions = { ...this._fitBoundsOptions, ...options };
+    this._fitBoundsOptions = options;
   }
 
   /**
