@@ -136,15 +136,11 @@ export class MockGeolocateControl implements IControl {
     }
 
     // Remove markers from map
-    if (this._positionMarker) {
-      this._positionMarker.remove();
-      this._positionMarker = undefined;
-    }
+    this._positionMarker?.remove();
+    this._positionMarker = undefined;
 
-    if (this._accuracyMarker) {
-      this._accuracyMarker.remove();
-      this._accuracyMarker = undefined;
-    }
+    this._accuracyMarker?.remove();
+    this._accuracyMarker = undefined;
 
     // Clean up references
     this._container = undefined;
@@ -186,15 +182,13 @@ export class MockGeolocateControl implements IControl {
     if (!this._map) return;
 
     // Add accuracy circle first (so it appears behind the dot)
-    if (this._accuracyMarker && this._showAccuracyCircle) {
-      this._accuracyMarker.addTo(this._map);
-      this._updateAccuracyCircle();
+    if (this._showAccuracyCircle) {
+      this._accuracyMarker?.addTo(this._map);
     }
+    this._updateAccuracyCircle();
 
     // Add position dot on top
-    if (this._positionMarker) {
-      this._positionMarker.addTo(this._map);
-    }
+    this._positionMarker?.addTo(this._map);
 
     // Setup map event listeners for accuracy circle updates
     this._setupMapEventListeners();
@@ -322,22 +316,18 @@ export class MockGeolocateControl implements IControl {
     this._position = LngLat.convert(coordinates);
 
     // Update marker positions if they exist
-    if (this._positionMarker) {
-      this._positionMarker.setLngLat(this._position);
-    }
-    if (this._accuracyMarker) {
-      this._accuracyMarker.setLngLat(this._position);
-      this._updateAccuracyCircle();
-    }
+    this._positionMarker?.setLngLat(this._position);
+    this._accuracyMarker?.setLngLat(this._position);
+    this._updateAccuracyCircle();
   }
 
   /**
    * Update the accuracy radius
-   * (Placeholder - will be implemented in Step 10)
+   * @param accuracy - The new accuracy radius in meters
    */
   setAccuracy(accuracy: number): void {
     this._accuracy = accuracy;
-    // Will update accuracy circle in Step 10
+    this._updateAccuracyCircle();
   }
 
   /**
@@ -346,7 +336,9 @@ export class MockGeolocateControl implements IControl {
    */
   setShowAccuracyCircle(show: boolean): void {
     this._showAccuracyCircle = show;
-    // Will toggle circle visibility in Step 11
+    // TODO: When implementing in Step 11:
+    // - If showing: add marker to map, call _setupMapEventListeners(), call _updateAccuracyCircle()
+    // - If hiding: remove marker from map, call _removeMapEventListeners()
   }
 
   /**
