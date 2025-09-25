@@ -7,11 +7,7 @@ import {
   type FitBoundsOptions,
   type LngLatLike,
 } from "maplibre-gl";
-import type {
-  MockGeolocateControlOptions,
-  EventHandlers,
-  MockPosition,
-} from "./types";
+import type { MockGeolocateControlOptions, EventHandlers } from "./types";
 
 /**
  * A MapLibre GL control that displays a user position marker at specified coordinates
@@ -288,23 +284,28 @@ export class MockGeolocateControl implements IControl {
    * Shows markers and centers the map on the mock position.
    *
    * **Event** `geolocate` will be fired on success.
-   * `data` - The mock Position object mimicking the browser's GeolocationPosition.
+   * `data` - A Position object compatible with the browser's GeolocationPosition interface.
    *
    * **Event** `outofmaxbounds` will be fired if the position is outside the map's maxBounds.
-   * `data` - The mock Position object mimicking the browser's GeolocationPosition.
+   * `data` - A Position object compatible with the browser's GeolocationPosition interface.
    */
   trigger(): void {
     if (!this._map) return;
 
-    // Create the mock Position object that mimics GeolocationPosition
-    const position: MockPosition = {
+    // Create a Position object compatible with GeolocationPosition interface
+    // Including all required properties per the W3C specification
+    const position = {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
         accuracy: this._accuracy,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null,
       },
       timestamp: Date.now(),
-    };
+    } as GeolocationPosition;
 
     // Check if position is within map's maxBounds (if set)
     const maxBounds = this._map.getMaxBounds();
@@ -380,10 +381,10 @@ export class MockGeolocateControl implements IControl {
   /**
    * Register an event handler
    * @param type - The event type ('geolocate' or 'outofmaxbounds')
-   * @param listener - The event handler function that receives a MockPosition object
+   * @param listener - The event handler function that receives a GeolocationPosition object
    */
-  on(type: "geolocate", listener: (e: MockPosition) => void): this;
-  on(type: "outofmaxbounds", listener: (e: MockPosition) => void): this;
+  on(type: "geolocate", listener: (e: GeolocationPosition) => void): this;
+  on(type: "outofmaxbounds", listener: (e: GeolocationPosition) => void): this;
   on(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
     if (!this._eventHandlers[type]) {
       this._eventHandlers[type] = [];
@@ -397,8 +398,8 @@ export class MockGeolocateControl implements IControl {
    * @param type - The event type
    * @param listener - The event handler function to remove
    */
-  off(type: "geolocate", listener: (e: MockPosition) => void): this;
-  off(type: "outofmaxbounds", listener: (e: MockPosition) => void): this;
+  off(type: "geolocate", listener: (e: GeolocationPosition) => void): this;
+  off(type: "outofmaxbounds", listener: (e: GeolocationPosition) => void): this;
   off(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
     if (!this._eventHandlers[type]) {
       return this;
@@ -414,14 +415,14 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Fire an event with a MockPosition object
+   * Fire an event with a GeolocationPosition-compatible object
    * @private
    */
-  private _fire(type: "geolocate", data: MockPosition): void;
-  private _fire(type: "outofmaxbounds", data: MockPosition): void;
+  private _fire(type: "geolocate", data: GeolocationPosition): void;
+  private _fire(type: "outofmaxbounds", data: GeolocationPosition): void;
   private _fire(
     type: "geolocate" | "outofmaxbounds",
-    data: MockPosition,
+    data: GeolocationPosition,
   ): void {
     if (!this._eventHandlers[type]) {
       return;

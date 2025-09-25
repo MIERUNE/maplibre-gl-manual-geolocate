@@ -145,23 +145,27 @@ Automatically calculates the optimal zoom level based on the accuracy radius, co
 
 ### Events
 
-Both events receive a `MockPosition` object that mimics the browser's [GeolocationPosition](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) interface, ensuring compatibility with the original GeolocateControl.
+Both events receive a [GeolocationPosition](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) object, ensuring full compatibility with the original GeolocateControl event handlers.
 
 #### `geolocate`
 
 Fired when the control button is clicked or `trigger()` is called and the position is successfully shown on the map.
 
-**Event data**: The mock [Position](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) object with the current location.
+**Event data**: A [Position](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) object with the current location.
 
 ```typescript
-mockControl.on('geolocate', (position: MockPosition) => {
+mockControl.on('geolocate', (position: GeolocationPosition) => {
   console.log('Mock position activated:', position);
-  // position structure (mimics GeolocationPosition):
+  // position structure (standard GeolocationPosition):
   // {
   //   coords: {
   //     latitude: number,
   //     longitude: number,
-  //     accuracy: number
+  //     accuracy: number,
+  //     altitude: null,
+  //     altitudeAccuracy: null,
+  //     heading: null,
+  //     speed: null
   //   },
   //   timestamp: number  // Unix timestamp in milliseconds
   // }
@@ -176,12 +180,12 @@ mockControl.on('geolocate', (position: MockPosition) => {
 
 Fired when the mock position is outside the map's `maxBounds` (if set).
 
-**Event data**: The mock [Position](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) object with the out-of-bounds location.
+**Event data**: A [Position](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) object with the out-of-bounds location.
 
 ```typescript
-mockControl.on('outofmaxbounds', (position: MockPosition) => {
+mockControl.on('outofmaxbounds', (position: GeolocationPosition) => {
   console.warn('Position outside map bounds:', position);
-  // Same structure as geolocate event
+  // Same GeolocationPosition structure as geolocate event
   
   alert(`Location (${position.coords.latitude}, ${position.coords.longitude}) is outside map bounds!`);
 });
