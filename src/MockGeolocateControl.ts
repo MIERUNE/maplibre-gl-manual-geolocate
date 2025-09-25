@@ -338,8 +338,8 @@ export class MockGeolocateControl implements IControl {
   setAccuracy(accuracy: number): void {
     this._accuracy = accuracy;
 
-    // Update accuracy circle if it exists and is visible
-    if (this._accuracyMarker && this._showAccuracyCircle) {
+    // Update accuracy circle if it exists (regardless of visibility)
+    if (this._accuracyMarker) {
       this._updateAccuracyCircle();
     }
   }
