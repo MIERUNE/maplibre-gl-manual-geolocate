@@ -136,15 +136,11 @@ export class MockGeolocateControl implements IControl {
     }
 
     // Remove markers from map
-    if (this._positionMarker) {
-      this._positionMarker.remove();
-      this._positionMarker = undefined;
-    }
+    this._positionMarker?.remove();
+    this._positionMarker = undefined;
 
-    if (this._accuracyMarker) {
-      this._accuracyMarker.remove();
-      this._accuracyMarker = undefined;
-    }
+    this._accuracyMarker?.remove();
+    this._accuracyMarker = undefined;
 
     // Clean up references
     this._container = undefined;
@@ -188,13 +184,11 @@ export class MockGeolocateControl implements IControl {
     // Add accuracy circle first (so it appears behind the dot)
     if (this._accuracyMarker && this._showAccuracyCircle) {
       this._accuracyMarker.addTo(this._map);
-      this._updateAccuracyCircle();
     }
+    this._updateAccuracyCircle();
 
     // Add position dot on top
-    if (this._positionMarker) {
-      this._positionMarker.addTo(this._map);
-    }
+    this._positionMarker?.addTo(this._map);
 
     // Setup map event listeners for accuracy circle updates
     this._setupMapEventListeners();
@@ -322,13 +316,9 @@ export class MockGeolocateControl implements IControl {
     this._position = LngLat.convert(coordinates);
 
     // Update marker positions if they exist
-    if (this._positionMarker) {
-      this._positionMarker.setLngLat(this._position);
-    }
-    if (this._accuracyMarker) {
-      this._accuracyMarker.setLngLat(this._position);
-      this._updateAccuracyCircle();
-    }
+    this._positionMarker?.setLngLat(this._position);
+    this._accuracyMarker?.setLngLat(this._position);
+    this._updateAccuracyCircle();
   }
 
   /**
@@ -337,11 +327,7 @@ export class MockGeolocateControl implements IControl {
    */
   setAccuracy(accuracy: number): void {
     this._accuracy = accuracy;
-
-    // Update accuracy circle if it exists (regardless of visibility)
-    if (this._accuracyMarker) {
-      this._updateAccuracyCircle();
-    }
+    this._updateAccuracyCircle();
   }
 
   /**
