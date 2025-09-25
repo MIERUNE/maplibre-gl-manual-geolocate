@@ -361,10 +361,15 @@ export class MockGeolocateControl implements IControl {
 
   /**
    * Register an event handler
-   * @param type - The event type ('geolocate')
+   * @param type - The event type ('geolocate' or 'outofmaxbounds')
    * @param listener - The event handler function
    */
-  on(type: "geolocate", listener: (e: GeolocationPosition) => void): this {
+  on(type: "geolocate", listener: (e: GeolocationPosition) => void): this;
+  on(type: "outofmaxbounds", listener: (e: GeolocationPosition) => void): this;
+  on(
+    type: "geolocate" | "outofmaxbounds",
+    listener: (e: GeolocationPosition) => void,
+  ): this {
     if (!this._eventHandlers[type]) {
       this._eventHandlers[type] = [];
     }

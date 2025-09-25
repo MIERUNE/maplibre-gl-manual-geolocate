@@ -37,7 +37,7 @@ export interface MockGeolocateControlOptions {
 /**
  * Event types supported by MockGeolocateControl
  */
-export type MockGeolocateEventType = "geolocate";
+export type MockGeolocateEventType = "geolocate" | "outofmaxbounds";
 
 /**
  * Event handler function type
@@ -46,9 +46,10 @@ export type EventHandler<T = any> = (event: T) => void;
 
 /**
  * Map of event types to their handler functions.
- * Events use the browser's native GeolocationPosition type for compatibility
+ * Both events use the browser's native GeolocationPosition type for compatibility
  * with the original GeolocateControl.
  */
 export interface EventHandlers {
   geolocate?: EventHandler<GeolocationPosition>[];
+  outofmaxbounds?: EventHandler<GeolocationPosition>[];
 }
