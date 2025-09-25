@@ -125,15 +125,13 @@ export class MockGeolocateControl implements IControl {
     this._removeMapEventListeners();
 
     // Clean up event listeners
-    if (this._button && this._onClickHandler) {
-      this._button.removeEventListener("click", this._onClickHandler);
+    if (this._onClickHandler) {
+      this._button?.removeEventListener("click", this._onClickHandler);
       this._onClickHandler = undefined;
     }
 
     // Remove DOM elements
-    if (this._container && this._container.parentNode) {
-      this._container.parentNode.removeChild(this._container);
-    }
+    this._container?.parentNode?.removeChild(this._container);
 
     // Remove markers from map
     this._positionMarker?.remove();
