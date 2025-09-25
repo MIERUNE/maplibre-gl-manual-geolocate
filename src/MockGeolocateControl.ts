@@ -316,11 +316,19 @@ export class MockGeolocateControl implements IControl {
 
   /**
    * Update the mock position
-   * (Placeholder - will be implemented in Step 9)
+   * @param coordinates - The new position coordinates
    */
   setPosition(coordinates: LngLatLike): void {
     this._position = LngLat.convert(coordinates);
-    // Will update marker position in Step 9
+
+    // Update marker positions if they exist
+    if (this._positionMarker) {
+      this._positionMarker.setLngLat(this._position);
+    }
+    if (this._accuracyMarker) {
+      this._accuracyMarker.setLngLat(this._position);
+      this._updateAccuracyCircle();
+    }
   }
 
   /**
