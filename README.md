@@ -147,7 +147,7 @@ Automatically calculates the optimal zoom level based on the accuracy radius, co
 
 #### `geolocate`
 
-Fired when the control button is clicked or `trigger()` is called. The event uses the browser's native `GeolocationPosition` type for compatibility with the original GeolocateControl.
+Fired when the control button is clicked or `trigger()` is called. The event uses the browser's native [`GeolocationPosition`](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) type for compatibility with the original GeolocateControl.
 
 ```typescript
 mockControl.on('geolocate', (event: GeolocationPosition) => {
@@ -221,7 +221,7 @@ function updateToLondon() {
 
 ### Event Handling
 
-Listen to control events to integrate with your application. Events use the browser's native `GeolocationPosition` type for compatibility:
+Listen to control events to integrate with your application. Events use the browser's native [`GeolocationPosition`](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) type for compatibility:
 
 ```typescript
 const mockControl = new MockGeolocateControl({
