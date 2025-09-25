@@ -135,7 +135,7 @@ mockControl.setFitBoundsOptions({
 
 #### `trigger(): void`
 
-Programmatically centers the map on the mock position with automatic zoom-to-accuracy.
+Programmatically centers the map on the mock position with automatic zoom-to-accuracy. When successful, fires the [`geolocate`](#geolocate) event. If the position is outside the map's `maxBounds`, fires the [`outofmaxbounds`](#outofmaxbounds) event instead.
 
 ```typescript
 mockControl.trigger(); // Same as clicking the geolocate button
