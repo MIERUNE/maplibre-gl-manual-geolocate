@@ -47,6 +47,7 @@ export type EventHandler<T = any> = (event: T) => void;
 /**
  * Map of event types to their handler functions
  * Both events use GeolocationPosition for compatibility with the original GeolocateControl
+ * cf. https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition
  */
 export interface EventHandlers {
   geolocate?: EventHandler<GeolocationPosition>[];
