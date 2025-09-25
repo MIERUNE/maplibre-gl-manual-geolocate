@@ -352,11 +352,11 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update the fit bounds options
-   * (Placeholder - will be implemented in Step 12)
+   * Update the fit bounds options used when zooming to position
+   * @param options - The FitBoundsOptions to use for map.fitBounds() calls
    */
   setFitBoundsOptions(options: FitBoundsOptions): void {
-    this._fitBoundsOptions = options;
+    this._fitBoundsOptions = { ...this._fitBoundsOptions, ...options };
   }
 
   /**
