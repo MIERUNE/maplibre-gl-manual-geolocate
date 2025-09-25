@@ -218,7 +218,7 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Remove map event listeners
+   * Remove map event listeners for accuracy circle updates
    * @private
    */
   private _removeMapEventListeners(): void {
