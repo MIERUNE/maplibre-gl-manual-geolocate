@@ -135,34 +135,33 @@ mockControl.setFitBoundsOptions({
 
 #### `trigger(): void`
 
-Programmatically centers the map on the mock position with automatic zoom-to-accuracy.
+Programmatically centers the map on the mock position with automatic zoom-to-accuracy and fires a `geolocate` event.
 
 ```typescript
 mockControl.trigger(); // Same as clicking the geolocate button
 ```
 
-Automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`.
+Automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`. When called, it fires a `geolocate` event with a `GeolocationPosition` object.
 
 ### Events
 
 #### `geolocate`
 
-Fired when the control button is clicked or `trigger()` is called.
+Fired when the control button is clicked or `trigger()` is called. The event uses the browser's native `GeolocationPosition` type for compatibility with the original GeolocateControl.
 
 ```typescript
-mockControl.on('geolocate', (event) => {
+mockControl.on('geolocate', (event: GeolocationPosition) => {
   console.log('Mock position activated:', event.coords);
-  // event.coords: { latitude: number, longitude: number, accuracy: number }
-});
-```
-
-#### `outofmaxbounds`
-
-Fired when the mock position is outside the map's `maxBounds` (if set).
-
-```typescript
-mockControl.on('outofmaxbounds', (event) => {
-  console.warn('Position outside map bounds:', event.coords);
+  // event.coords contains all W3C Geolocation API properties:
+  // - latitude: number
+  // - longitude: number  
+  // - accuracy: number
+  // - altitude: null (always null for mock)
+  // - altitudeAccuracy: null (always null for mock)
+  // - heading: null (always null for mock)
+  // - speed: null (always null for mock)
+  
+  console.log('Timestamp:', event.timestamp);
 });
 ```
 
@@ -212,17 +211,27 @@ function updateToLondon() {
 
 ### Event Handling
 
-Listen to control events to integrate with your application:
+Listen to control events to integrate with your application. Events use the browser's native `GeolocationPosition` type for compatibility:
 
 ```typescript
 const mockControl = new MockGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 }
 });
 
-// Listen for geolocate events
+// Listen for geolocate events (uses native GeolocationPosition type)
 mockControl.on('geolocate', (event) => {
-  const { latitude, longitude, accuracy } = event.coords;
+  const { 
+    latitude, 
+    longitude, 
+    accuracy,
+    altitude,        // Always null for mock control
+    altitudeAccuracy, // Always null for mock control
+    heading,         // Always null for mock control
+    speed            // Always null for mock control
+  } = event.coords;
+  
   console.log(`Location: ${latitude}, ${longitude} (±${accuracy}m)`);
+  console.log(`Timestamp: ${event.timestamp}`);
   
   // Update your application UI
   updateLocationDisplay(event.coords);

@@ -1,4 +1,4 @@
-import type { FitBoundsOptions, LngLatLike } from 'maplibre-gl';
+import type { FitBoundsOptions, LngLatLike } from "maplibre-gl";
 
 /**
  * Options for the MockGeolocateControl
@@ -35,25 +35,9 @@ export interface MockGeolocateControlOptions {
 }
 
 /**
- * Geolocate event payload structure (compatible with GeolocateControl)
- */
-export interface GeolocateEventData {
-  coords: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-  };
-}
-
-/**
- * Out of max bounds event payload structure
- */
-export interface OutOfMaxBoundsEventData extends GeolocateEventData {}
-
-/**
  * Event types supported by MockGeolocateControl
  */
-export type MockGeolocateEventType = 'geolocate' | 'outofmaxbounds';
+export type MockGeolocateEventType = "geolocate";
 
 /**
  * Event handler function type
@@ -61,9 +45,10 @@ export type MockGeolocateEventType = 'geolocate' | 'outofmaxbounds';
 export type EventHandler<T = any> = (event: T) => void;
 
 /**
- * Map of event types to their handler functions
+ * Map of event types to their handler functions.
+ * Events use the browser's native GeolocationPosition type for compatibility
+ * with the original GeolocateControl.
  */
 export interface EventHandlers {
-  geolocate?: EventHandler<GeolocateEventData>[];
-  outofmaxbounds?: EventHandler<OutOfMaxBoundsEventData>[];
+  geolocate?: EventHandler<GeolocationPosition>[];
 }
