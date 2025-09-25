@@ -7,7 +7,7 @@ A MapLibre GL JS control that displays a user position marker at specified coord
 Perfect for scenarios where you need location visualization without actual geolocation:
 
 - **🧪 Development & Testing** - Test location features with predictable coordinates
-- **🎯 Demos & Presentations** - Reliable positioning that works every time  
+- **🎯 Demos & Presentations** - Reliable positioning that works every time
 - **🔒 Privacy-Conscious Apps** - Show approximate location without requesting permissions
 - **📱 Offline & Indoor Use** - Display position when geolocation is unavailable
 - **🏗️ Development Workflow** - Seamlessly switch between mock and real geolocation for testing
@@ -63,24 +63,24 @@ type MockGeolocateControlOptions = {
    * The mock coordinates to display.
    * Accepts various coordinate formats:
    * - `{lng: number, lat: number}` object
-   * - `{lon: number, lat: number}` object  
+   * - `{lon: number, lat: number}` object
    * - `[lng, lat]` array
    * - `LngLat` instance
    */
   position: LngLatLike;
-  
+
   /**
    * Accuracy circle radius in meters
    * @default 50
    */
   accuracy?: number;
-  
+
   /**
    * Whether to show the transparent circle around the position indicating the accuracy
    * @default true
    */
   showAccuracyCircle?: boolean;
-  
+
   /**
    * A `FitBoundsOptions` object to use when the map is panned and zoomed to the mock location.
    * The default is to use a `maxZoom` of 15 to limit how far the map will zoom in for very accurate locations.
@@ -163,6 +163,7 @@ Fired when the mock position is outside the map's `maxBounds` (if set).
 ```typescript
 mockControl.on('outofmaxbounds', (event) => {
   console.warn('Position outside map bounds:', event.coords);
+  // event.coords: { latitude: number, longitude: number, accuracy: number }
 });
 ```
 
@@ -223,7 +224,7 @@ const mockControl = new MockGeolocateControl({
 mockControl.on('geolocate', (event) => {
   const { latitude, longitude, accuracy } = event.coords;
   console.log(`Location: ${latitude}, ${longitude} (±${accuracy}m)`);
-  
+
   // Update your application UI
   updateLocationDisplay(event.coords);
 });
@@ -270,7 +271,7 @@ Seamlessly switch between mock and real geolocation based on environment:
 // Environment-based control selection
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const geolocateControl = isDevelopment 
+const geolocateControl = isDevelopment
   ? new MockGeolocateControl({
       position: { lng: 139.6917, lat: 35.6895 }, // Tokyo for testing
       accuracy: 50,
