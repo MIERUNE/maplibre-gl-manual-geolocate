@@ -147,25 +147,49 @@ Automatically calculates the optimal zoom level based on the accuracy radius, co
 
 #### `geolocate`
 
-Fired when the control button is clicked or `trigger()` is called.
+Fired when the control button is clicked or `trigger()` is called. The event data structure matches the browser's [GeolocationPosition](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) interface.
 
 ```typescript
-mockControl.on('geolocate', (event) => {
-  console.log('Mock position activated:', event.coords);
-  // event.coords: { latitude: number, longitude: number, accuracy: number }
+mockControl.on('geolocate', (event: GeolocateEventData) => {
+  console.log('Mock position activated:', event);
+  // event structure:
+  // {
+  //   coords: {
+  //     latitude: number,
+  //     longitude: number,
+  //     accuracy: number
+  //   },
+  //   timestamp: number  // Unix timestamp in milliseconds
+  // }
+  
+  console.log(`Position: ${event.coords.latitude}, ${event.coords.longitude}`);
+  console.log(`Accuracy: ±${event.coords.accuracy}m`);
+  console.log(`Timestamp: ${new Date(event.timestamp).toISOString()}`);
 });
 ```
 
 #### `outofmaxbounds`
 
-Fired when the mock position is outside the map's `maxBounds` (if set).
+Fired when the mock position is outside the map's `maxBounds` (if set). Uses the same data structure as `geolocate` event.
 
 ```typescript
-mockControl.on('outofmaxbounds', (event) => {
-  console.warn('Position outside map bounds:', event.coords);
-  // event.coords: { latitude: number, longitude: number, accuracy: number }
+mockControl.on('outofmaxbounds', (event: OutOfMaxBoundsEventData) => {
+  console.warn('Position outside map bounds:', event);
+  // event structure (same as GeolocateEventData):
+  // {
+  //   coords: {
+  //     latitude: number,
+  //     longitude: number,
+  //     accuracy: number
+  //   },
+  //   timestamp: number
+  // }
+  
+  alert(`Position (${event.coords.latitude}, ${event.coords.longitude}) is outside map bounds!`);
 });
 ```
+
+Both events provide full compatibility with the original GeolocateControl's event structure, making it easy to switch between mock and real controls without changing event handlers.
 
 ---
 
