@@ -135,13 +135,13 @@ mockControl.setFitBoundsOptions({
 
 #### `trigger(): void`
 
-Programmatically centers the map on the mock position with automatic zoom-to-accuracy. When successful, fires the [`geolocate`](#geolocate) event. If the position is outside the map's `maxBounds`, fires the [`outofmaxbounds`](#outofmaxbounds) event instead.
+Programmatically triggers the geolocate control. Shows the position marker at the mock location. If the position is within the map's bounds, centers the map with automatic zoom-to-accuracy and fires the [`geolocate`](#geolocate) event. If the position is outside the map's `maxBounds`, shows the marker but does not center the map, and fires the [`outofmaxbounds`](#outofmaxbounds) event instead.
 
 ```typescript
 mockControl.trigger(); // Same as clicking the geolocate button
 ```
 
-Automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`.
+When centering is performed, automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`.
 
 ### Events
 
@@ -169,7 +169,7 @@ mockControl.on('geolocate', (position: GeolocationPosition) => {
   //   },
   //   timestamp: number  // Unix timestamp in milliseconds
   // }
-  
+
   console.log(`Location: ${position.coords.latitude}, ${position.coords.longitude}`);
   console.log(`Accuracy: ±${position.coords.accuracy}m`);
   console.log(`Time: ${new Date(position.timestamp).toISOString()}`);
@@ -186,7 +186,7 @@ Fired when the mock position is outside the map's `maxBounds` (if set).
 mockControl.on('outofmaxbounds', (position: GeolocationPosition) => {
   console.warn('Position outside map bounds:', position);
   // Same GeolocationPosition structure as geolocate event
-  
+
   alert(`Location (${position.coords.latitude}, ${position.coords.longitude}) is outside map bounds!`);
 });
 ```
