@@ -289,19 +289,37 @@ export class MockGeolocateControl implements IControl {
    * Shows markers and centers the map on the mock position
    */
   trigger(): void {
+    if (!this._map) return;
+
+    // Check if position is within map's maxBounds (if set)
+    const maxBounds = this._map.getMaxBounds();
+    if (maxBounds && !maxBounds.contains(this._position)) {
+      // Fire outofmaxbounds event
+      const outOfBoundsData: OutOfMaxBoundsEventData = {
+        coords: {
+          latitude: this._position.lat,
+          longitude: this._position.lng,
+          accuracy: this._accuracy,
+        },
+      };
+      this._fire("outofmaxbounds", outOfBoundsData);
+      return; // Don't center the map if out of bounds
+    }
+
     // Show markers (or update their position if already shown)
     this._showMarkers();
 
     // Zoom to the mock location with accuracy
     this._zoomToPosition();
 
-    // Fire geolocate event
+    // Fire geolocate event with timestamp
     const eventData: GeolocateEventData = {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
         accuracy: this._accuracy,
       },
+      timestamp: Date.now(),
     };
     this._fire("geolocate", eventData);
   }
