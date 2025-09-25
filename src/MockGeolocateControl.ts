@@ -333,11 +333,15 @@ export class MockGeolocateControl implements IControl {
 
   /**
    * Update the accuracy radius
-   * (Placeholder - will be implemented in Step 10)
+   * @param accuracy - The new accuracy radius in meters
    */
   setAccuracy(accuracy: number): void {
     this._accuracy = accuracy;
-    // Will update accuracy circle in Step 10
+
+    // Update accuracy circle if it exists and is visible
+    if (this._accuracyMarker && this._showAccuracyCircle) {
+      this._updateAccuracyCircle();
+    }
   }
 
   /**
