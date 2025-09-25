@@ -182,8 +182,8 @@ export class MockGeolocateControl implements IControl {
     if (!this._map) return;
 
     // Add accuracy circle first (so it appears behind the dot)
-    if (this._accuracyMarker && this._showAccuracyCircle) {
-      this._accuracyMarker.addTo(this._map);
+    if (this._showAccuracyCircle) {
+      this._accuracyMarker?.addTo(this._map);
     }
     this._updateAccuracyCircle();
 
@@ -336,7 +336,9 @@ export class MockGeolocateControl implements IControl {
    */
   setShowAccuracyCircle(show: boolean): void {
     this._showAccuracyCircle = show;
-    // Will toggle circle visibility in Step 11
+    // TODO: When implementing in Step 11:
+    // - If showing: add marker to map, call _setupMapEventListeners(), call _updateAccuracyCircle()
+    // - If hiding: remove marker from map, call _removeMapEventListeners()
   }
 
   /**
