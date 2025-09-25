@@ -35,9 +35,13 @@ export interface MockGeolocateControlOptions {
 }
 
 /**
- * Geolocate event payload structure (compatible with GeolocateControl)
+ * Mock Position object that mimics the browser's GeolocationPosition interface.
+ * This is the data structure passed to both 'geolocate' and 'outofmaxbounds' events,
+ * matching the behavior of the original GeolocateControl.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition
  */
-export interface GeolocateEventData {
+export interface MockPosition {
   coords: {
     latitude: number;
     longitude: number;
@@ -45,11 +49,6 @@ export interface GeolocateEventData {
   };
   timestamp: number;
 }
-
-/**
- * Out of max bounds event payload structure
- */
-export interface OutOfMaxBoundsEventData extends GeolocateEventData {}
 
 /**
  * Event types supported by MockGeolocateControl
@@ -65,6 +64,6 @@ export type EventHandler<T = any> = (event: T) => void;
  * Map of event types to their handler functions
  */
 export interface EventHandlers {
-  geolocate?: EventHandler<GeolocateEventData>[];
-  outofmaxbounds?: EventHandler<OutOfMaxBoundsEventData>[];
+  geolocate?: EventHandler<MockPosition>[];
+  outofmaxbounds?: EventHandler<MockPosition>[];
 }

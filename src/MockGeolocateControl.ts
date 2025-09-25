@@ -10,8 +10,7 @@ import {
 import type {
   MockGeolocateControlOptions,
   EventHandlers,
-  GeolocateEventData,
-  OutOfMaxBoundsEventData,
+  MockPosition,
 } from "./types";
 
 /**
@@ -285,24 +284,33 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Programmatically trigger the geolocate control
-   * Shows markers and centers the map on the mock position
+   * Programmatically trigger the geolocate control.
+   * Shows markers and centers the map on the mock position.
+   *
+   * **Event** `geolocate` will be fired on success.
+   * `data` - The mock Position object mimicking the browser's GeolocationPosition.
+   *
+   * **Event** `outofmaxbounds` will be fired if the position is outside the map's maxBounds.
+   * `data` - The mock Position object mimicking the browser's GeolocationPosition.
    */
   trigger(): void {
     if (!this._map) return;
 
+    // Create the mock Position object that mimics GeolocationPosition
+    const position: MockPosition = {
+      coords: {
+        latitude: this._position.lat,
+        longitude: this._position.lng,
+        accuracy: this._accuracy,
+      },
+      timestamp: Date.now(),
+    };
+
     // Check if position is within map's maxBounds (if set)
     const maxBounds = this._map.getMaxBounds();
     if (maxBounds && !maxBounds.contains(this._position)) {
-      // Fire outofmaxbounds event
-      const outOfBoundsData: OutOfMaxBoundsEventData = {
-        coords: {
-          latitude: this._position.lat,
-          longitude: this._position.lng,
-          accuracy: this._accuracy,
-        },
-      };
-      this._fire("outofmaxbounds", outOfBoundsData);
+      // Fire outofmaxbounds event with Position object
+      this._fire("outofmaxbounds", position);
       return; // Don't center the map if out of bounds
     }
 
@@ -312,16 +320,8 @@ export class MockGeolocateControl implements IControl {
     // Zoom to the mock location with accuracy
     this._zoomToPosition();
 
-    // Fire geolocate event with timestamp
-    const eventData: GeolocateEventData = {
-      coords: {
-        latitude: this._position.lat,
-        longitude: this._position.lng,
-        accuracy: this._accuracy,
-      },
-      timestamp: Date.now(),
-    };
-    this._fire("geolocate", eventData);
+    // Fire geolocate event with Position object
+    this._fire("geolocate", position);
   }
 
   /**
@@ -380,13 +380,10 @@ export class MockGeolocateControl implements IControl {
   /**
    * Register an event handler
    * @param type - The event type ('geolocate' or 'outofmaxbounds')
-   * @param listener - The event handler function
+   * @param listener - The event handler function that receives a MockPosition object
    */
-  on(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
-  on(
-    type: "outofmaxbounds",
-    listener: (e: OutOfMaxBoundsEventData) => void,
-  ): this;
+  on(type: "geolocate", listener: (e: MockPosition) => void): this;
+  on(type: "outofmaxbounds", listener: (e: MockPosition) => void): this;
   on(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
     if (!this._eventHandlers[type]) {
       this._eventHandlers[type] = [];
@@ -400,11 +397,8 @@ export class MockGeolocateControl implements IControl {
    * @param type - The event type
    * @param listener - The event handler function to remove
    */
-  off(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
-  off(
-    type: "outofmaxbounds",
-    listener: (e: OutOfMaxBoundsEventData) => void,
-  ): this;
+  off(type: "geolocate", listener: (e: MockPosition) => void): this;
+  off(type: "outofmaxbounds", listener: (e: MockPosition) => void): this;
   off(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
     if (!this._eventHandlers[type]) {
       return this;
@@ -420,14 +414,14 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Fire an event
+   * Fire an event with a MockPosition object
    * @private
    */
-  private _fire(type: "geolocate", data: GeolocateEventData): void;
-  private _fire(type: "outofmaxbounds", data: OutOfMaxBoundsEventData): void;
+  private _fire(type: "geolocate", data: MockPosition): void;
+  private _fire(type: "outofmaxbounds", data: MockPosition): void;
   private _fire(
     type: "geolocate" | "outofmaxbounds",
-    data: GeolocateEventData | OutOfMaxBoundsEventData,
+    data: MockPosition,
   ): void {
     if (!this._eventHandlers[type]) {
       return;
