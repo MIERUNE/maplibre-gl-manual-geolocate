@@ -43,7 +43,7 @@ export interface GeolocateEventData {
     longitude: number;
     accuracy: number;
   };
-  timestamp?: number;
+  timestamp: number;
 }
 
 /**
