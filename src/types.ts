@@ -59,6 +59,3 @@ export interface EventHandlers {
   geolocate?: EventHandler<GeolocationPosition>[];
   outofmaxbounds?: EventHandler<GeolocationPosition>[];
 }
-
-export type GeolocateEventData = GeolocationPosition;
-export type OutOfMaxBoundsEventData = GeolocationPosition;

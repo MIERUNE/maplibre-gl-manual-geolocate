@@ -7,12 +7,7 @@ import {
   type FitBoundsOptions,
   type LngLatLike,
 } from "maplibre-gl";
-import type {
-  MockGeolocateControlOptions,
-  EventHandlers,
-  GeolocateEventData,
-  OutOfMaxBoundsEventData,
-} from "./types";
+import type { MockGeolocateControlOptions, EventHandlers } from "./types";
 
 /**
  * A MapLibre GL control that displays a user position marker at specified coordinates
@@ -290,16 +285,12 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Check if the current position is within the maxBounds
-   * @returns `true` if the position is within the bounds, `false` otherwise
+   * Create a GeolocationPosition object from the current position
+   * @returns A W3C-compliant GeolocationPosition object
    * @private
    */
-  private _checkMaxBounds(): boolean {
-    if (!this._maxBounds) {
-      return true;
-    }
-
-    const position = {
+  private _createGeolocationPosition(): GeolocationPosition {
+    return {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
@@ -311,13 +302,24 @@ export class MockGeolocateControl implements IControl {
       },
       timestamp: Date.now(),
     } as GeolocationPosition;
+  }
 
-    if (this._maxBounds.contains(this._position)) {
+  /**
+   * Check if the current position is within the maxBounds
+   * @returns `true` if the position is within the bounds, `false` otherwise
+   * @private
+   */
+  private _checkMaxBounds(): boolean {
+    if (!this._maxBounds) {
       return true;
-    } else {
-      this._fire("outofmaxbounds", position);
+    }
+
+    if (!this._maxBounds.contains(this._position)) {
+      this._fire("outofmaxbounds", this._createGeolocationPosition());
       return false;
     }
+
+    return true;
   }
 
   /**
@@ -336,19 +338,7 @@ export class MockGeolocateControl implements IControl {
     this._zoomToPosition();
 
     // Fire geolocate event with native GeolocationPosition format
-    const position = {
-      coords: {
-        latitude: this._position.lat,
-        longitude: this._position.lng,
-        accuracy: this._accuracy,
-        altitude: null,
-        altitudeAccuracy: null,
-        heading: null,
-        speed: null,
-      },
-      timestamp: Date.now(),
-    } as GeolocationPosition;
-    this._fire("geolocate", position);
+    this._fire("geolocate", this._createGeolocationPosition());
   }
 
   /**
@@ -429,12 +419,12 @@ export class MockGeolocateControl implements IControl {
    * @param type - The event type
    * @param listener - The event handler function to remove
    */
-  off(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
+  off(type: "geolocate", listener: (e: GeolocationPosition) => void): this;
+  off(type: "outofmaxbounds", listener: (e: GeolocationPosition) => void): this;
   off(
-    type: "outofmaxbounds",
-    listener: (e: OutOfMaxBoundsEventData) => void,
-  ): this;
-  off(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
+    type: "geolocate" | "outofmaxbounds",
+    listener: (e: GeolocationPosition) => void,
+  ): this {
     if (!this._eventHandlers[type]) {
       return this;
     }
@@ -452,11 +442,11 @@ export class MockGeolocateControl implements IControl {
    * Fire an event
    * @private
    */
-  private _fire(type: "geolocate", data: GeolocateEventData): void;
-  private _fire(type: "outofmaxbounds", data: OutOfMaxBoundsEventData): void;
+  private _fire(type: "geolocate", data: GeolocationPosition): void;
+  private _fire(type: "outofmaxbounds", data: GeolocationPosition): void;
   private _fire(
     type: "geolocate" | "outofmaxbounds",
-    data: GeolocateEventData | OutOfMaxBoundsEventData,
+    data: GeolocationPosition,
   ): void {
     if (!this._eventHandlers[type]) {
       return;
