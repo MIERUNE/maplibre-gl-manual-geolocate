@@ -7,12 +7,7 @@ import {
   type FitBoundsOptions,
   type LngLatLike,
 } from "maplibre-gl";
-import type {
-  MockGeolocateControlOptions,
-  EventHandlers,
-  GeolocateEventData,
-  OutOfMaxBoundsEventData,
-} from "./types";
+import type { MockGeolocateControlOptions, EventHandlers } from "./types";
 
 /**
  * A MapLibre GL control that displays a user position marker at specified coordinates
@@ -295,15 +290,20 @@ export class MockGeolocateControl implements IControl {
     // Zoom to the mock location with accuracy
     this._zoomToPosition();
 
-    // Fire geolocate event
-    const eventData: GeolocateEventData = {
+    // Fire geolocate event with native GeolocationPosition format
+    const position = {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
         accuracy: this._accuracy,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null,
       },
-    };
-    this._fire("geolocate", eventData);
+      timestamp: Date.now(),
+    } as GeolocationPosition;
+    this._fire("geolocate", position);
   }
 
   /**
@@ -364,12 +364,12 @@ export class MockGeolocateControl implements IControl {
    * @param type - The event type ('geolocate' or 'outofmaxbounds')
    * @param listener - The event handler function
    */
-  on(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
+  on(type: "geolocate", listener: (e: GeolocationPosition) => void): this;
+  on(type: "outofmaxbounds", listener: (e: GeolocationPosition) => void): this;
   on(
-    type: "outofmaxbounds",
-    listener: (e: OutOfMaxBoundsEventData) => void,
-  ): this;
-  on(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
+    type: "geolocate" | "outofmaxbounds",
+    listener: (e: GeolocationPosition) => void,
+  ): this {
     if (!this._eventHandlers[type]) {
       this._eventHandlers[type] = [];
     }

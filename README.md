@@ -7,7 +7,7 @@ A MapLibre GL JS control that displays a user position marker at specified coord
 Perfect for scenarios where you need location visualization without actual geolocation:
 
 - **🧪 Development & Testing** - Test location features with predictable coordinates
-- **🎯 Demos & Presentations** - Reliable positioning that works every time  
+- **🎯 Demos & Presentations** - Reliable positioning that works every time
 - **🔒 Privacy-Conscious Apps** - Show approximate location without requesting permissions
 - **📱 Offline & Indoor Use** - Display position when geolocation is unavailable
 - **🏗️ Development Workflow** - Seamlessly switch between mock and real geolocation for testing
@@ -63,24 +63,24 @@ type MockGeolocateControlOptions = {
    * The mock coordinates to display.
    * Accepts various coordinate formats:
    * - `{lng: number, lat: number}` object
-   * - `{lon: number, lat: number}` object  
+   * - `{lon: number, lat: number}` object
    * - `[lng, lat]` array
    * - `LngLat` instance
    */
   position: LngLatLike;
-  
+
   /**
    * Accuracy circle radius in meters
    * @default 50
    */
   accuracy?: number;
-  
+
   /**
    * Whether to show the transparent circle around the position indicating the accuracy
    * @default true
    */
   showAccuracyCircle?: boolean;
-  
+
   /**
    * A `FitBoundsOptions` object to use when the map is panned and zoomed to the mock location.
    * The default is to use a `maxZoom` of 15 to limit how far the map will zoom in for very accurate locations.
@@ -135,33 +135,42 @@ mockControl.setFitBoundsOptions({
 
 #### `trigger(): void`
 
-Programmatically centers the map on the mock position with automatic zoom-to-accuracy.
+Programmatically centers the map on the mock position with automatic zoom-to-accuracy and fires a `geolocate` event.
 
 ```typescript
 mockControl.trigger(); // Same as clicking the geolocate button
 ```
 
-Automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`.
+Automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`. When called, it fires a `geolocate` event with a `GeolocationPosition` object.
 
 ### Events
 
 #### `geolocate`
 
-Fired when the control button is clicked or `trigger()` is called.
+Fired when the control button is clicked or `trigger()` is called. The event uses the browser's native [`GeolocationPosition`](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) type for compatibility with the original GeolocateControl.
 
 ```typescript
-mockControl.on('geolocate', (event) => {
+mockControl.on('geolocate', (event: GeolocationPosition) => {
   console.log('Mock position activated:', event.coords);
-  // event.coords: { latitude: number, longitude: number, accuracy: number }
+  // event.coords contains all W3C Geolocation API properties:
+  // - latitude: number
+  // - longitude: number
+  // - accuracy: number
+  // - altitude: null (always null for mock)
+  // - altitudeAccuracy: null (always null for mock)
+  // - heading: null (always null for mock)
+  // - speed: null (always null for mock)
+
+  console.log('Timestamp:', event.timestamp);
 });
 ```
 
 #### `outofmaxbounds`
 
-Fired when the mock position is outside the map's `maxBounds` (if set).
+Fired when the mock position is outside the map's `maxBounds` (if set). Uses the same `GeolocationPosition` type as the geolocate event.
 
 ```typescript
-mockControl.on('outofmaxbounds', (event) => {
+mockControl.on('outofmaxbounds', (event: GeolocationPosition) => {
   console.warn('Position outside map bounds:', event.coords);
 });
 ```
@@ -212,18 +221,28 @@ function updateToLondon() {
 
 ### Event Handling
 
-Listen to control events to integrate with your application:
+Listen to control events to integrate with your application. Events use the browser's native [`GeolocationPosition`](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) type for compatibility:
 
 ```typescript
 const mockControl = new MockGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 }
 });
 
-// Listen for geolocate events
+// Listen for geolocate events (uses native GeolocationPosition type)
 mockControl.on('geolocate', (event) => {
-  const { latitude, longitude, accuracy } = event.coords;
+  const {
+    latitude,
+    longitude,
+    accuracy,
+    altitude,        // Always null for mock control
+    altitudeAccuracy, // Always null for mock control
+    heading,         // Always null for mock control
+    speed            // Always null for mock control
+  } = event.coords;
+
   console.log(`Location: ${latitude}, ${longitude} (±${accuracy}m)`);
-  
+  console.log(`Timestamp: ${event.timestamp}`);
+
   // Update your application UI
   updateLocationDisplay(event.coords);
 });
@@ -270,7 +289,7 @@ Seamlessly switch between mock and real geolocation based on environment:
 // Environment-based control selection
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const geolocateControl = isDevelopment 
+const geolocateControl = isDevelopment
   ? new MockGeolocateControl({
       position: { lng: 139.6917, lat: 35.6895 }, // Tokyo for testing
       accuracy: 50,
