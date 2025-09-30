@@ -7,7 +7,12 @@ import {
   type FitBoundsOptions,
   type LngLatLike,
 } from "maplibre-gl";
-import type { MockGeolocateControlOptions, EventHandlers } from "./types";
+import type {
+  MockGeolocateControlOptions,
+  EventHandlers,
+  GeolocateEventData,
+  OutOfMaxBoundsEventData,
+} from "./types";
 
 /**
  * A MapLibre GL control that displays a user position marker at specified coordinates
@@ -36,6 +41,7 @@ export class MockGeolocateControl implements IControl {
   private _accuracy: number;
   private _showAccuracyCircle: boolean;
   private _fitBoundsOptions: FitBoundsOptions;
+  private _maxBounds?: LngLatBounds;
 
   // Event handlers storage
   private _eventHandlers: EventHandlers = {};
@@ -70,6 +76,10 @@ export class MockGeolocateControl implements IControl {
     this._accuracy = options.accuracy ?? 50;
     this._showAccuracyCircle = options.showAccuracyCircle ?? true;
     this._fitBoundsOptions = options.fitBoundsOptions ?? { maxZoom: 15 };
+
+    if (options.maxBounds) {
+      this._maxBounds = LngLatBounds.convert(options.maxBounds);
+    }
   }
 
   /**
@@ -280,10 +290,45 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
+   * Check if the current position is within the maxBounds
+   * @returns `true` if the position is within the bounds, `false` otherwise
+   * @private
+   */
+  private _checkMaxBounds(): boolean {
+    if (!this._maxBounds) {
+      return true;
+    }
+
+    const position = {
+      coords: {
+        latitude: this._position.lat,
+        longitude: this._position.lng,
+        accuracy: this._accuracy,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null,
+      },
+      timestamp: Date.now(),
+    } as GeolocationPosition;
+
+    if (this._maxBounds.contains(this._position)) {
+      return true;
+    } else {
+      this._fire("outofmaxbounds", position);
+      return false;
+    }
+  }
+
+  /**
    * Programmatically trigger the geolocate control
    * Shows markers and centers the map on the mock position
    */
   trigger(): void {
+    if (!this._checkMaxBounds()) {
+      return;
+    }
+
     // Show markers (or update their position if already shown)
     this._showMarkers();
 
@@ -317,6 +362,8 @@ export class MockGeolocateControl implements IControl {
     this._positionMarker?.setLngLat(this._position);
     this._accuracyMarker?.setLngLat(this._position);
     this._updateAccuracyCircle();
+
+    this._checkMaxBounds();
   }
 
   /**

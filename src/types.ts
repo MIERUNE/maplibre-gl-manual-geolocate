@@ -1,4 +1,4 @@
-import type { FitBoundsOptions, LngLatLike } from "maplibre-gl";
+import type { FitBoundsOptions, LngLatLike, LngLatBounds } from "maplibre-gl";
 
 /**
  * Options for the MockGeolocateControl
@@ -32,6 +32,12 @@ export interface MockGeolocateControlOptions {
    * @default {maxZoom: 15}
    */
   fitBoundsOptions?: FitBoundsOptions;
+
+  /**
+   * A `LngLatBounds` object to restrict the user's location to.
+   * If the user's location is outside of these bounds, an `outofmaxbounds` event will be fired.
+   */
+  maxBounds?: LngLatBounds | [number, number, number, number];
 }
 
 /**
@@ -53,3 +59,6 @@ export interface EventHandlers {
   geolocate?: EventHandler<GeolocationPosition>[];
   outofmaxbounds?: EventHandler<GeolocationPosition>[];
 }
+
+export type GeolocateEventData = GeolocationPosition;
+export type OutOfMaxBoundsEventData = GeolocationPosition;
