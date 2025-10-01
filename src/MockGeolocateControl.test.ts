@@ -14,6 +14,7 @@ function createMockMap(): Map {
     },
     center: [0, 0],
     zoom: 1,
+    fadeDuration: 0, // Disable fade animations
   });
   return map;
 }
@@ -182,7 +183,9 @@ describe("MockGeolocateControl", () => {
 
       map.removeControl(control);
 
-      const removedContainer = map.getContainer().querySelector(".maplibregl-ctrl-geolocate");
+      const removedContainer = map
+        .getContainer()
+        .querySelector(".maplibregl-ctrl-geolocate");
       expect(removedContainer).toBeNull();
     });
 
@@ -623,13 +626,17 @@ describe("MockGeolocateControl", () => {
 
     it("should create position marker when triggered", () => {
       control.trigger();
-      const marker = map.getContainer().querySelector(".maplibregl-user-location-dot");
+      const marker = map
+        .getContainer()
+        .querySelector(".maplibregl-user-location-dot");
       expect(marker).toBeDefined();
     });
 
     it("should create accuracy circle when triggered", () => {
       control.trigger();
-      const circle = map.getContainer().querySelector(".maplibregl-user-location-accuracy-circle");
+      const circle = map
+        .getContainer()
+        .querySelector(".maplibregl-user-location-accuracy-circle");
       expect(circle).toBeDefined();
     });
 
@@ -641,7 +648,9 @@ describe("MockGeolocateControl", () => {
       map.addControl(customControl);
       customControl.trigger();
 
-      const circle = map.getContainer().querySelector(".maplibregl-user-location-accuracy-circle");
+      const circle = map
+        .getContainer()
+        .querySelector(".maplibregl-user-location-accuracy-circle");
       expect(circle).toBeNull();
     });
 
@@ -649,8 +658,12 @@ describe("MockGeolocateControl", () => {
       control.trigger();
       map.removeControl(control);
 
-      const marker = map.getContainer().querySelector(".maplibregl-user-location-dot");
-      const circle = map.getContainer().querySelector(".maplibregl-user-location-accuracy-circle");
+      const marker = map
+        .getContainer()
+        .querySelector(".maplibregl-user-location-dot");
+      const circle = map
+        .getContainer()
+        .querySelector(".maplibregl-user-location-accuracy-circle");
 
       expect(marker).toBeNull();
       expect(circle).toBeNull();
