@@ -280,18 +280,12 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Programmatically trigger the geolocate control
-   * Shows markers and centers the map on the mock position
+   * Create a GeolocationPosition object from the current position
+   * @returns A W3C-compliant GeolocationPosition object
+   * @private
    */
-  trigger(): void {
-    // Show markers (or update their position if already shown)
-    this._showMarkers();
-
-    // Zoom to the mock location with accuracy
-    this._zoomToPosition();
-
-    // Fire geolocate event with native GeolocationPosition format
-    const position = {
+  private _createGeolocationPosition(): GeolocationPosition {
+    return {
       coords: {
         latitude: this._position.lat,
         longitude: this._position.lng,
@@ -303,7 +297,52 @@ export class MockGeolocateControl implements IControl {
       },
       timestamp: Date.now(),
     } as GeolocationPosition;
-    this._fire("geolocate", position);
+  }
+
+  /**
+   * Check if the current position is outside the map's maxBounds
+   * Matches the original GeolocateControl behavior
+   * @returns `true` if position is outside bounds, `false` otherwise
+   * @private
+   */
+  private _isOutOfMapMaxBounds(): boolean {
+    if (!this._map) {
+      return false;
+    }
+
+    const bounds = this._map.getMaxBounds();
+    if (!bounds) {
+      return false;
+    }
+
+    const { lat, lng } = this._position;
+    return (
+      lng < bounds.getWest() ||
+      lng > bounds.getEast() ||
+      lat < bounds.getSouth() ||
+      lat > bounds.getNorth()
+    );
+  }
+
+  /**
+   * Programmatically trigger the geolocate control
+   * Shows markers and centers the map on the mock position
+   */
+  trigger(): void {
+    // Check if position is outside map's maxBounds
+    if (this._isOutOfMapMaxBounds()) {
+      this._fire("outofmaxbounds", this._createGeolocationPosition());
+      return;
+    }
+
+    // Show markers (or update their position if already shown)
+    this._showMarkers();
+
+    // Zoom to the mock location with accuracy
+    this._zoomToPosition();
+
+    // Fire geolocate event with native GeolocationPosition format
+    this._fire("geolocate", this._createGeolocationPosition());
   }
 
   /**
@@ -382,12 +421,12 @@ export class MockGeolocateControl implements IControl {
    * @param type - The event type
    * @param listener - The event handler function to remove
    */
-  off(type: "geolocate", listener: (e: GeolocateEventData) => void): this;
+  off(type: "geolocate", listener: (e: GeolocationPosition) => void): this;
+  off(type: "outofmaxbounds", listener: (e: GeolocationPosition) => void): this;
   off(
-    type: "outofmaxbounds",
-    listener: (e: OutOfMaxBoundsEventData) => void,
-  ): this;
-  off(type: "geolocate" | "outofmaxbounds", listener: (e: any) => void): this {
+    type: "geolocate" | "outofmaxbounds",
+    listener: (e: GeolocationPosition) => void,
+  ): this {
     if (!this._eventHandlers[type]) {
       return this;
     }
@@ -405,11 +444,11 @@ export class MockGeolocateControl implements IControl {
    * Fire an event
    * @private
    */
-  private _fire(type: "geolocate", data: GeolocateEventData): void;
-  private _fire(type: "outofmaxbounds", data: OutOfMaxBoundsEventData): void;
+  private _fire(type: "geolocate", data: GeolocationPosition): void;
+  private _fire(type: "outofmaxbounds", data: GeolocationPosition): void;
   private _fire(
     type: "geolocate" | "outofmaxbounds",
-    data: GeolocateEventData | OutOfMaxBoundsEventData,
+    data: GeolocationPosition,
   ): void {
     if (!this._eventHandlers[type]) {
       return;
