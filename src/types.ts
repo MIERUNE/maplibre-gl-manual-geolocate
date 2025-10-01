@@ -1,4 +1,4 @@
-import type { FitBoundsOptions, LngLatLike, LngLatBounds } from "maplibre-gl";
+import type { FitBoundsOptions, LngLatLike } from "maplibre-gl";
 
 /**
  * Options for the MockGeolocateControl
