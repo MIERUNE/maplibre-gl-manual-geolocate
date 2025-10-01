@@ -36,7 +36,6 @@ export class MockGeolocateControl implements IControl {
   private _accuracy: number;
   private _showAccuracyCircle: boolean;
   private _fitBoundsOptions: FitBoundsOptions;
-  private _maxBounds?: LngLatBounds;
 
   // Event handlers storage
   private _eventHandlers: EventHandlers = {};
@@ -71,10 +70,6 @@ export class MockGeolocateControl implements IControl {
     this._accuracy = options.accuracy ?? 50;
     this._showAccuracyCircle = options.showAccuracyCircle ?? true;
     this._fitBoundsOptions = options.fitBoundsOptions ?? { maxZoom: 15 };
-
-    if (options.maxBounds) {
-      this._maxBounds = LngLatBounds.convert(options.maxBounds);
-    }
   }
 
   /**
@@ -305,21 +300,28 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Check if the current position is within the maxBounds
-   * @returns `true` if the position is within the bounds, `false` otherwise
+   * Check if the current position is outside the map's maxBounds
+   * Matches the original GeolocateControl behavior
+   * @returns `true` if position is outside bounds, `false` otherwise
    * @private
    */
-  private _checkMaxBounds(): boolean {
-    if (!this._maxBounds) {
-      return true;
-    }
-
-    if (!this._maxBounds.contains(this._position)) {
-      this._fire("outofmaxbounds", this._createGeolocationPosition());
+  private _isOutOfMapMaxBounds(): boolean {
+    if (!this._map) {
       return false;
     }
 
-    return true;
+    const bounds = this._map.getMaxBounds();
+    if (!bounds) {
+      return false;
+    }
+
+    const { lat, lng } = this._position;
+    return (
+      lng < bounds.getWest() ||
+      lng > bounds.getEast() ||
+      lat < bounds.getSouth() ||
+      lat > bounds.getNorth()
+    );
   }
 
   /**
@@ -327,7 +329,9 @@ export class MockGeolocateControl implements IControl {
    * Shows markers and centers the map on the mock position
    */
   trigger(): void {
-    if (!this._checkMaxBounds()) {
+    // Check if position is outside map's maxBounds
+    if (this._isOutOfMapMaxBounds()) {
+      this._fire("outofmaxbounds", this._createGeolocationPosition());
       return;
     }
 
@@ -352,8 +356,6 @@ export class MockGeolocateControl implements IControl {
     this._positionMarker?.setLngLat(this._position);
     this._accuracyMarker?.setLngLat(this._position);
     this._updateAccuracyCircle();
-
-    this._checkMaxBounds();
   }
 
   /**

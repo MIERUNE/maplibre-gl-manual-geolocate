@@ -32,12 +32,6 @@ export interface MockGeolocateControlOptions {
    * @default {maxZoom: 15}
    */
   fitBoundsOptions?: FitBoundsOptions;
-
-  /**
-   * A `LngLatBounds` object to restrict the user's location to.
-   * If the user's location is outside of these bounds, an `outofmaxbounds` event will be fired.
-   */
-  maxBounds?: LngLatBounds | [number, number, number, number];
 }
 
 /**
