@@ -3,7 +3,15 @@ import { vi } from 'vitest';
 
 /**
  * Creates a test map instance with sensible defaults for testing
- * Inspired by MapLibre GL JS test utilities
+ *
+ * Inspired by MapLibre GL JS test utilities, but implemented independently
+ * since the original test utilities are not exported from the maplibre-gl package.
+ *
+ * Reference: https://github.com/maplibre/maplibre-gl-js/blob/main/src/util/test/util.ts
+ *
+ * Note: We keep this implementation minimal to avoid complex WebGL initialization
+ * issues during testing. For testing MockGeolocateControl, we only need basic
+ * map functionality, not full WebGL rendering capabilities.
  */
 export function createMap(options?: any): Map {
   const container = document.createElement('div');

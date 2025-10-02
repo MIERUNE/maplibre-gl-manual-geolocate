@@ -1,5 +1,17 @@
 import { beforeAll, vi } from 'vitest';
 
+/**
+ * Test setup for MapLibre GL JS components
+ *
+ * This setup file provides browser API mocks required for testing components
+ * that use MapLibre GL JS. Since MapLibre GL requires WebGL and various browser
+ * APIs, we need to mock them for the jsdom environment.
+ *
+ * Inspired by MapLibre GL JS test setup:
+ * https://github.com/maplibre/maplibre-gl-js/blob/main/test/unit/lib/web_worker_mock.ts
+ * https://github.com/maplibre/maplibre-gl-js/blob/main/test/unit/setup.ts
+ */
+
 // Mock URL.createObjectURL for MapLibre GL worker setup
 (globalThis as any).URL.createObjectURL = vi.fn(() => 'blob:mock-url');
 (globalThis as any).URL.revokeObjectURL = vi.fn();
