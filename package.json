@@ -25,15 +25,21 @@
     "build": "tsc --noEmit && vite build --config vite.config.lib.ts",
     "build:demo": "vite build --config vite.config.demo.ts",
     "preview": "vite preview",
-    "preview:demo": "vite preview --config vite.config.demo.ts"
+    "preview:demo": "vite preview --config vite.config.demo.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
     "maplibre-gl": ">=5.0.0"
   },
   "devDependencies": {
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^27.0.0",
     "maplibre-gl": "^5.7.1",
     "typescript": "~5.8.3",
     "vite": "^7.1.2",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.4"
   }
 }
