@@ -49,7 +49,7 @@ export function sleep(ms: number): Promise<void> {
  * Creates a mock GeolocationPosition object
  */
 export function createMockPosition(lng: number, lat: number, accuracy = 10): GeolocationPosition {
-  return {
+  const position = {
     coords: {
       latitude: lat,
       longitude: lng,
@@ -58,22 +58,44 @@ export function createMockPosition(lng: number, lat: number, accuracy = 10): Geo
       altitudeAccuracy: null,
       heading: null,
       speed: null,
+      toJSON: () => ({
+        latitude: lat,
+        longitude: lng,
+        accuracy,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null,
+      }),
     },
     timestamp: Date.now(),
+    toJSON: () => ({
+      coords: {
+        latitude: lat,
+        longitude: lng,
+        accuracy,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null,
+      },
+      timestamp: Date.now(),
+    }),
   };
+  return position;
 }
 
 /**
  * Creates a mock GeolocationPositionError
  */
 export function createMockPositionError(code: number, message: string): GeolocationPositionError {
-  const error = new Error(message) as GeolocationPositionError;
-  error.code = code;
-  error.message = message;
-  error.PERMISSION_DENIED = 1;
-  error.POSITION_UNAVAILABLE = 2;
-  error.TIMEOUT = 3;
-  return error;
+  return {
+    code,
+    message,
+    PERMISSION_DENIED: 1,
+    POSITION_UNAVAILABLE: 2,
+    TIMEOUT: 3,
+  };
 }
 
 /**

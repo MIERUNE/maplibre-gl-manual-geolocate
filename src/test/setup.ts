@@ -1,11 +1,11 @@
 import { beforeAll, vi } from 'vitest';
 
 // Mock URL.createObjectURL for MapLibre GL worker setup
-global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
-global.URL.revokeObjectURL = vi.fn();
+(globalThis as any).URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+(globalThis as any).URL.revokeObjectURL = vi.fn();
 
 // Mock Worker for MapLibre GL
-global.Worker = vi.fn().mockImplementation(() => ({
+(globalThis as any).Worker = vi.fn().mockImplementation(() => ({
   postMessage: vi.fn(),
   terminate: vi.fn(),
   addEventListener: vi.fn(),
@@ -14,14 +14,14 @@ global.Worker = vi.fn().mockImplementation(() => ({
 })) as any;
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
 
 // Mock IntersectionObserver
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+(globalThis as any).IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),

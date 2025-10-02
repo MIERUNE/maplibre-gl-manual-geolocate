@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { MockGeolocateControl } from './MockGeolocateControl';
-import type { MockGeolocateOptions } from './types';
+import type { MockGeolocateControlOptions } from './types';
 
 describe('MockGeolocateControl (Simple Tests)', () => {
   describe('initialization', () => {
@@ -12,7 +12,7 @@ describe('MockGeolocateControl (Simple Tests)', () => {
     });
 
     it('should create control with custom options', () => {
-      const options: MockGeolocateOptions = {
+      const options: MockGeolocateControlOptions = {
         position: { lng: 139.7, lat: 35.6 },
         accuracy: 50,
         showAccuracyCircle: true,
@@ -88,8 +88,8 @@ describe('MockGeolocateControl (Simple Tests)', () => {
 
       // Should not throw
       expect(() => {
-        control.on('error', handler);
-        control.off('error', handler);
+        control.on('outofmaxbounds', handler);
+        control.off('outofmaxbounds', handler);
       }).not.toThrow();
     });
   });
