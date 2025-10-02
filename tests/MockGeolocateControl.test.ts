@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { Map, LngLat } from "maplibre-gl";
-import { MockGeolocateControl } from "./MockGeolocateControl";
+import { MockGeolocateControl } from "../src/MockGeolocateControl";
 
 // Helper to create a minimal mock map
 function createMockMap(): Map {

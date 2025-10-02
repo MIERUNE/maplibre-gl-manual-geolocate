@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/test-setup.ts"],
+    setupFiles: ["./tests/setup.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
@@ -12,11 +12,11 @@ export default defineConfig({
         "node_modules/",
         "dist/",
         "demo-dist/",
+        "tests/",
         "**/*.config.*",
         "**/types.ts",
         "src/main.ts",
         "src/vite-env.d.ts",
-        "src/test-setup.ts",
       ],
     },
   },
