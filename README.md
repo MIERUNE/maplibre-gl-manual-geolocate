@@ -1,5 +1,7 @@
 # maplibre-gl-manual-geolocate
 
+[GitHub Repository](https://github.com/MIERUNE/maplibre-gl-mock-geolocate) | [Live Demo](https://maplibre-gl-manual-geolocate.mierune.dev/)
+
 A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's [geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API). Provides the same visual appearance as the built-in [`GeolocateControl`](https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/) with complete control over positioning.
 
 ## Why Use This Control?
@@ -355,16 +357,16 @@ While ManualGeolocateControl maintains the same visual appearance and core funct
 
 For comparison with the original control, see [`GeolocateControlOptions`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/GeolocateControlOptions/) in the MapLibre GL JS documentation. ManualGeolocateControl uses [`ManualGeolocateControlOptions`](#manualgeolocatecontroloptions) instead.
 
-| Option                  | GeolocateControl | ManualGeolocateControl | Description                                      |
-| ----------------------- | :--------------: | :--------------------: | ------------------------------------------------ |
-| `fitBoundsOptions`      |        ✅        |           ✅           | Auto-zoom configuration (identical behavior)     |
-| `positionOptions`       |        ✅        |           ❌           | Geolocation API options (not needed for manual)  |
-| `showAccuracyCircle`    |        ✅        |           ✅           | Accuracy circle visibility                       |
-| `showUserLocation`      |        ✅        |           ❌           | Always shows location in manual                  |
-| `trackUserLocation`     |        ✅        |           ❌           | Real-time tracking (not supported in manual)     |
-| **Manual-specific**     |                  |                        |                                                  |
-| `position`              |        ❌        |           ✅           | Required: Coordinates to display                 |
-| `accuracy`              |        ❌        |           ✅           | Optional: Accuracy radius in meters              |
+| Option               | GeolocateControl | ManualGeolocateControl | Description                                     |
+| -------------------- | :--------------: | :--------------------: | ----------------------------------------------- |
+| `fitBoundsOptions`   |        ✅        |           ✅           | Auto-zoom configuration (identical behavior)    |
+| `positionOptions`    |        ✅        |           ❌           | Geolocation API options (not needed for manual) |
+| `showAccuracyCircle` |        ✅        |           ✅           | Accuracy circle visibility                      |
+| `showUserLocation`   |        ✅        |           ❌           | Always shows location in manual                 |
+| `trackUserLocation`  |        ✅        |           ❌           | Real-time tracking (not supported in manual)    |
+| **Manual-specific**  |                  |                        |                                                 |
+| `position`           |        ❌        |           ✅           | Required: Coordinates to display                |
+| `accuracy`           |        ❌        |           ✅           | Optional: Accuracy radius in meters             |
 
 #### Methods Compatibility
 
