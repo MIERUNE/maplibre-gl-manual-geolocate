@@ -154,12 +154,6 @@ body {
 }
 
 
-.panel-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
 .panel-hint {
     margin: -8px 0 0 0;
     font-size: 12px;
@@ -177,35 +171,6 @@ body {
     font-size: 11px;
 }
 
-
-.panel-button {
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-    background: #3a7afe;
-    color: #ffffff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.panel-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-}
-
-.panel-button:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.panel-button--secondary {
-    background: #f5f7fb;
-    color: #1a1a1a;
-    border: 1px solid #d0d5dd;
-}
 
 .coordinate-form {
     display: flex;
