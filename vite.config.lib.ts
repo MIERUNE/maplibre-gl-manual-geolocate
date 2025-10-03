@@ -7,8 +7,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: "src/index.ts",
-      name: "MaplibreGlMockGeolocate",
-      fileName: "maplibre-gl-mock-geolocate",
+      name: "MaplibreGlManualGeolocate",
+      fileName: "maplibre-gl-manual-geolocate",
     },
     rollupOptions: {
       external: ["maplibre-gl"],

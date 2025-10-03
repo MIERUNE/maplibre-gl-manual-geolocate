@@ -152,36 +152,36 @@ vi.mock("maplibre-gl", async (importOriginal) => {
   };
 });
 
-import { MockGeolocateControl } from "./MockGeolocateControl";
+import { ManualGeolocateControl } from "./ManualGeolocateControl";
 // createMap() pulls Map from the mock above, giving the tests deterministic
 // map behaviour without needing a real WebGL context.
 import { cleanupMap, createMap } from "./test/util";
-import type { MockGeolocateControlOptions } from "./types";
+import type { ManualGeolocateControlOptions } from "./types";
 
-describe("MockGeolocateControl (Simple Tests)", () => {
+describe("ManualGeolocateControl (Simple Tests)", () => {
   describe("initialization", () => {
     it("should create control with required position", () => {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: { lng: 139.7, lat: 35.6 },
       });
-      expect(control).toBeInstanceOf(MockGeolocateControl);
+      expect(control).toBeInstanceOf(ManualGeolocateControl);
     });
 
     it("should create control with custom options", () => {
-      const options: MockGeolocateControlOptions = {
+      const options: ManualGeolocateControlOptions = {
         position: { lng: 139.7, lat: 35.6 },
         accuracy: 50,
         showAccuracyCircle: true,
         fitBoundsOptions: { maxZoom: 15 },
       };
-      const control = new MockGeolocateControl(options);
-      expect(control).toBeInstanceOf(MockGeolocateControl);
+      const control = new ManualGeolocateControl(options);
+      expect(control).toBeInstanceOf(ManualGeolocateControl);
     });
   });
 
   describe("setPosition", () => {
     it("should accept position updates", () => {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: { lng: 139.7, lat: 35.6 },
       });
 
@@ -194,7 +194,7 @@ describe("MockGeolocateControl (Simple Tests)", () => {
 
   describe("setAccuracy", () => {
     it("should accept accuracy updates", () => {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: { lng: 139.7, lat: 35.6 },
       });
 
@@ -206,7 +206,7 @@ describe("MockGeolocateControl (Simple Tests)", () => {
 
   describe("setShowAccuracyCircle", () => {
     it("should accept show accuracy circle updates", () => {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: { lng: 139.7, lat: 35.6 },
       });
 
@@ -219,7 +219,7 @@ describe("MockGeolocateControl (Simple Tests)", () => {
 
   describe("setFitBoundsOptions", () => {
     it("should accept fit bounds options updates", () => {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: { lng: 139.7, lat: 35.6 },
       });
 
@@ -231,7 +231,7 @@ describe("MockGeolocateControl (Simple Tests)", () => {
 
   describe("event handling", () => {
     it("should support on/off for events", () => {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: { lng: 139.7, lat: 35.6 },
       });
       const handler = vi.fn();
@@ -251,14 +251,14 @@ describe("MockGeolocateControl (Simple Tests)", () => {
   });
 });
 
-describe("MockGeolocateControl (Map Integration)", () => {
+describe("ManualGeolocateControl (Map Integration)", () => {
   const defaultPosition = { lng: 139.7, lat: 35.6 };
 
   it("should add markers to the map and fit bounds when triggered", async () => {
     const map = createMap();
 
     try {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: defaultPosition,
         accuracy: 75,
         showAccuracyCircle: true,
@@ -316,7 +316,7 @@ describe("MockGeolocateControl (Map Integration)", () => {
     const map = createMap();
 
     try {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: defaultPosition,
         accuracy: 50,
         showAccuracyCircle: true,
@@ -353,7 +353,7 @@ describe("MockGeolocateControl (Map Integration)", () => {
         [139.65, 35.45],
       ]);
 
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: defaultPosition,
         accuracy: 50,
       });
@@ -390,7 +390,7 @@ describe("MockGeolocateControl (Map Integration)", () => {
     const map = createMap();
 
     try {
-      const control = new MockGeolocateControl({
+      const control = new ManualGeolocateControl({
         position: defaultPosition,
         accuracy: 50,
         showAccuracyCircle: true,

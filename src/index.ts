@@ -1,3 +1,3 @@
 // Entry point for the library
-export { MockGeolocateControl } from "./MockGeolocateControl";
-export type { MockGeolocateControlOptions } from "./types";
+export { ManualGeolocateControl } from "./ManualGeolocateControl";
+export type { ManualGeolocateControlOptions } from "./types";

@@ -1,8 +1,8 @@
-# maplibre-gl-mock-geolocate
+# maplibre-gl-manual-geolocate
 
 A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's [geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API). Provides the same visual appearance as the built-in [`GeolocateControl`](https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/) with complete control over positioning.
 
-## Why Use Mock Geolocate?
+## Why Use This Control?
 
 Perfect for scenarios where you need location visualization without actual geolocation:
 
@@ -10,18 +10,18 @@ Perfect for scenarios where you need location visualization without actual geolo
 - **🎯 Demos & Presentations** - Reliable positioning that works every time
 - **🔒 Privacy-Conscious Apps** - Show approximate location without requesting permissions
 - **📱 Offline & Indoor Use** - Display position when geolocation is unavailable
-- **🏗️ Development Workflow** - Seamlessly switch between mock and real geolocation for testing
+- **🏗️ Development Workflow** - Seamlessly switch between manual and real geolocation for testing
 
 ## Installation
 
 ```shell
-npm install maplibre-gl-mock-geolocate
+npm install maplibre-gl-manual-geolocate
 ```
 
 ## Quick Start
 
 ```typescript
-import { MockGeolocateControl } from "maplibre-gl-mock-geolocate";
+import { ManualGeolocateControl } from "maplibre-gl-manual-geolocate";
 import { Map } from "maplibre-gl";
 
 const map = new Map({
@@ -31,14 +31,14 @@ const map = new Map({
   zoom: 12,
 });
 
-// Create mock geolocate control
-const mockGeolocateControl = new MockGeolocateControl({
+// Create manual geolocate control
+const manualGeolocateControl = new ManualGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 }, // Tokyo coordinates
   accuracy: 50, // 50-meter accuracy circle
 });
 
 // Add to map (same as regular GeolocateControl)
-map.addControl(mockGeolocateControl, "top-right");
+map.addControl(manualGeolocateControl, "top-right");
 ```
 
 **Try it out:** Click the location button to center the map on Tokyo with automatic zoom-to-accuracy!
@@ -50,17 +50,17 @@ map.addControl(mockGeolocateControl, "top-right");
 ### Constructor
 
 ```typescript
-new MockGeolocateControl(options: MockGeolocateControlOptions)
+new ManualGeolocateControl(options: ManualGeolocateControlOptions)
 ```
 
-Creates a new mock geolocate control with the specified options.
+Creates a new manual geolocate control with the specified options.
 
-#### `MockGeolocateControlOptions`
+#### `ManualGeolocateControlOptions`
 
 ```typescript
-type MockGeolocateControlOptions = {
+type ManualGeolocateControlOptions = {
   /**
-   * The mock coordinates to display.
+   * The manual coordinates to display.
    * Accepts various coordinate formats:
    * - `{lng: number, lat: number}` object
    * - `{lon: number, lat: number}` object
@@ -82,7 +82,7 @@ type MockGeolocateControlOptions = {
   showAccuracyCircle?: boolean;
 
   /**
-   * A `FitBoundsOptions` object to use when the map is panned and zoomed to the mock location.
+   * A `FitBoundsOptions` object to use when the map is panned and zoomed to the manual location.
    * The default is to use a `maxZoom` of 15 to limit how far the map will zoom in for very accurate locations.
    * @default {maxZoom: 15}
    */
@@ -99,10 +99,10 @@ type MockGeolocateControlOptions = {
 
 #### `setPosition(coordinates: LngLatLike): void`
 
-Updates the mock position coordinates.
+Updates the manual position coordinates.
 
 ```typescript
-mockControl.setPosition({ lng: 139.6917, lat: 35.6895 });
+manualControl.setPosition({ lng: 139.6917, lat: 35.6895 });
 // Also supports: [139.6917, 35.6895], {lon: 139.6917, lat: 35.6895}
 ```
 
@@ -111,7 +111,7 @@ mockControl.setPosition({ lng: 139.6917, lat: 35.6895 });
 Updates the accuracy circle radius in meters.
 
 ```typescript
-mockControl.setAccuracy(100); // 100-meter accuracy circle
+manualControl.setAccuracy(100); // 100-meter accuracy circle
 ```
 
 #### `setShowAccuracyCircle(show: boolean): void`
@@ -119,7 +119,7 @@ mockControl.setAccuracy(100); // 100-meter accuracy circle
 Controls the visibility of the accuracy circle.
 
 ```typescript
-mockControl.setShowAccuracyCircle(false); // Hide accuracy circle
+manualControl.setShowAccuracyCircle(false); // Hide accuracy circle
 ```
 
 #### `setFitBoundsOptions(options: FitBoundsOptions): void`
@@ -127,7 +127,7 @@ mockControl.setShowAccuracyCircle(false); // Hide accuracy circle
 Updates the auto-zoom behavior options.
 
 ```typescript
-mockControl.setFitBoundsOptions({
+manualControl.setFitBoundsOptions({
   maxZoom: 18,
   padding: 100,
   linear: true,
@@ -136,10 +136,10 @@ mockControl.setFitBoundsOptions({
 
 #### `trigger(): void`
 
-Programmatically centers the map on the mock position with automatic zoom-to-accuracy and fires a `geolocate` event.
+Programmatically centers the map on the manual position with automatic zoom-to-accuracy and fires a `geolocate` event.
 
 ```typescript
-mockControl.trigger(); // Same as clicking the geolocate button
+manualControl.trigger(); // Same as clicking the geolocate button
 ```
 
 Automatically calculates the optimal zoom level based on the accuracy radius, constrained by `fitBoundsOptions`. When called, it fires a `geolocate` event with a `GeolocationPosition` object.
@@ -151,16 +151,16 @@ Automatically calculates the optimal zoom level based on the accuracy radius, co
 Fired when the control button is clicked or `trigger()` is called. The event uses the browser's native [`GeolocationPosition`](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) type for compatibility with the original GeolocateControl.
 
 ```typescript
-mockControl.on("geolocate", (event: GeolocationPosition) => {
-  console.log("Mock position activated:", event.coords);
+manualControl.on("geolocate", (event: GeolocationPosition) => {
+  console.log("Manual position activated:", event.coords);
   // event.coords contains all W3C Geolocation API properties:
   // - latitude: number
   // - longitude: number
   // - accuracy: number
-  // - altitude: null (always null for mock)
-  // - altitudeAccuracy: null (always null for mock)
-  // - heading: null (always null for mock)
-  // - speed: null (always null for mock)
+  // - altitude: null (always null for manual control)
+  // - altitudeAccuracy: null (always null for manual control)
+  // - heading: null (always null for manual control)
+  // - speed: null (always null for manual control)
 
   console.log("Timestamp:", event.timestamp);
 });
@@ -168,7 +168,7 @@ mockControl.on("geolocate", (event: GeolocationPosition) => {
 
 #### `outofmaxbounds`
 
-Fired when the mock position is outside the map's `maxBounds` (if set on the map instance). Uses the same `GeolocationPosition` type as the geolocate event.
+Fired when the manual position is outside the map's `maxBounds` (if set on the map instance). Uses the same `GeolocationPosition` type as the geolocate event.
 
 The `maxBounds` are set on the map itself, not on the control:
 
@@ -184,17 +184,17 @@ const map = new Map({
   ], // Restrict map to Tokyo region
 });
 
-const mockControl = new MockGeolocateControl({
+const manualControl = new ManualGeolocateControl({
   position: { lng: 200, lat: 100 }, // Outside the maxBounds
 });
 
-mockControl.on("outofmaxbounds", (event: GeolocationPosition) => {
+manualControl.on("outofmaxbounds", (event: GeolocationPosition) => {
   console.warn("Position outside map bounds:", event.coords);
   // Handle out-of-bounds scenario - markers won't be shown, map won't center
 });
 
-map.addControl(mockControl);
-mockControl.trigger(); // Will fire 'outofmaxbounds' instead of 'geolocate'
+map.addControl(manualControl);
+manualControl.trigger(); // Will fire 'outofmaxbounds' instead of 'geolocate'
 ```
 
 ---
@@ -203,15 +203,15 @@ mockControl.trigger(); // Will fire 'outofmaxbounds' instead of 'geolocate'
 
 ### Basic Usage
 
-Create a mock geolocate control with flexible coordinate formats:
+Create a manual geolocate control with flexible coordinate formats:
 
 ```typescript
 // Multiple coordinate formats supported
-const mockControl = new MockGeolocateControl({
+const manualControl = new ManualGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 }, // Tokyo
 });
 
-map.addControl(mockControl, "top-right");
+map.addControl(manualControl, "top-right");
 
 // Alternative coordinate formats:
 // position: [139.6917, 35.6895]              // Array format
@@ -221,23 +221,23 @@ map.addControl(mockControl, "top-right");
 
 ### Dynamic Position Updates
 
-Update the mock position programmatically for interactive applications:
+Update the manual position programmatically for interactive applications:
 
 ```typescript
-const mockControl = new MockGeolocateControl({
+const manualControl = new ManualGeolocateControl({
   position: [0, 0], // Equator starting point
   accuracy: 100,
 });
 
 // Update location dynamically
 function updateToNewYork() {
-  mockControl.setPosition([-74.006, 40.7128]);
-  mockControl.setAccuracy(25); // More precise location
+  manualControl.setPosition([-74.006, 40.7128]);
+  manualControl.setAccuracy(25); // More precise location
 }
 
 function updateToLondon() {
-  mockControl.setPosition([-0.1276, 51.5074]);
-  mockControl.trigger(); // Auto-zoom to new location
+  manualControl.setPosition([-0.1276, 51.5074]);
+  manualControl.trigger(); // Auto-zoom to new location
 }
 ```
 
@@ -246,20 +246,20 @@ function updateToLondon() {
 Listen to control events to integrate with your application. Events use the browser's native [`GeolocationPosition`](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) type for compatibility:
 
 ```typescript
-const mockControl = new MockGeolocateControl({
+const manualControl = new ManualGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 },
 });
 
 // Listen for geolocate events (uses native GeolocationPosition type)
-mockControl.on("geolocate", (event) => {
+manualControl.on("geolocate", (event) => {
   const {
     latitude,
     longitude,
     accuracy,
-    altitude, // Always null for mock control
-    altitudeAccuracy, // Always null for mock control
-    heading, // Always null for mock control
-    speed, // Always null for mock control
+    altitude, // Always null for manual control
+    altitudeAccuracy, // Always null for manual control
+    heading, // Always null for manual control
+    speed, // Always null for manual control
   } = event.coords;
 
   console.log(`Location: ${latitude}, ${longitude} (±${accuracy}m)`);
@@ -270,11 +270,11 @@ mockControl.on("geolocate", (event) => {
 });
 
 // Handle out of bounds scenarios
-mockControl.on("outofmaxbounds", (event) => {
+manualControl.on("outofmaxbounds", (event) => {
   console.warn("Position outside map bounds!");
 });
 
-map.addControl(mockControl);
+map.addControl(manualControl);
 ```
 
 ### Auto-Zoom Configuration
@@ -282,7 +282,7 @@ map.addControl(mockControl);
 Customize the automatic zoom behavior with detailed options:
 
 ```typescript
-const mockControl = new MockGeolocateControl({
+const manualControl = new ManualGeolocateControl({
   position: { lng: 139.6917, lat: 35.6895 },
   accuracy: 100, // 100-meter accuracy circle
   fitBoundsOptions: {
@@ -293,7 +293,7 @@ const mockControl = new MockGeolocateControl({
   },
 });
 
-map.addControl(mockControl);
+map.addControl(manualControl);
 
 // Zoom behavior examples:
 // accuracy: 10   → Street-level view (buildings visible)
@@ -305,14 +305,14 @@ See [FitBoundsOptions - MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs
 
 ### Development vs Production
 
-Seamlessly switch between mock and real geolocation based on environment:
+Seamlessly switch between manual and real geolocation based on environment:
 
 ```typescript
 // Environment-based control selection
 const isDevelopment = process.env.NODE_ENV === "development";
 
 const geolocateControl = isDevelopment
-  ? new MockGeolocateControl({
+  ? new ManualGeolocateControl({
       position: { lng: 139.6917, lat: 35.6895 }, // Tokyo for testing
       accuracy: 50,
       showAccuracyCircle: true,
@@ -325,7 +325,7 @@ const geolocateControl = isDevelopment
 map.addControl(geolocateControl, "top-right");
 ```
 
-This pattern enables reliable testing with mock data while using real geolocation in production.
+This pattern enables reliable testing with manual data while using real geolocation in production.
 
 See the [Comparison with GeolocateControl](#️-comparison-with-geolocatecontrol) section below for detailed differences between the two controls.
 
@@ -333,80 +333,80 @@ See the [Comparison with GeolocateControl](#️-comparison-with-geolocatecontrol
 
 ## ⚖️ Comparison with GeolocateControl
 
-MockGeolocateControl is designed to be a drop-in replacement for MapLibre GL JS's built-in [`GeolocateControl`](https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/), which provides a button that uses the browser's Geolocation API to locate the user on the map.
+ManualGeolocateControl is designed to be a drop-in replacement for MapLibre GL JS's built-in [`GeolocateControl`](https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/), which provides a button that uses the browser's Geolocation API to locate the user on the map.
 
 ### Key Differences
 
-While MockGeolocateControl maintains the same visual appearance and core functionality as the original GeolocateControl, there are important differences in how they operate:
+While ManualGeolocateControl maintains the same visual appearance and core functionality as the original GeolocateControl, there are important differences in how they operate:
 
-**Data Source:** The original GeolocateControl uses the browser's Geolocation API to obtain real-time location data from various sources (GPS, WiFi, cell towers, IP addresses). MockGeolocateControl uses predefined coordinates that you specify, giving you complete control over the displayed position.
+**Data Source:** The original GeolocateControl uses the browser's Geolocation API to obtain real-time location data from various sources (GPS, WiFi, cell towers, IP addresses). ManualGeolocateControl uses predefined coordinates that you specify, giving you complete control over the displayed position.
 
-**Permissions & Privacy:** GeolocateControl requires users to grant location permissions through a browser prompt, which some users may decline for privacy reasons. MockGeolocateControl requires no permissions at all, making it ideal for privacy-conscious applications or scenarios where you want to show approximate locations without accessing actual user data.
+**Permissions & Privacy:** GeolocateControl requires users to grant location permissions through a browser prompt, which some users may decline for privacy reasons. ManualGeolocateControl requires no permissions at all, making it ideal for privacy-conscious applications or scenarios where you want to show approximate locations without accessing actual user data.
 
-**Reliability & Consistency:** GeolocateControl's accuracy depends on available location sources and can fail in various scenarios (poor signal, indoor environments, permission denied). MockGeolocateControl always works consistently with your specified coordinates, making it perfect for demos, testing, and predictable behavior.
+**Reliability & Consistency:** GeolocateControl's accuracy depends on available location sources and can fail in various scenarios (poor signal, indoor environments, permission denied). ManualGeolocateControl always works consistently with your specified coordinates, making it perfect for demos, testing, and predictable behavior.
 
-**Security Requirements:** GeolocateControl requires HTTPS in modern browsers for security reasons. MockGeolocateControl works on both HTTP and HTTPS, simplifying local development and testing.
+**Security Requirements:** GeolocateControl requires HTTPS in modern browsers for security reasons. ManualGeolocateControl works on both HTTP and HTTPS, simplifying local development and testing.
 
-**Tracking Mode:** GeolocateControl offers a tracking mode (when `trackUserLocation: true`) that continuously monitors the user's position and updates the map in real-time as they move. This creates an active state where the control acts as a toggle button, maintaining a lock on the user's location. MockGeolocateControl does not support tracking mode since it works with static, predefined coordinates. Each trigger simply centers the map on the mock position without continuous updates.
+**Tracking Mode:** GeolocateControl offers a tracking mode (when `trackUserLocation: true`) that continuously monitors the user's position and updates the map in real-time as they move. This creates an active state where the control acts as a toggle button, maintaining a lock on the user's location. ManualGeolocateControl does not support tracking mode since it works with static, predefined coordinates. Each trigger simply centers the map on the manual position without continuous updates.
 
 ### Compatibility Tables
 
 #### Options Compatibility
 
-For comparison with the original control, see [`GeolocateControlOptions`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/GeolocateControlOptions/) in the MapLibre GL JS documentation. MockGeolocateControl uses [`MockGeolocateControlOptions`](#mockgeolocatecontroloptions) instead.
+For comparison with the original control, see [`GeolocateControlOptions`](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/GeolocateControlOptions/) in the MapLibre GL JS documentation. ManualGeolocateControl uses [`ManualGeolocateControlOptions`](#manualgeolocatecontroloptions) instead.
 
-| Option               | GeolocateControl | MockGeolocateControl | Description                                   |
-| -------------------- | :--------------: | :------------------: | --------------------------------------------- |
-| `fitBoundsOptions`   |        ✅        |          ✅          | Auto-zoom configuration (identical behavior)  |
-| `positionOptions`    |        ✅        |          ❌          | Geolocation API options (not needed for mock) |
-| `showAccuracyCircle` |        ✅        |          ✅          | Accuracy circle visibility                    |
-| `showUserLocation`   |        ✅        |          ❌          | Always shows location in mock                 |
-| `trackUserLocation`  |        ✅        |          ❌          | Real-time tracking (not supported in mock)    |
-| **Mock-specific**    |                  |                      |                                               |
-| `position`           |        ❌        |          ✅          | Required: Coordinates to display              |
-| `accuracy`           |        ❌        |          ✅          | Optional: Accuracy radius in meters           |
+| Option                  | GeolocateControl | ManualGeolocateControl | Description                                      |
+| ----------------------- | :--------------: | :--------------------: | ------------------------------------------------ |
+| `fitBoundsOptions`      |        ✅        |           ✅           | Auto-zoom configuration (identical behavior)     |
+| `positionOptions`       |        ✅        |           ❌           | Geolocation API options (not needed for manual)  |
+| `showAccuracyCircle`    |        ✅        |           ✅           | Accuracy circle visibility                       |
+| `showUserLocation`      |        ✅        |           ❌           | Always shows location in manual                  |
+| `trackUserLocation`     |        ✅        |           ❌           | Real-time tracking (not supported in manual)     |
+| **Manual-specific**     |                  |                        |                                                  |
+| `position`              |        ❌        |           ✅           | Required: Coordinates to display                 |
+| `accuracy`              |        ❌        |           ✅           | Optional: Accuracy radius in meters              |
 
 #### Methods Compatibility
 
-| Method                    | GeolocateControl | MockGeolocateControl | Description                        |
-| ------------------------- | :--------------: | :------------------: | ---------------------------------- |
-| `trigger()`               |        ✅        |          ✅          | Center map on position (identical) |
-| **Mock-specific**         |                  |                      |                                    |
-| `setPosition()`           |        ❌        |          ✅          | Update mock coordinates            |
-| `setAccuracy()`           |        ❌        |          ✅          | Update accuracy radius             |
-| `setShowAccuracyCircle()` |        ❌        |          ✅          | Toggle accuracy circle             |
-| `setFitBoundsOptions()`   |        ❌        |          ✅          | Update zoom behavior               |
+| Method                    | GeolocateControl | ManualGeolocateControl | Description                        |
+| ------------------------- | :--------------: | :--------------------: | ---------------------------------- |
+| `trigger()`               |        ✅        |           ✅           | Center map on position (identical) |
+| **Manual-specific**       |                  |                        |                                    |
+| `setPosition()`           |        ❌        |           ✅           | Update manual coordinates          |
+| `setAccuracy()`           |        ❌        |           ✅           | Update accuracy radius             |
+| `setShowAccuracyCircle()` |        ❌        |           ✅           | Toggle accuracy circle             |
+| `setFitBoundsOptions()`   |        ❌        |           ✅           | Update zoom behavior               |
 
 #### Events Compatibility
 
-| Event                    | GeolocateControl | MockGeolocateControl | Description                              |
-| ------------------------ | :--------------: | :------------------: | ---------------------------------------- |
-| `geolocate`              |        ✅        |          ✅          | Position update (same payload structure) |
-| `outofmaxbounds`         |        ✅        |          ✅          | Position outside map bounds              |
-| `error`                  |        ✅        |          ❌          | Geolocation API errors (not applicable)  |
-| `trackuserlocationstart` |        ✅        |          ❌          | Tracking mode started                    |
-| `trackuserlocationend`   |        ✅        |          ❌          | Tracking mode ended                      |
-| `userlocationfocus`      |        ✅        |          ❌          | Return to tracking mode                  |
-| `userlocationlostfocus`  |        ✅        |          ❌          | Exit tracking mode                       |
+| Event                    | GeolocateControl | ManualGeolocateControl | Description                              |
+| ------------------------ | :--------------: | :--------------------: | ---------------------------------------- |
+| `geolocate`              |        ✅        |           ✅           | Position update (same payload structure) |
+| `outofmaxbounds`         |        ✅        |           ✅           | Position outside map bounds              |
+| `error`                  |        ✅        |           ❌           | Geolocation API errors (not applicable)  |
+| `trackuserlocationstart` |        ✅        |           ❌           | Tracking mode started                    |
+| `trackuserlocationend`   |        ✅        |           ❌           | Tracking mode ended                      |
+| `userlocationfocus`      |        ✅        |           ❌           | Return to tracking mode                  |
+| `userlocationlostfocus`  |        ✅        |           ❌           | Exit tracking mode                       |
 
 #### Visual Compatibility
 
-| Element             | GeolocateControl | MockGeolocateControl | Description                            |
-| ------------------- | :--------------: | :------------------: | -------------------------------------- |
-| Control button      |        ✅        |          ✅          | Same button appearance and position    |
-| Default icon        |        ✅        |          ✅          | Same geolocate icon in default state   |
-| Position marker     |        ✅        |          ✅          | Blue dot with white border             |
-| Accuracy circle     |        ✅        |          ✅          | Semi-transparent blue circle           |
-| CSS classes         |        ✅        |          ✅          | Uses same MapLibre classes for markers |
-| **Button States**   |                  |                      |                                        |
-| Default (inactive)  |        ✅        |          ✅          | Same appearance when not activated     |
-| Active (tracking)   |        ✅        |          ❌          | No persistent active state in mock     |
-| Background          |        ✅        |          ❌          | No background tracking state           |
-| Disabled            |        ✅        |          ❌          | Mock is always enabled                 |
-| Error               |        ✅        |          ❌          | No error state (always succeeds)       |
-| **Visual Feedback** |                  |                      |                                        |
-| Click animation     |        ✅        |          ✅          | Button press feedback                  |
-| Location pulse      |        ✅        |          ❌          | No pulsing animation for live tracking |
+| Element             | GeolocateControl | ManualGeolocateControl | Description                            |
+| ------------------- | :--------------: | :--------------------: | -------------------------------------- |
+| Control button      |        ✅        |           ✅           | Same button appearance and position    |
+| Default icon        |        ✅        |           ✅           | Same geolocate icon in default state   |
+| Position marker     |        ✅        |           ✅           | Blue dot with white border             |
+| Accuracy circle     |        ✅        |           ✅           | Semi-transparent blue circle           |
+| CSS classes         |        ✅        |           ✅           | Uses same MapLibre classes for markers |
+| **Button States**   |                  |                        |                                        |
+| Default (inactive)  |        ✅        |           ✅           | Same appearance when not activated     |
+| Active (tracking)   |        ✅        |           ❌           | No persistent active state in manual   |
+| Background          |        ✅        |           ❌           | No background tracking state           |
+| Disabled            |        ✅        |           ❌           | Manual is always enabled               |
+| Error               |        ✅        |           ❌           | No error state (always succeeds)       |
+| **Visual Feedback** |                  |                        |                                        |
+| Click animation     |        ✅        |           ✅           | Button press feedback                  |
+| Location pulse      |        ✅        |           ❌           | No pulsing animation for live tracking |
 
 ---
 
