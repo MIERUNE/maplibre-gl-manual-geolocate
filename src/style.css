@@ -152,26 +152,35 @@ body {
     font-size: 12px;
     color: #666666;
 }
-
-
-.panel-hint {
-    margin: -8px 0 0 0;
-    font-size: 12px;
-    color: #666666;
+.panel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid #3a7afe;
+    background: #3a7afe;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
 }
 
-.panel-hint kbd {
-    display: inline-block;
-    padding: 2px 6px;
-    margin: 0 2px;
-    border-radius: 4px;
-    border: 1px solid #d0d0d0;
-    background: #f5f5f5;
-    font-family: "Menlo", "Consolas", "Liberation Mono", monospace;
-    font-size: 11px;
+.panel-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(58, 122, 254, 0.25);
 }
 
+.panel-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(58, 122, 254, 0.2);
+}
 
+.panel-button:focus-visible {
+    outline: 2px solid rgba(58, 122, 254, 0.6);
+    outline-offset: 2px;
+}
 .coordinate-form {
     display: flex;
     flex-direction: column;
