@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 
+// Mock MapLibre's heavy Map/Marker classes so createMap() below instantiates our
+// lightweight stand-ins while still reusing the real geometry helpers.
 vi.mock('maplibre-gl', async (importOriginal) => {
   const actual = await importOriginal<typeof import('maplibre-gl')>();
 
@@ -142,6 +144,8 @@ vi.mock('maplibre-gl', async (importOriginal) => {
 
 import { MockGeolocateControl } from './MockGeolocateControl';
 import type { MockGeolocateControlOptions } from './types';
+// createMap() pulls Map from the mock above, giving the tests deterministic
+// map behaviour without needing a real WebGL context.
 import { createMap, cleanupMap } from './test/util';
 
 describe('MockGeolocateControl (Simple Tests)', () => {
