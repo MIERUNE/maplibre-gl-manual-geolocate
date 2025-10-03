@@ -275,8 +275,16 @@ export class MockGeolocateControl implements IControl {
     // Create bounds from position and accuracy radius
     const bounds = LngLatBounds.fromLngLat(this._position, this._accuracy);
 
-    // Fit the map to the bounds with configured options
-    this._map.fitBounds(bounds, this._fitBoundsOptions);
+    // Fit the map to the bounds while keeping the current bearing unless overridden
+    const fitBoundsOptions: FitBoundsOptions & { bearing?: number } = {
+      ...this._fitBoundsOptions,
+    };
+
+    if (fitBoundsOptions.bearing === undefined) {
+      fitBoundsOptions.bearing = this._map.getBearing();
+    }
+
+    this._map.fitBounds(bounds, fitBoundsOptions);
   }
 
   /**
