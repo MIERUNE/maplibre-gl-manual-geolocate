@@ -25,6 +25,33 @@ import { beforeAll, vi } from 'vitest';
   dispatchEvent: vi.fn(),
 })) as any;
 
+// Mock ImageData if not provided by the environment
+if (!(globalThis as any).ImageData) {
+  (globalThis as any).ImageData = class ImageData {
+    data: Uint8ClampedArray;
+    width: number;
+    height: number;
+
+    constructor(
+      widthOrData: number | Uint8ClampedArray,
+      heightOrWidth: number,
+      maybeHeight?: number,
+    ) {
+      if (typeof widthOrData === 'number') {
+        this.width = widthOrData;
+        this.height = heightOrWidth;
+        this.data = new Uint8ClampedArray(this.width * this.height * 4);
+      } else {
+        this.data = widthOrData;
+        this.width = heightOrWidth;
+        this.height = typeof maybeHeight === 'number'
+          ? maybeHeight
+          : Math.max(1, Math.floor(this.data.length / 4 / this.width));
+      }
+    }
+  };
+}
+
 // Mock ResizeObserver
 (globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
@@ -132,12 +159,26 @@ beforeAll(() => {
     disable: vi.fn(),
     clearColor: vi.fn(),
     clear: vi.fn(),
+    colorMask: vi.fn(),
+    clearDepth: vi.fn(),
+    clearStencil: vi.fn(),
     depthFunc: vi.fn(),
     depthMask: vi.fn(),
+    depthRange: vi.fn(),
     blendFunc: vi.fn(),
+    blendFuncSeparate: vi.fn(),
     blendEquation: vi.fn(),
+    blendColor: vi.fn(),
     cullFace: vi.fn(),
     frontFace: vi.fn(),
+    stencilMask: vi.fn(),
+    stencilMaskSeparate: vi.fn(),
+    stencilFunc: vi.fn(),
+    stencilFuncSeparate: vi.fn(),
+    stencilOp: vi.fn(),
+    stencilOpSeparate: vi.fn(),
+    polygonOffset: vi.fn(),
+    sampleCoverage: vi.fn(),
 
     // Query operations
     getParameter: vi.fn((param) => {
@@ -197,6 +238,7 @@ beforeAll(() => {
     ELEMENT_ARRAY_BUFFER: 0x8893,
     STATIC_DRAW: 0x88E4,
     DYNAMIC_DRAW: 0x88E8,
+    VERSION: 0x1F02,
     VERTEX_SHADER: 0x8B31,
     FRAGMENT_SHADER: 0x8B30,
     COMPILE_STATUS: 0x8B81,
