@@ -162,6 +162,31 @@ body {
     min-width: 0;
 }
 
+.panel-console {
+    min-height: 120px;
+    max-height: 220px;
+    padding: 12px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+    font-size: 12px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.25);
+}
+
+.panel-console::-webkit-scrollbar {
+    width: 8px;
+}
+
+.panel-console::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.5);
+    border-radius: 4px;
+}
+
 .panel-toggle {
     display: inline-flex;
     align-items: center;
