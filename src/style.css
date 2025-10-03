@@ -131,6 +131,12 @@ body {
     gap: 12px;
 }
 
+.panel-section--spaced {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e5e5;
+}
+
 .panel-toggle {
     display: inline-flex;
     align-items: center;
