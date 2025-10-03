@@ -18,6 +18,9 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "correctness": {
+        "noUnusedPrivateClassMembers": "off"
+      },
       "suspicious": {
         "noExplicitAny": "off",
         "noShadowRestrictedNames": "off"

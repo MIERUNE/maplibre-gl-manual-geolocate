@@ -9,6 +9,7 @@ vi.mock("maplibre-gl", async (importOriginal) => {
 
   class FakeMarker {
     private element: HTMLElement;
+    private map?: FakeMap;
 
     constructor(options: any = {}) {
       this.element = options.element ?? document.createElement("div");
