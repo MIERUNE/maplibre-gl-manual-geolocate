@@ -17,13 +17,13 @@ Perfect for scenarios where you need location visualization without actual geolo
 ## Installation
 
 ```shell
-npm install maplibre-gl-manual-geolocate
+npm install @mierune/maplibre-gl-manual-geolocate
 ```
 
 ## Quick Start
 
 ```typescript
-import { ManualGeolocateControl } from "maplibre-gl-manual-geolocate";
+import { ManualGeolocateControl } from "@mierune/maplibre-gl-manual-geolocate";
 import { Map } from "maplibre-gl";
 
 const map = new Map({
