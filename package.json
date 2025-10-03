@@ -15,15 +15,7 @@
   },
   "keywords": [
     "maplibre",
-    "maplibre-gl-js",
-    "geolocate",
-    "geolocation",
-    "control",
-    "manual",
-    "mock",
-    "testing",
-    "development",
-    "map"
+    "maplibre-gl"
   ],
   "publishConfig": {
     "access": "public"
