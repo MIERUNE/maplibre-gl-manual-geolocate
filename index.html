@@ -43,8 +43,52 @@
             </a>
         </header>
 
-        <!-- Map container -->
-        <div id="map"></div>
+        <div class="app-layout">
+            <aside class="control-panel" aria-label="Mock geolocate controls">
+                <h2 class="panel-title">Location presets</h2>
+                <label class="panel-label" for="preset-select">Choose a city</label>
+                <select id="preset-select" class="panel-input">
+                    <option value="custom">Custom coordinates</option>
+                </select>
+
+                <form id="coordinate-form" class="coordinate-form" autocomplete="off">
+                    <fieldset class="panel-fieldset">
+                        <legend class="panel-legend">Coordinates</legend>
+                        <label class="panel-label" for="lng-input">Longitude</label>
+                        <input id="lng-input" class="panel-input" type="number" step="0.000001" required />
+
+                        <label class="panel-label" for="lat-input">Latitude</label>
+                        <input id="lat-input" class="panel-input" type="number" step="0.000001" required />
+                    </fieldset>
+
+                    <label class="panel-label" for="accuracy-input">Accuracy (meters)</label>
+                    <input
+                        id="accuracy-input"
+                        class="panel-input"
+                        type="number"
+                        min="1"
+                        step="1"
+                        value="50"
+                        required
+                    />
+
+                    <label class="panel-checkbox">
+                        <input id="accuracy-toggle" type="checkbox" checked />
+                        Show accuracy circle
+                    </label>
+
+                    <div class="panel-actions">
+                        <button type="submit" class="panel-button">Update location</button>
+                        <button type="button" id="trigger-button" class="panel-button panel-button--secondary">
+                            Center map
+                        </button>
+                    </div>
+                </form>
+            </aside>
+
+            <!-- Map container -->
+            <div id="map" role="presentation" aria-hidden="true"></div>
+        </div>
 
         <!-- Load the demo application -->
         <script type="module" src="/src/main.ts"></script>
