@@ -1,11 +1,11 @@
 import type { FitBoundsOptions, LngLatLike } from "maplibre-gl";
 
 /**
- * Options for the MockGeolocateControl
+ * Options for the ManualGeolocateControl
  */
-export interface MockGeolocateControlOptions {
+export interface ManualGeolocateControlOptions {
   /**
-   * The mock coordinates to display.
+   * The manual coordinates to display.
    * Accepts various coordinate formats:
    * - `{lng: number, lat: number}` object
    * - `{lon: number, lat: number}` object
@@ -27,7 +27,7 @@ export interface MockGeolocateControlOptions {
   showAccuracyCircle?: boolean;
 
   /**
-   * A `FitBoundsOptions` object to use when the map is panned and zoomed to the mock location.
+   * A `FitBoundsOptions` object to use when the map is panned and zoomed to the manual location.
    * The default is to use a `maxZoom` of 15 to limit how far the map will zoom in for very accurate locations.
    * @default {maxZoom: 15}
    */
@@ -35,9 +35,9 @@ export interface MockGeolocateControlOptions {
 }
 
 /**
- * Event types supported by MockGeolocateControl
+ * Event types supported by ManualGeolocateControl
  */
-export type MockGeolocateEventType = "geolocate" | "outofmaxbounds";
+export type ManualGeolocateEventType = "geolocate" | "outofmaxbounds";
 
 /**
  * Event handler function type

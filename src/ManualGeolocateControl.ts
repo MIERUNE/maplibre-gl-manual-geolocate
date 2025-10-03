@@ -7,26 +7,26 @@ import {
   type Map,
   Marker,
 } from "maplibre-gl";
-import type { EventHandlers, MockGeolocateControlOptions } from "./types";
+import type { EventHandlers, ManualGeolocateControlOptions } from "./types";
 
 /**
  * A MapLibre GL control that displays a user position marker at specified coordinates
  * without requiring the browser's geolocation API.
  *
- * Unlike the native GeolocateControl, this mock version does not support tracking mode
+ * Unlike the native GeolocateControl, this manual version does not support tracking mode
  * since it works with static, predefined coordinates. Each trigger simply shows/updates
  * the marker position without continuous location updates.
  *
  * @example
  * ```typescript
- * const mockGeolocateControl = new MockGeolocateControl({
+ * const manualGeolocateControl = new ManualGeolocateControl({
  *   position: { lng: 139.74135747, lat: 35.65809922 },
  *   accuracy: 50
  * });
- * map.addControl(mockGeolocateControl, 'top-right');
+ * map.addControl(manualGeolocateControl, 'top-right');
  * ```
  */
-export class MockGeolocateControl implements IControl {
+export class ManualGeolocateControl implements IControl {
   private _map?: Map;
   private _container?: HTMLElement;
   private _button?: HTMLButtonElement;
@@ -54,13 +54,13 @@ export class MockGeolocateControl implements IControl {
   private _onClickHandler?: () => void;
 
   /**
-   * Creates a new MockGeolocateControl instance
+   * Creates a new ManualGeolocateControl instance
    * @param options - Configuration options for the control
    */
-  constructor(options: MockGeolocateControlOptions) {
+  constructor(options: ManualGeolocateControlOptions) {
     // Validate required position option
     if (!options.position) {
-      throw new Error("MockGeolocateControl: position option is required");
+      throw new Error("ManualGeolocateControl: position option is required");
     }
 
     // Convert position using MapLibre's built-in converter
@@ -266,7 +266,7 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Zoom the map to the mock position with accuracy radius
+   * Zoom the map to the manual position with accuracy radius
    * @private
    */
   private _zoomToPosition(): void {
@@ -349,7 +349,7 @@ export class MockGeolocateControl implements IControl {
 
   /**
    * Programmatically trigger the geolocate control
-   * Shows markers and centers the map on the mock position
+   * Shows markers and centers the map on the manual position
    */
   trigger(): void {
     // Check if position is outside map's maxBounds
@@ -361,7 +361,7 @@ export class MockGeolocateControl implements IControl {
     // Show markers (or update their position if already shown)
     this._showMarkers();
 
-    // Zoom to the mock location with accuracy
+    // Zoom to the manual location with accuracy
     this._zoomToPosition();
 
     // Fire geolocate event with native GeolocationPosition format
@@ -369,7 +369,7 @@ export class MockGeolocateControl implements IControl {
   }
 
   /**
-   * Update the mock position
+   * Update the manual position
    * @param coordinates - The new position coordinates
    */
   setPosition(coordinates: LngLatLike): void {

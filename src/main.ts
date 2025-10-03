@@ -4,7 +4,7 @@
 import "./style.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl, { type FitBoundsOptions } from "maplibre-gl";
-import { MockGeolocateControl } from "./index";
+import { ManualGeolocateControl } from "./index";
 
 const DEFAULT_ACCURACY = 50;
 const DEFAULT_FIT_BOUNDS: FitBoundsOptions = {
@@ -106,13 +106,13 @@ const map = new maplibregl.Map({
   zoom: 4,
 });
 
-// Create mock geolocate control
-const mockGeolocateControl = new MockGeolocateControl({
+// Create manual geolocate control
+const manualGeolocateControl = new ManualGeolocateControl({
   position: { lng: 139.74135747, lat: 35.65809922 }, // Tokyo
   accuracy: DEFAULT_ACCURACY,
   showAccuracyCircle: true,
 });
-mockGeolocateControl.setFitBoundsOptions(currentFitBoundsOptions);
+manualGeolocateControl.setFitBoundsOptions(currentFitBoundsOptions);
 
 // Add navigation control for comparison
 map.addControl(new maplibregl.NavigationControl(), "top-right");
@@ -121,10 +121,10 @@ map.addControl(new maplibregl.NavigationControl(), "top-right");
 map.addControl(new maplibregl.ScaleControl(), "bottom-left");
 
 // Add control to map
-map.addControl(mockGeolocateControl, "top-right");
+map.addControl(manualGeolocateControl, "top-right");
 
 // Test event system (will be enhanced in later PR)
-mockGeolocateControl.on("geolocate", (e) => {
+manualGeolocateControl.on("geolocate", (e) => {
   console.log("📍 Geolocate event fired:", e.coords);
   appendConsoleMessage(
     `geolocate → lng: ${e.coords.longitude.toFixed(5)}, lat: ${e.coords.latitude.toFixed(5)}, accuracy: ${Math.round(e.coords.accuracy)}m`,
@@ -133,12 +133,12 @@ mockGeolocateControl.on("geolocate", (e) => {
 
 // Log when map is loaded
 map.on("load", () => {
-  console.log("Map loaded! MockGeolocateControl is in the top-right corner.");
+  console.log("Map loaded! ManualGeolocateControl is in the top-right corner.");
   console.log("Try clicking the geolocate button to see:");
   console.log("  - Blue position marker with white border");
   console.log("  - Semi-transparent accuracy circle");
   console.log("  - Event logs in console");
-  appendConsoleMessage("Map initialized. Ready to mock geolocation events.");
+  appendConsoleMessage("Map initialized. Ready to use manual geolocation.");
 });
 
 function fillInputs({ lng, lat }: { lng: number; lat: number }) {
@@ -235,7 +235,7 @@ function updateControlFromInputs() {
     return null;
   }
 
-  mockGeolocateControl.setPosition({ lng, lat });
+  manualGeolocateControl.setPosition({ lng, lat });
 
   return { lng, lat };
 }
@@ -268,9 +268,9 @@ function populatePresetSelect() {
     const accuracy = preset.accuracy ?? DEFAULT_ACCURACY;
     syncAccuracyUI(accuracy);
     fillInputs({ lng: preset.lng, lat: preset.lat });
-    mockGeolocateControl.setPosition({ lng: preset.lng, lat: preset.lat });
-    mockGeolocateControl.setAccuracy(accuracy);
-    mockGeolocateControl.trigger();
+    manualGeolocateControl.setPosition({ lng: preset.lng, lat: preset.lat });
+    manualGeolocateControl.setAccuracy(accuracy);
+    manualGeolocateControl.trigger();
     appendConsoleMessage(`Preset "${preset.label}" triggered.`);
   });
 }
@@ -286,11 +286,11 @@ function setupFormHandlers() {
     event.preventDefault();
     const result = updateControlFromInputs();
     if (result) {
-      console.log("Updated mock coordinates:", result);
+      console.log("Updated manual coordinates:", result);
       if (presetSelect) {
         presetSelect.value = "custom";
       }
-      mockGeolocateControl.trigger();
+      manualGeolocateControl.trigger();
       appendConsoleMessage(
         `Custom position triggered → lng: ${result.lng.toFixed(5)}, lat: ${result.lat.toFixed(5)}`,
       );
@@ -310,7 +310,7 @@ function setupFormHandlers() {
       presetSelect.value = "custom";
     }
 
-    mockGeolocateControl.trigger();
+    manualGeolocateControl.trigger();
     appendConsoleMessage(
       `Position updated → lng: ${result.lng.toFixed(5)}, lat: ${result.lat.toFixed(5)}`,
     );
@@ -337,7 +337,7 @@ function setupAccuracyControls() {
     }
 
     updateAccuracyLabel(accuracy);
-    mockGeolocateControl.setAccuracy(accuracy);
+    manualGeolocateControl.setAccuracy(accuracy);
 
     if (markCustom && presetSelect) {
       presetSelect.value = "custom";
@@ -358,7 +358,7 @@ function setupAccuracyControls() {
 
   toggle?.addEventListener("change", () => {
     const checked = toggle.checked;
-    mockGeolocateControl.setShowAccuracyCircle(checked);
+    manualGeolocateControl.setShowAccuracyCircle(checked);
     appendConsoleMessage(
       checked ? "Accuracy circle shown." : "Accuracy circle hidden.",
     );
@@ -391,7 +391,7 @@ function setupFitBoundsControls() {
       ...currentFitBoundsOptions,
       ...partial,
     };
-    mockGeolocateControl.setFitBoundsOptions(currentFitBoundsOptions);
+    manualGeolocateControl.setFitBoundsOptions(currentFitBoundsOptions);
 
     if (markCustom && presetSelect) {
       presetSelect.value = "custom";
