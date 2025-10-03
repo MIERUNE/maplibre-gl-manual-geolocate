@@ -1,13 +1,13 @@
 import {
+  type FitBoundsOptions,
+  type IControl,
   LngLat,
   LngLatBounds,
-  Marker,
-  type IControl,
-  type Map,
-  type FitBoundsOptions,
   type LngLatLike,
+  type Map,
+  Marker,
 } from "maplibre-gl";
-import type { MockGeolocateControlOptions, EventHandlers } from "./types";
+import type { EventHandlers, MockGeolocateControlOptions } from "./types";
 
 /**
  * A MapLibre GL control that displays a user position marker at specified coordinates
@@ -277,8 +277,7 @@ export class MockGeolocateControl implements IControl {
 
     this._map.fitBounds(bounds, {
       ...this._fitBoundsOptions,
-      bearing:
-        this._fitBoundsOptions.bearing ?? this._map.getBearing(),
+      bearing: this._fitBoundsOptions.bearing ?? this._map.getBearing(),
     });
   }
 

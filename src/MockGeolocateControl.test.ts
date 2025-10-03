@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from "vitest";
 
 // Mock MapLibre's heavy Map/Marker classes so createMap() below instantiates our
 // lightweight stand-ins while still reusing the real geometry helpers.
-vi.mock('maplibre-gl', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('maplibre-gl')>();
+vi.mock("maplibre-gl", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("maplibre-gl")>();
 
   type EventHandler = (...args: any[]) => void;
 
@@ -12,10 +12,10 @@ vi.mock('maplibre-gl', async (importOriginal) => {
     private map?: FakeMap;
 
     constructor(options: any = {}) {
-      this.element = options.element ?? document.createElement('div');
+      this.element = options.element ?? document.createElement("div");
     }
 
-    setLngLat(lngLat: import('maplibre-gl').LngLatLike) {
+    setLngLat(lngLat: import("maplibre-gl").LngLatLike) {
       actual.LngLat.convert(lngLat);
       return this;
     }
@@ -39,25 +39,25 @@ vi.mock('maplibre-gl', async (importOriginal) => {
 
   class FakeMap {
     private container: HTMLDivElement;
-    private maxBounds?: import('maplibre-gl').LngLatBounds;
+    private maxBounds?: import("maplibre-gl").LngLatBounds;
     private events = new Map<string, Set<EventHandler>>();
     private fitBoundsRecords: Array<{
-      bounds: import('maplibre-gl').LngLatBoundsLike;
-      options?: import('maplibre-gl').FitBoundsOptions;
+      bounds: import("maplibre-gl").LngLatBoundsLike;
+      options?: import("maplibre-gl").FitBoundsOptions;
     }> = [];
     private bearing = 0;
     _removed = false;
 
     constructor(options: any = {}) {
-      this.container = options.container ?? document.createElement('div');
-      this.container.classList.add('maplibregl-map');
+      this.container = options.container ?? document.createElement("div");
+      this.container.classList.add("maplibregl-map");
       if (!this.container.parentElement) {
         document.body.appendChild(this.container);
       }
     }
 
     addControl(control: any) {
-      const node = control.onAdd(this as unknown as import('maplibre-gl').Map);
+      const node = control.onAdd(this as unknown as import("maplibre-gl").Map);
       this.container.appendChild(node);
       return this;
     }
@@ -87,7 +87,7 @@ vi.mock('maplibre-gl', async (importOriginal) => {
       return this.bearing;
     }
 
-    project(lngLat: import('maplibre-gl').LngLatLike) {
+    project(lngLat: import("maplibre-gl").LngLatLike) {
       const coord = actual.LngLat.convert(lngLat);
       return { x: coord.lng * 100, y: coord.lat * 100 };
     }
@@ -97,8 +97,8 @@ vi.mock('maplibre-gl', async (importOriginal) => {
     }
 
     fitBounds(
-      bounds: import('maplibre-gl').LngLatBoundsLike,
-      options?: import('maplibre-gl').FitBoundsOptions,
+      bounds: import("maplibre-gl").LngLatBoundsLike,
+      options?: import("maplibre-gl").FitBoundsOptions,
     ) {
       this.fitBoundsRecords.push({ bounds, options });
       return this;
@@ -133,7 +133,7 @@ vi.mock('maplibre-gl', async (importOriginal) => {
       return true;
     }
 
-    setMaxBounds(bounds: import('maplibre-gl').LngLatBoundsLike) {
+    setMaxBounds(bounds: import("maplibre-gl").LngLatBoundsLike) {
       this.maxBounds = new actual.LngLatBounds(bounds as any);
       return this;
     }
@@ -152,22 +152,22 @@ vi.mock('maplibre-gl', async (importOriginal) => {
   };
 });
 
-import { MockGeolocateControl } from './MockGeolocateControl';
-import type { MockGeolocateControlOptions } from './types';
+import { MockGeolocateControl } from "./MockGeolocateControl";
 // createMap() pulls Map from the mock above, giving the tests deterministic
 // map behaviour without needing a real WebGL context.
-import { createMap, cleanupMap } from './test/util';
+import { cleanupMap, createMap } from "./test/util";
+import type { MockGeolocateControlOptions } from "./types";
 
-describe('MockGeolocateControl (Simple Tests)', () => {
-  describe('initialization', () => {
-    it('should create control with required position', () => {
+describe("MockGeolocateControl (Simple Tests)", () => {
+  describe("initialization", () => {
+    it("should create control with required position", () => {
       const control = new MockGeolocateControl({
-        position: { lng: 139.7, lat: 35.6 }
+        position: { lng: 139.7, lat: 35.6 },
       });
       expect(control).toBeInstanceOf(MockGeolocateControl);
     });
 
-    it('should create control with custom options', () => {
+    it("should create control with custom options", () => {
       const options: MockGeolocateControlOptions = {
         position: { lng: 139.7, lat: 35.6 },
         accuracy: 50,
@@ -179,10 +179,10 @@ describe('MockGeolocateControl (Simple Tests)', () => {
     });
   });
 
-  describe('setPosition', () => {
-    it('should accept position updates', () => {
+  describe("setPosition", () => {
+    it("should accept position updates", () => {
       const control = new MockGeolocateControl({
-        position: { lng: 139.7, lat: 35.6 }
+        position: { lng: 139.7, lat: 35.6 },
       });
 
       // Should not throw
@@ -192,10 +192,10 @@ describe('MockGeolocateControl (Simple Tests)', () => {
     });
   });
 
-  describe('setAccuracy', () => {
-    it('should accept accuracy updates', () => {
+  describe("setAccuracy", () => {
+    it("should accept accuracy updates", () => {
       const control = new MockGeolocateControl({
-        position: { lng: 139.7, lat: 35.6 }
+        position: { lng: 139.7, lat: 35.6 },
       });
 
       expect(() => {
@@ -204,10 +204,10 @@ describe('MockGeolocateControl (Simple Tests)', () => {
     });
   });
 
-  describe('setShowAccuracyCircle', () => {
-    it('should accept show accuracy circle updates', () => {
+  describe("setShowAccuracyCircle", () => {
+    it("should accept show accuracy circle updates", () => {
       const control = new MockGeolocateControl({
-        position: { lng: 139.7, lat: 35.6 }
+        position: { lng: 139.7, lat: 35.6 },
       });
 
       expect(() => {
@@ -217,10 +217,10 @@ describe('MockGeolocateControl (Simple Tests)', () => {
     });
   });
 
-  describe('setFitBoundsOptions', () => {
-    it('should accept fit bounds options updates', () => {
+  describe("setFitBoundsOptions", () => {
+    it("should accept fit bounds options updates", () => {
       const control = new MockGeolocateControl({
-        position: { lng: 139.7, lat: 35.6 }
+        position: { lng: 139.7, lat: 35.6 },
       });
 
       expect(() => {
@@ -229,32 +229,32 @@ describe('MockGeolocateControl (Simple Tests)', () => {
     });
   });
 
-  describe('event handling', () => {
-    it('should support on/off for events', () => {
+  describe("event handling", () => {
+    it("should support on/off for events", () => {
       const control = new MockGeolocateControl({
-        position: { lng: 139.7, lat: 35.6 }
+        position: { lng: 139.7, lat: 35.6 },
       });
       const handler = vi.fn();
 
       // Add event listener
-      control.on('geolocate', handler);
+      control.on("geolocate", handler);
 
       // Remove event listener
-      control.off('geolocate', handler);
+      control.off("geolocate", handler);
 
       // Should not throw
       expect(() => {
-        control.on('outofmaxbounds', handler);
-        control.off('outofmaxbounds', handler);
+        control.on("outofmaxbounds", handler);
+        control.off("outofmaxbounds", handler);
       }).not.toThrow();
     });
   });
 });
 
-describe('MockGeolocateControl (Map Integration)', () => {
+describe("MockGeolocateControl (Map Integration)", () => {
   const defaultPosition = { lng: 139.7, lat: 35.6 };
 
-  it('should add markers to the map and fit bounds when triggered', async () => {
+  it("should add markers to the map and fit bounds when triggered", async () => {
     const map = createMap();
 
     try {
@@ -268,7 +268,7 @@ describe('MockGeolocateControl (Map Integration)', () => {
       map.addControl(control);
 
       const geolocateHandler = vi.fn();
-      control.on('geolocate', geolocateHandler);
+      control.on("geolocate", geolocateHandler);
 
       control.trigger();
 
@@ -279,19 +279,32 @@ describe('MockGeolocateControl (Map Integration)', () => {
         accuracy: 75,
       });
 
-      const fitBoundsCalls = (map as unknown as { getFitBoundsCalls: () => Array<{ options?: any }> }).getFitBoundsCalls();
+      const fitBoundsCalls = (
+        map as unknown as { getFitBoundsCalls: () => Array<{ options?: any }> }
+      ).getFitBoundsCalls();
       expect(fitBoundsCalls).toHaveLength(1);
-      expect(fitBoundsCalls[0].options).toMatchObject({ maxZoom: 16, padding: 8 });
+      expect(fitBoundsCalls[0].options).toMatchObject({
+        maxZoom: 16,
+        padding: 8,
+      });
 
       const mapContainer = map.getContainer();
-      const dotElement = mapContainer.querySelector('.maplibregl-user-location-dot') as HTMLDivElement | null;
-      const accuracyElement = mapContainer.querySelector('.maplibregl-user-location-accuracy-circle') as HTMLDivElement | null;
+      const dotElement = mapContainer.querySelector(
+        ".maplibregl-user-location-dot",
+      ) as HTMLDivElement | null;
+      const accuracyElement = mapContainer.querySelector(
+        ".maplibregl-user-location-accuracy-circle",
+      ) as HTMLDivElement | null;
 
       expect(dotElement).not.toBeNull();
       expect(accuracyElement).not.toBeNull();
 
-      const width = accuracyElement ? parseFloat(accuracyElement.style.width) : 0;
-      const height = accuracyElement ? parseFloat(accuracyElement.style.height) : 0;
+      const width = accuracyElement
+        ? parseFloat(accuracyElement.style.width)
+        : 0;
+      const height = accuracyElement
+        ? parseFloat(accuracyElement.style.height)
+        : 0;
       expect(width).toBeGreaterThan(0);
       expect(height).toBeGreaterThan(0);
     } finally {
@@ -299,7 +312,7 @@ describe('MockGeolocateControl (Map Integration)', () => {
     }
   });
 
-  it('should toggle accuracy circle visibility on demand', async () => {
+  it("should toggle accuracy circle visibility on demand", async () => {
     const map = createMap();
 
     try {
@@ -313,24 +326,30 @@ describe('MockGeolocateControl (Map Integration)', () => {
       control.trigger();
 
       const mapContainer = map.getContainer();
-      expect(mapContainer.querySelector('.maplibregl-user-location-accuracy-circle')).not.toBeNull();
+      expect(
+        mapContainer.querySelector(".maplibregl-user-location-accuracy-circle"),
+      ).not.toBeNull();
 
       control.setShowAccuracyCircle(false);
-      expect(mapContainer.querySelector('.maplibregl-user-location-accuracy-circle')).toBeNull();
+      expect(
+        mapContainer.querySelector(".maplibregl-user-location-accuracy-circle"),
+      ).toBeNull();
 
       control.setShowAccuracyCircle(true);
-      expect(mapContainer.querySelector('.maplibregl-user-location-accuracy-circle')).not.toBeNull();
+      expect(
+        mapContainer.querySelector(".maplibregl-user-location-accuracy-circle"),
+      ).not.toBeNull();
     } finally {
       cleanupMap(map);
     }
   });
 
-  it('should fire outofmaxbounds and skip map updates when outside max bounds', async () => {
+  it("should fire outofmaxbounds and skip map updates when outside max bounds", async () => {
     const map = createMap();
 
     try {
       map.setMaxBounds([
-        [139.60, 35.40],
+        [139.6, 35.4],
         [139.65, 35.45],
       ]);
 
@@ -341,8 +360,8 @@ describe('MockGeolocateControl (Map Integration)', () => {
 
       const geolocateHandler = vi.fn();
       const outOfBoundsHandler = vi.fn();
-      control.on('geolocate', geolocateHandler);
-      control.on('outofmaxbounds', outOfBoundsHandler);
+      control.on("geolocate", geolocateHandler);
+      control.on("outofmaxbounds", outOfBoundsHandler);
 
       map.addControl(control);
 
@@ -350,18 +369,24 @@ describe('MockGeolocateControl (Map Integration)', () => {
 
       expect(outOfBoundsHandler).toHaveBeenCalledTimes(1);
       expect(geolocateHandler).not.toHaveBeenCalled();
-      const fitBoundsCalls = (map as unknown as { getFitBoundsCalls: () => any[] }).getFitBoundsCalls();
+      const fitBoundsCalls = (
+        map as unknown as { getFitBoundsCalls: () => any[] }
+      ).getFitBoundsCalls();
       expect(fitBoundsCalls).toHaveLength(0);
 
       const mapContainer = map.getContainer();
-      expect(mapContainer.querySelector('.maplibregl-user-location-dot')).toBeNull();
-      expect(mapContainer.querySelector('.maplibregl-user-location-accuracy-circle')).toBeNull();
+      expect(
+        mapContainer.querySelector(".maplibregl-user-location-dot"),
+      ).toBeNull();
+      expect(
+        mapContainer.querySelector(".maplibregl-user-location-accuracy-circle"),
+      ).toBeNull();
     } finally {
       cleanupMap(map);
     }
   });
 
-  it('should recalculate accuracy circle size when accuracy changes', async () => {
+  it("should recalculate accuracy circle size when accuracy changes", async () => {
     const map = createMap();
 
     try {
@@ -375,12 +400,18 @@ describe('MockGeolocateControl (Map Integration)', () => {
       control.trigger();
 
       const mapContainer = map.getContainer();
-      const accuracyElement = mapContainer.querySelector('.maplibregl-user-location-accuracy-circle') as HTMLDivElement | null;
+      const accuracyElement = mapContainer.querySelector(
+        ".maplibregl-user-location-accuracy-circle",
+      ) as HTMLDivElement | null;
       expect(accuracyElement).not.toBeNull();
 
-      const initialWidth = accuracyElement ? parseFloat(accuracyElement.style.width) : 0;
+      const initialWidth = accuracyElement
+        ? parseFloat(accuracyElement.style.width)
+        : 0;
       control.setAccuracy(200);
-      const updatedWidth = accuracyElement ? parseFloat(accuracyElement.style.width) : 0;
+      const updatedWidth = accuracyElement
+        ? parseFloat(accuracyElement.style.width)
+        : 0;
 
       expect(initialWidth).toBeGreaterThan(0);
       expect(updatedWidth).toBeGreaterThan(initialWidth);
