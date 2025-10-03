@@ -18,6 +18,40 @@ let currentFitBoundsOptions: FitBoundsOptions = {
   ...DEFAULT_FIT_BOUNDS,
 };
 
+const CONSOLE_LIMIT = 200;
+type ConsoleEntry = {
+  timestamp: Date;
+  message: string;
+};
+
+const consoleEntries: ConsoleEntry[] = [];
+
+function formatTimestamp(date: Date): string {
+  const hrs = date.getHours().toString().padStart(2, "0");
+  const mins = date.getMinutes().toString().padStart(2, "0");
+  const secs = date.getSeconds().toString().padStart(2, "0");
+  return `${hrs}:${mins}:${secs}`;
+}
+
+function renderConsole() {
+  const container = document.querySelector<HTMLDivElement>("#demo-console");
+  if (!container) return;
+
+  container.textContent = consoleEntries
+    .map((entry) => `[${formatTimestamp(entry.timestamp)}] ${entry.message}`)
+    .join("\n");
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendConsoleMessage(message: string) {
+  consoleEntries.push({ timestamp: new Date(), message });
+  if (consoleEntries.length > CONSOLE_LIMIT) {
+    consoleEntries.shift();
+  }
+  renderConsole();
+}
+
 type PositionPreset = {
   id: string;
   label: string;
@@ -92,6 +126,9 @@ map.addControl(mockGeolocateControl, "top-right");
 // Test event system (will be enhanced in later PR)
 mockGeolocateControl.on("geolocate", (e) => {
   console.log("📍 Geolocate event fired:", e.coords);
+  appendConsoleMessage(
+    `geolocate → lng: ${e.coords.longitude.toFixed(5)}, lat: ${e.coords.latitude.toFixed(5)}, accuracy: ${Math.round(e.coords.accuracy)}m`,
+  );
 });
 
 // Log when map is loaded
@@ -101,6 +138,7 @@ map.on("load", () => {
   console.log("  - Blue position marker with white border");
   console.log("  - Semi-transparent accuracy circle");
   console.log("  - Event logs in console");
+  appendConsoleMessage("Map initialised. Ready to mock geolocation events.");
 });
 
 function fillInputs({ lng, lat }: { lng: number; lat: number }) {
@@ -236,6 +274,7 @@ function populatePresetSelect() {
     mockGeolocateControl.setPosition({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setAccuracy(accuracy);
     mockGeolocateControl.trigger();
+    appendConsoleMessage(`Preset "${preset.label}" triggered.`);
   });
 }
 
@@ -255,8 +294,12 @@ function setupFormHandlers() {
         presetSelect.value = "custom";
       }
       mockGeolocateControl.trigger();
+      appendConsoleMessage(
+        `Custom position triggered → lng: ${result.lng.toFixed(5)}, lat: ${result.lat.toFixed(5)}`,
+      );
     } else {
       console.warn("Invalid coordinate input.");
+      appendConsoleMessage("⚠️ Invalid coordinate input ignored.");
     }
   });
 
@@ -271,12 +314,13 @@ function setupFormHandlers() {
     }
 
     mockGeolocateControl.trigger();
+    appendConsoleMessage(
+      `Position updated → lng: ${result.lng.toFixed(5)}, lat: ${result.lat.toFixed(5)}`,
+    );
   };
 
   lngInput?.addEventListener("change", handleFieldChange);
   latInput?.addEventListener("change", handleFieldChange);
-  lngInput?.addEventListener("blur", handleFieldChange);
-  latInput?.addEventListener("blur", handleFieldChange);
 }
 
 function setupAccuracyControls() {
@@ -285,7 +329,11 @@ function setupAccuracyControls() {
   const presetSelect =
     document.querySelector<HTMLSelectElement>("#preset-select");
 
-  const applyAccuracy = (value: number, markCustom = false) => {
+  const applyAccuracy = (
+    value: number,
+    markCustom = false,
+    announce = false,
+  ) => {
     const accuracy = Number(value);
     if (!Number.isFinite(accuracy)) {
       return;
@@ -297,6 +345,10 @@ function setupAccuracyControls() {
     if (markCustom && presetSelect) {
       presetSelect.value = "custom";
     }
+
+    if (announce) {
+      appendConsoleMessage(`Accuracy set to ${Math.round(accuracy)}m.`);
+    }
   };
 
   slider?.addEventListener("input", () => {
@@ -304,14 +356,17 @@ function setupAccuracyControls() {
   });
 
   slider?.addEventListener("change", () => {
-    applyAccuracy(Number(slider.value), true);
+    applyAccuracy(Number(slider.value), true, true);
   });
 
   toggle?.addEventListener("change", () => {
     const checked = toggle.checked;
     mockGeolocateControl.setShowAccuracyCircle(checked);
+    appendConsoleMessage(
+      checked ? "Accuracy circle shown." : "Accuracy circle hidden.",
+    );
     if (checked) {
-      applyAccuracy(Number(slider?.value ?? DEFAULT_ACCURACY));
+      applyAccuracy(Number(slider?.value ?? DEFAULT_ACCURACY), false, false);
     }
   });
 
@@ -352,6 +407,28 @@ function setupFitBoundsControls() {
     }
 
     syncFitBoundsUI(currentFitBoundsOptions);
+
+    if (markCustom) {
+      const changes: string[] = [];
+      if (partial.maxZoom !== undefined) {
+        changes.push(`maxZoom=${partial.maxZoom}`);
+      }
+      if (partial.padding !== undefined) {
+        changes.push(`padding=${partial.padding}`);
+      }
+      if (partial.offset !== undefined) {
+        const [x, y] = Array.isArray(partial.offset)
+          ? partial.offset
+          : [partial.offset ?? 0, partial.offset ?? 0];
+        changes.push(`offset=[${x}, ${y}]`);
+      }
+      if (partial.linear !== undefined) {
+        changes.push(`linear=${partial.linear}`);
+      }
+      if (changes.length) {
+        appendConsoleMessage(`FitBounds updated (${changes.join(", ")}).`);
+      }
+    }
   };
 
   const readOffset = (): [number, number] => {
@@ -410,6 +487,12 @@ function setupFitBoundsControls() {
   });
 
   syncFitBoundsUI(currentFitBoundsOptions);
+  const defaultOffset = Array.isArray(currentFitBoundsOptions.offset)
+    ? currentFitBoundsOptions.offset
+    : [0, 0];
+  appendConsoleMessage(
+    `FitBounds defaults → maxZoom=${currentFitBoundsOptions.maxZoom ?? "-"}, padding=${currentFitBoundsOptions.padding ?? 0}, offset=[${defaultOffset.join(", ")}], linear=${Boolean(currentFitBoundsOptions.linear)}`,
+  );
 }
 
 populatePresetSelect();
