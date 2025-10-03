@@ -43,8 +43,50 @@
             </a>
         </header>
 
-        <!-- Map container -->
-        <div id="map"></div>
+        <div class="app-layout">
+            <aside class="control-panel" aria-label="Mock geolocate controls">
+                <h2 class="panel-title">Position</h2>
+                <select id="preset-select" class="panel-input">
+                    <option value="custom">Custom coordinates</option>
+                </select>
+
+                <form
+                    id="coordinate-form"
+                    class="coordinate-form"
+                    autocomplete="off"
+                >
+                    <fieldset class="panel-fieldset">
+                        <legend class="panel-legend">Coordinates</legend>
+                        <label class="panel-label" for="lng-input"
+                            >Longitude</label
+                        >
+                        <input
+                            id="lng-input"
+                            class="panel-input"
+                            type="number"
+                            step="0.000001"
+                            required
+                        />
+
+                        <label class="panel-label" for="lat-input"
+                            >Latitude</label
+                        >
+                        <input
+                            id="lat-input"
+                            class="panel-input"
+                            type="number"
+                            step="0.000001"
+                            required
+                        />
+                    </fieldset>
+
+                    <button type="submit" class="panel-button">Trigger</button>
+                </form>
+            </aside>
+
+            <!-- Map container -->
+            <div id="map" role="presentation" aria-hidden="true"></div>
+        </div>
 
         <!-- Load the demo application -->
         <script type="module" src="/src/main.ts"></script>
