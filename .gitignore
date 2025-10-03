@@ -29,3 +29,6 @@ dist-ssr
 
 # Serena MCP
 .serena/
+
+# Test coverage
+coverage/
