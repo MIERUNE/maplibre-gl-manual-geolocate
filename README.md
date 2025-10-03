@@ -462,6 +462,17 @@ The project uses [Biome](https://biomejs.dev/) for fast linting and formatting. 
 - `biome.json` - Biome linting and formatting configuration
 - `vitest.config.ts` - Vitest testing configuration
 
+### CI/CD
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+- **Lint** - Runs Biome checks on all code (formatting + linting)
+- **Test** - Runs unit tests with Vitest
+- **Build** - Compiles TypeScript and builds the library
+- **Deploy Demo** - Automatically deploys the demo to GitHub Pages on push to main
+
+All workflows run on pull requests to ensure code quality before merging.
+
 ---
 
 ## License
