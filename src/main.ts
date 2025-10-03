@@ -134,12 +134,12 @@ function populatePresetSelect() {
     fillInputs({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setPosition({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setAccuracy(accuracy);
+    mockGeolocateControl.trigger();
   });
 }
 
 function setupFormHandlers() {
   const form = document.querySelector<HTMLFormElement>("#coordinate-form");
-  const triggerButton = document.querySelector<HTMLButtonElement>("#trigger-button");
   const presetSelect = document.querySelector<HTMLSelectElement>("#preset-select");
 
   form?.addEventListener("submit", (event) => {
@@ -153,20 +153,6 @@ function setupFormHandlers() {
     } else {
       console.warn("Invalid coordinate input.");
     }
-  });
-
-  triggerButton?.addEventListener("click", () => {
-    const result = updateControlFromInputs();
-    if (!result) {
-      console.warn("Cannot center map: invalid coordinate input.");
-      return;
-    }
-
-    if (presetSelect) {
-      presetSelect.value = "custom";
-    }
-
-    mockGeolocateControl.trigger();
   });
 }
 
