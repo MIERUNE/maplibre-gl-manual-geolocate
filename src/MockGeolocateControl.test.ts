@@ -45,6 +45,7 @@ vi.mock('maplibre-gl', async (importOriginal) => {
       bounds: import('maplibre-gl').LngLatBoundsLike;
       options?: import('maplibre-gl').FitBoundsOptions;
     }> = [];
+    private bearing = 0;
     _removed = false;
 
     constructor(options: any = {}) {
@@ -75,6 +76,15 @@ vi.mock('maplibre-gl', async (importOriginal) => {
 
     getContainer() {
       return this.container;
+    }
+
+    setBearing(value: number) {
+      this.bearing = value;
+      return this;
+    }
+
+    getBearing() {
+      return this.bearing;
     }
 
     project(lngLat: import('maplibre-gl').LngLatLike) {
