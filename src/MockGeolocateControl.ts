@@ -288,18 +288,39 @@ export class MockGeolocateControl implements IControl {
    * @private
    */
   private _createGeolocationPosition(): GeolocationPosition {
-    return {
-      coords: {
-        latitude: this._position.lat,
-        longitude: this._position.lng,
-        accuracy: this._accuracy,
+    const { lat, lng } = this._position;
+    const accuracy = this._accuracy;
+    const timestamp = Date.now();
+
+    const coords = {
+      latitude: lat,
+      longitude: lng,
+      accuracy,
+      altitude: null,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null,
+      toJSON: () => ({
+        latitude: lat,
+        longitude: lng,
+        accuracy,
         altitude: null,
         altitudeAccuracy: null,
         heading: null,
         speed: null,
-      },
-      timestamp: Date.now(),
-    } as GeolocationPosition;
+      }),
+    } satisfies GeolocationCoordinates;
+
+    const position = {
+      coords,
+      timestamp,
+      toJSON: () => ({
+        coords: coords.toJSON(),
+        timestamp,
+      }),
+    } satisfies GeolocationPosition;
+
+    return position;
   }
 
   /**
