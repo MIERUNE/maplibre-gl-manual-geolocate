@@ -57,7 +57,7 @@ const map = new maplibregl.Map({
   style:
     "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
   center: [139.74135747, 35.65809922], // Tokyo
-  zoom: 4,
+  zoom: 14,
 });
 
 // Create mock geolocate control
