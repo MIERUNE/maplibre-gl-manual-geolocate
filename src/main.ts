@@ -3,10 +3,20 @@
 // Usage: `pnpm dev` then open http://localhost:5173
 import "./style.css";
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl from "maplibre-gl";
+import maplibregl, { type FitBoundsOptions } from "maplibre-gl";
 import { MockGeolocateControl } from "./index";
 
 const DEFAULT_ACCURACY = 50;
+const DEFAULT_FIT_BOUNDS: FitBoundsOptions = {
+  maxZoom: 15,
+  padding: 20,
+  offset: [0, 0],
+  linear: false,
+};
+
+let currentFitBoundsOptions: FitBoundsOptions = {
+  ...DEFAULT_FIT_BOUNDS,
+};
 
 type PositionPreset = {
   id: string;
@@ -68,6 +78,7 @@ const mockGeolocateControl = new MockGeolocateControl({
   accuracy: DEFAULT_ACCURACY,
   showAccuracyCircle: true,
 });
+mockGeolocateControl.setFitBoundsOptions(currentFitBoundsOptions);
 
 // Add navigation control for comparison
 map.addControl(new maplibregl.NavigationControl(), "top-right");
@@ -121,6 +132,53 @@ function updateAccuracyLabel(accuracy: number) {
 function syncAccuracyUI(accuracy: number) {
   setAccuracySliderValue(accuracy);
   updateAccuracyLabel(accuracy);
+}
+
+function syncFitBoundsUI(options: FitBoundsOptions) {
+  const maxZoomInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-maxzoom",
+  );
+  const paddingInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-padding",
+  );
+  const offsetXInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-offset-x",
+  );
+  const offsetYInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-offset-y",
+  );
+  const linearInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-linear",
+  );
+
+  if (maxZoomInput) {
+    maxZoomInput.value =
+      options.maxZoom !== undefined ? options.maxZoom.toString() : "";
+  }
+
+  if (paddingInput) {
+    const paddingValue =
+      typeof options.padding === "number" ? options.padding : 0;
+    paddingInput.value = paddingValue.toString();
+  }
+
+  const offset = Array.isArray(options.offset)
+    ? options.offset
+    : typeof options.offset === "number"
+      ? [options.offset, options.offset]
+      : [0, 0];
+
+  if (offsetXInput) {
+    offsetXInput.value = offset[0].toString();
+  }
+
+  if (offsetYInput) {
+    offsetYInput.value = offset[1].toString();
+  }
+
+  if (linearInput) {
+    linearInput.checked = Boolean(options.linear);
+  }
 }
 
 function updateControlFromInputs() {
@@ -260,6 +318,100 @@ function setupAccuracyControls() {
   syncAccuracyUI(Number(slider?.value ?? DEFAULT_ACCURACY));
 }
 
+function setupFitBoundsControls() {
+  const presetSelect =
+    document.querySelector<HTMLSelectElement>("#preset-select");
+  const maxZoomInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-maxzoom",
+  );
+  const paddingInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-padding",
+  );
+  const offsetXInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-offset-x",
+  );
+  const offsetYInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-offset-y",
+  );
+  const linearInput = document.querySelector<HTMLInputElement>(
+    "#fitbounds-linear",
+  );
+
+  const commit = (
+    partial: Partial<FitBoundsOptions>,
+    markCustom = false,
+  ) => {
+    currentFitBoundsOptions = {
+      ...currentFitBoundsOptions,
+      ...partial,
+    };
+    mockGeolocateControl.setFitBoundsOptions(currentFitBoundsOptions);
+
+    if (markCustom && presetSelect) {
+      presetSelect.value = "custom";
+    }
+
+    syncFitBoundsUI(currentFitBoundsOptions);
+  };
+
+  const readOffset = (): [number, number] => {
+    const rawX = Number(offsetXInput?.value ?? 0);
+    const rawY = Number(offsetYInput?.value ?? 0);
+    const x = Number.isFinite(rawX) ? rawX : 0;
+    const y = Number.isFinite(rawY) ? rawY : 0;
+    return [x, y];
+  };
+
+  maxZoomInput?.addEventListener("input", () => {
+    const value = Number(maxZoomInput.value);
+    if (Number.isFinite(value)) {
+      commit({ maxZoom: value });
+    }
+  });
+
+  maxZoomInput?.addEventListener("change", () => {
+    const value = Number(maxZoomInput.value);
+    if (Number.isFinite(value)) {
+      commit({ maxZoom: value }, true);
+    } else {
+      syncFitBoundsUI(currentFitBoundsOptions);
+    }
+  });
+
+  paddingInput?.addEventListener("input", () => {
+    const value = Number(paddingInput.value);
+    if (Number.isFinite(value)) {
+      commit({ padding: value });
+    }
+  });
+
+  paddingInput?.addEventListener("change", () => {
+    const value = Number(paddingInput.value);
+    if (Number.isFinite(value)) {
+      commit({ padding: value }, true);
+    } else {
+      syncFitBoundsUI(currentFitBoundsOptions);
+    }
+  });
+
+  const handleOffsetInput = (markCustom: boolean) => {
+    const [x, y] = readOffset();
+    commit({ offset: [x, y] }, markCustom);
+  };
+
+  offsetXInput?.addEventListener("input", () => handleOffsetInput(false));
+  offsetYInput?.addEventListener("input", () => handleOffsetInput(false));
+  offsetXInput?.addEventListener("change", () => handleOffsetInput(true));
+  offsetYInput?.addEventListener("change", () => handleOffsetInput(true));
+
+  linearInput?.addEventListener("change", () => {
+    const checked = Boolean(linearInput.checked);
+    commit({ linear: checked }, true);
+  });
+
+  syncFitBoundsUI(currentFitBoundsOptions);
+}
+
 populatePresetSelect();
 fillInputs({
   lng: 139.741357,
@@ -268,3 +420,4 @@ fillInputs({
 setupFormHandlers();
 setupAccuracyControls();
 syncAccuracyUI(DEFAULT_ACCURACY);
+setupFitBoundsControls();
