@@ -189,6 +189,10 @@ body {
     line-height: 1.2;
 }
 
+.panel-toggle span {
+    line-height: 1.6;
+}
+
 .panel-input {
     width: 100%;
     padding: 8px 10px;
