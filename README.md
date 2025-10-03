@@ -433,6 +433,16 @@ pnpm preview      # Preview library build
 pnpm preview:demo # Preview demo site
 ```
 
+### Testing
+
+```bash
+pnpm test          # Run tests in watch mode
+pnpm test:ui       # Run tests with interactive UI
+pnpm test:coverage # Run tests with coverage report
+```
+
+The project uses [Vitest](https://vitest.dev/) for testing with coverage reporting via `@vitest/coverage-v8`. Current test coverage for the main control is ~85%.
+
 ### Configuration Files
 
 - `vite.config.ts` - Development server configuration
