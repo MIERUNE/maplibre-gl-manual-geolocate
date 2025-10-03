@@ -69,48 +69,40 @@ map.on("load", () => {
   console.log("  - Event logs in console");
 });
 
-function fillInputs({ lng, lat, accuracy }: { lng: number; lat: number; accuracy: number }) {
+function fillInputs({ lng, lat }: { lng: number; lat: number }) {
   const lngInput = document.querySelector<HTMLInputElement>("#lng-input");
   const latInput = document.querySelector<HTMLInputElement>("#lat-input");
-  const accuracyInput = document.querySelector<HTMLInputElement>("#accuracy-input");
 
-  if (!lngInput || !latInput || !accuracyInput) {
+  if (!lngInput || !latInput) {
     return;
   }
 
   lngInput.value = lng.toFixed(6);
   latInput.value = lat.toFixed(6);
-  accuracyInput.value = accuracy.toString();
 }
 
 function updateControlFromInputs() {
   const lngInput = document.querySelector<HTMLInputElement>("#lng-input");
   const latInput = document.querySelector<HTMLInputElement>("#lat-input");
-  const accuracyInput = document.querySelector<HTMLInputElement>("#accuracy-input");
-  const showAccuracyInput = document.querySelector<HTMLInputElement>("#accuracy-toggle");
 
-  if (!lngInput || !latInput || !accuracyInput || !showAccuracyInput) {
+  if (!lngInput || !latInput) {
     return null;
   }
 
   const lng = Number(lngInput.value);
   const lat = Number(latInput.value);
-  const accuracy = Number(accuracyInput.value);
-  const showAccuracy = showAccuracyInput.checked;
 
-  if (!Number.isFinite(lng) || !Number.isFinite(lat) || !Number.isFinite(accuracy)) {
+  if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
     return null;
   }
 
-  if (lng < -180 || lng > 180 || lat < -90 || lat > 90 || accuracy <= 0) {
+  if (lng < -180 || lng > 180 || lat < -90 || lat > 90) {
     return null;
   }
 
   mockGeolocateControl.setPosition({ lng, lat });
-  mockGeolocateControl.setAccuracy(accuracy);
-  mockGeolocateControl.setShowAccuracyCircle(showAccuracy);
 
-  return { lng, lat, accuracy };
+  return { lng, lat };
 }
 
 function populatePresetSelect() {
@@ -139,7 +131,7 @@ function populatePresetSelect() {
     }
 
     const accuracy = preset.accuracy ?? 50;
-    fillInputs({ lng: preset.lng, lat: preset.lat, accuracy });
+    fillInputs({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setPosition({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setAccuracy(accuracy);
   });
@@ -148,7 +140,6 @@ function populatePresetSelect() {
 function setupFormHandlers() {
   const form = document.querySelector<HTMLFormElement>("#coordinate-form");
   const triggerButton = document.querySelector<HTMLButtonElement>("#trigger-button");
-  const showAccuracyInput = document.querySelector<HTMLInputElement>("#accuracy-toggle");
   const presetSelect = document.querySelector<HTMLSelectElement>("#preset-select");
 
   form?.addEventListener("submit", (event) => {
@@ -177,17 +168,11 @@ function setupFormHandlers() {
 
     mockGeolocateControl.trigger();
   });
-
-  showAccuracyInput?.addEventListener("change", () => {
-    const checked = showAccuracyInput.checked;
-    mockGeolocateControl.setShowAccuracyCircle(checked);
-  });
 }
 
 populatePresetSelect();
 fillInputs({
   lng: 139.741357,
   lat: 35.658099,
-  accuracy: 50,
 });
 setupFormHandlers();
