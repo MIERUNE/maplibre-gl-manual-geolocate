@@ -16,15 +16,35 @@ type LocationPreset = {
 
 const LOCATION_PRESETS: LocationPreset[] = [
   { id: "berlin", label: "Berlin, Germany", lng: 13.405, lat: 52.52 },
-  { id: "buenos-aires", label: "Buenos Aires, Argentina", lng: -58.3816, lat: -34.6037 },
+  {
+    id: "buenos-aires",
+    label: "Buenos Aires, Argentina",
+    lng: -58.3816,
+    lat: -34.6037,
+  },
   { id: "cairo", label: "Cairo, Egypt", lng: 31.2357, lat: 30.0444 },
-  { id: "cape-town", label: "Cape Town, South Africa", lng: 18.4241, lat: -33.9249 },
+  {
+    id: "cape-town",
+    label: "Cape Town, South Africa",
+    lng: 18.4241,
+    lat: -33.9249,
+  },
   { id: "hong-kong", label: "Hong Kong", lng: 114.1694, lat: 22.3193 },
   { id: "london", label: "London, United Kingdom", lng: -0.1276, lat: 51.5074 },
   { id: "moscow", label: "Moscow, Russia", lng: 37.6173, lat: 55.7558 },
   { id: "new-delhi", label: "New Delhi, India", lng: 77.209, lat: 28.6139 },
-  { id: "new-york", label: "New York, United States", lng: -74.006, lat: 40.7128 },
-  { id: "san-francisco", label: "San Francisco, United States", lng: -122.4194, lat: 37.7749 },
+  {
+    id: "new-york",
+    label: "New York, United States",
+    lng: -74.006,
+    lat: 40.7128,
+  },
+  {
+    id: "san-francisco",
+    label: "San Francisco, United States",
+    lng: -122.4194,
+    lat: 37.7749,
+  },
   { id: "seoul", label: "Seoul, South Korea", lng: 126.978, lat: 37.5665 },
   { id: "singapore", label: "Singapore", lng: 103.8198, lat: 1.3521 },
   { id: "sydney", label: "Sydney, Australia", lng: 151.2093, lat: -33.8688 },
@@ -37,7 +57,7 @@ const map = new maplibregl.Map({
   style:
     "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
   center: [139.74135747, 35.65809922], // Tokyo
-  zoom: 14, // Slightly closer for better detail
+  zoom: 4,
 });
 
 // Create mock geolocate control
@@ -140,7 +160,8 @@ function populatePresetSelect() {
 
 function setupFormHandlers() {
   const form = document.querySelector<HTMLFormElement>("#coordinate-form");
-  const presetSelect = document.querySelector<HTMLSelectElement>("#preset-select");
+  const presetSelect =
+    document.querySelector<HTMLSelectElement>("#preset-select");
   const lngInput = document.querySelector<HTMLInputElement>("#lng-input");
   const latInput = document.querySelector<HTMLInputElement>("#lat-input");
 
