@@ -178,6 +178,16 @@ body {
     accent-color: #3a7afe;
 }
 
+.panel-code {
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #f0f2f8;
+    border: 1px solid #d8dae6;
+    color: #314a72;
+}
+
 .panel-input {
     width: 100%;
     padding: 8px 10px;
