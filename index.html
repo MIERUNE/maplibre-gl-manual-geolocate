@@ -82,6 +82,32 @@
 
                     <button type="submit" class="panel-button">Trigger</button>
                 </form>
+
+                <section class="panel-section" aria-label="Accuracy settings">
+                    <h3 class="panel-subtitle">Accuracy</h3>
+
+                    <label class="panel-toggle" for="accuracy-toggle">
+                        <input
+                            id="accuracy-toggle"
+                            type="checkbox"
+                            checked
+                        />
+                        <span>Show accuracy circle</span>
+                    </label>
+
+                    <label class="panel-label" for="accuracy-slider">
+                        Accuracy radius: <span id="accuracy-value">50 m</span>
+                    </label>
+                    <input
+                        id="accuracy-slider"
+                        class="panel-slider"
+                        type="range"
+                        min="5"
+                        max="2000"
+                        step="5"
+                        value="50"
+                    />
+                </section>
             </aside>
 
             <!-- Map container -->
