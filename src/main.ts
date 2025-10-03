@@ -141,6 +141,8 @@ function populatePresetSelect() {
 function setupFormHandlers() {
   const form = document.querySelector<HTMLFormElement>("#coordinate-form");
   const presetSelect = document.querySelector<HTMLSelectElement>("#preset-select");
+  const lngInput = document.querySelector<HTMLInputElement>("#lng-input");
+  const latInput = document.querySelector<HTMLInputElement>("#lat-input");
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -150,10 +152,29 @@ function setupFormHandlers() {
       if (presetSelect) {
         presetSelect.value = "custom";
       }
+      mockGeolocateControl.trigger();
     } else {
       console.warn("Invalid coordinate input.");
     }
   });
+
+  const handleFieldChange = () => {
+    const result = updateControlFromInputs();
+    if (!result) {
+      return;
+    }
+
+    if (presetSelect) {
+      presetSelect.value = "custom";
+    }
+
+    mockGeolocateControl.trigger();
+  };
+
+  lngInput?.addEventListener("change", handleFieldChange);
+  latInput?.addEventListener("change", handleFieldChange);
+  lngInput?.addEventListener("blur", handleFieldChange);
+  latInput?.addEventListener("blur", handleFieldChange);
 }
 
 populatePresetSelect();
