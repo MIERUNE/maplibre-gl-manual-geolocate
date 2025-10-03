@@ -158,27 +158,30 @@ body {
     justify-content: center;
     padding: 10px 16px;
     border-radius: 6px;
-    border: 1px solid #3a7afe;
-    background: #3a7afe;
-    color: #ffffff;
+    border: 1px solid #d0d5dd;
+    background: #f5f7fb;
+    color: #1a1a1a;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    transition: background 0.15s ease, border-color 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .panel-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(58, 122, 254, 0.25);
+    background: #edf0f8;
+    border-color: #c3c7d6;
+    box-shadow: 0 2px 6px rgba(22, 36, 71, 0.08);
 }
 
 .panel-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(58, 122, 254, 0.2);
+    background: #e4e7f2;
+    border-color: #babfd1;
+    box-shadow: 0 1px 3px rgba(22, 36, 71, 0.12);
 }
 
 .panel-button:focus-visible {
-    outline: 2px solid rgba(58, 122, 254, 0.6);
+    outline: 2px solid rgba(58, 122, 254, 0.45);
     outline-offset: 2px;
 }
 .coordinate-form {
