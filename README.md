@@ -483,7 +483,14 @@ All workflows run on pull requests to ensure code quality before merging.
 
 ## License
 
-[MIT](LICENSE)
+Licensed under either of:
+
+- [MIT License](LICENSE-MIT)
+- [Apache License, Version 2.0](LICENSE-APACHE)
+
+at your option.
+
+This dual licensing approach provides you with the flexibility to choose the license that best suits your project's needs. The Apache 2.0 license includes explicit patent grants for additional protection.
 
 ---
 
