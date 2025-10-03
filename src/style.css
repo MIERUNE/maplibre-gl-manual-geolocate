@@ -137,6 +137,31 @@ body {
     border-top: 1px solid #e5e5e5;
 }
 
+.panel-caption {
+    margin: 0;
+    font-size: 12px;
+    color: #5d6470;
+}
+
+.panel-caption a {
+    color: #3a7afe;
+    text-decoration: none;
+}
+
+.panel-caption a:hover {
+    text-decoration: underline;
+}
+
+.panel-input-row {
+    display: flex;
+    gap: 12px;
+}
+
+.panel-input-col {
+    flex: 1;
+    min-width: 0;
+}
+
 .panel-toggle {
     display: inline-flex;
     align-items: center;
@@ -151,6 +176,21 @@ body {
     width: 16px;
     height: 16px;
     accent-color: #3a7afe;
+}
+
+.panel-code {
+    font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #f0f2f8;
+    border: 1px solid #d8dae6;
+    color: #314a72;
+    line-height: 1.2;
+}
+
+.panel-toggle span {
+    line-height: 1.6;
 }
 
 .panel-input {
