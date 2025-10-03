@@ -6,6 +6,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { MockGeolocateControl } from "./index";
 
+const DEFAULT_ACCURACY = 50;
+
 type PositionPreset = {
   id: string;
   label: string;
@@ -63,7 +65,8 @@ const map = new maplibregl.Map({
 // Create mock geolocate control
 const mockGeolocateControl = new MockGeolocateControl({
   position: { lng: 139.74135747, lat: 35.65809922 }, // Tokyo
-  accuracy: 50, // 50-meter accuracy circle
+  accuracy: DEFAULT_ACCURACY,
+  showAccuracyCircle: true,
 });
 
 // Add navigation control for comparison
@@ -99,6 +102,25 @@ function fillInputs({ lng, lat }: { lng: number; lat: number }) {
 
   lngInput.value = lng.toFixed(6);
   latInput.value = lat.toFixed(6);
+}
+
+function setAccuracySliderValue(accuracy: number) {
+  const slider = document.querySelector<HTMLInputElement>("#accuracy-slider");
+  if (slider) {
+    slider.value = Math.round(accuracy).toString();
+  }
+}
+
+function updateAccuracyLabel(accuracy: number) {
+  const label = document.querySelector<HTMLSpanElement>("#accuracy-value");
+  if (label) {
+    label.textContent = `${Math.round(accuracy)} m`;
+  }
+}
+
+function syncAccuracyUI(accuracy: number) {
+  setAccuracySliderValue(accuracy);
+  updateAccuracyLabel(accuracy);
 }
 
 function updateControlFromInputs() {
@@ -150,7 +172,8 @@ function populatePresetSelect() {
       return;
     }
 
-    const accuracy = preset.accuracy ?? 50;
+    const accuracy = preset.accuracy ?? DEFAULT_ACCURACY;
+    syncAccuracyUI(accuracy);
     fillInputs({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setPosition({ lng: preset.lng, lat: preset.lat });
     mockGeolocateControl.setAccuracy(accuracy);
@@ -198,9 +221,50 @@ function setupFormHandlers() {
   latInput?.addEventListener("blur", handleFieldChange);
 }
 
+function setupAccuracyControls() {
+  const toggle = document.querySelector<HTMLInputElement>("#accuracy-toggle");
+  const slider = document.querySelector<HTMLInputElement>("#accuracy-slider");
+  const presetSelect =
+    document.querySelector<HTMLSelectElement>("#preset-select");
+
+  const applyAccuracy = (value: number, markCustom = false) => {
+    const accuracy = Number(value);
+    if (!Number.isFinite(accuracy)) {
+      return;
+    }
+
+    updateAccuracyLabel(accuracy);
+    mockGeolocateControl.setAccuracy(accuracy);
+
+    if (markCustom && presetSelect) {
+      presetSelect.value = "custom";
+    }
+  };
+
+  slider?.addEventListener("input", () => {
+    applyAccuracy(Number(slider.value));
+  });
+
+  slider?.addEventListener("change", () => {
+    applyAccuracy(Number(slider.value), true);
+  });
+
+  toggle?.addEventListener("change", () => {
+    const checked = toggle.checked;
+    mockGeolocateControl.setShowAccuracyCircle(checked);
+    if (checked) {
+      applyAccuracy(Number(slider?.value ?? DEFAULT_ACCURACY));
+    }
+  });
+
+  syncAccuracyUI(Number(slider?.value ?? DEFAULT_ACCURACY));
+}
+
 populatePresetSelect();
 fillInputs({
   lng: 139.741357,
   lat: 35.658099,
 });
 setupFormHandlers();
+setupAccuracyControls();
+syncAccuracyUI(DEFAULT_ACCURACY);
