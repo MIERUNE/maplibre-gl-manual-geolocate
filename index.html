@@ -45,46 +45,48 @@
 
         <div class="app-layout">
             <aside class="control-panel" aria-label="Mock geolocate controls">
-                <h2 class="panel-title">Position</h2>
-                <select id="preset-select" class="panel-input">
-                    <option value="custom">Custom coordinates</option>
-                </select>
+                <section class="panel-section" aria-label="Position settings">
+                    <h2 class="panel-title">Position</h2>
+                    <select id="preset-select" class="panel-input">
+                        <option value="custom">Custom coordinates</option>
+                    </select>
 
-                <form
-                    id="coordinate-form"
-                    class="coordinate-form"
-                    autocomplete="off"
-                >
-                    <fieldset class="panel-fieldset">
-                        <legend class="panel-legend">Coordinates</legend>
-                        <label class="panel-label" for="lng-input"
-                            >Longitude</label
-                        >
-                        <input
-                            id="lng-input"
-                            class="panel-input"
-                            type="number"
-                            step="0.000001"
-                            required
-                        />
+                    <form
+                        id="coordinate-form"
+                        class="coordinate-form"
+                        autocomplete="off"
+                    >
+                        <fieldset class="panel-fieldset">
+                            <legend class="panel-legend">Coordinates</legend>
+                            <label class="panel-label" for="lng-input"
+                                >Longitude</label
+                            >
+                            <input
+                                id="lng-input"
+                                class="panel-input"
+                                type="number"
+                                step="0.000001"
+                                required
+                            />
 
-                        <label class="panel-label" for="lat-input"
-                            >Latitude</label
-                        >
-                        <input
-                            id="lat-input"
-                            class="panel-input"
-                            type="number"
-                            step="0.000001"
-                            required
-                        />
-                    </fieldset>
+                            <label class="panel-label" for="lat-input"
+                                >Latitude</label
+                            >
+                            <input
+                                id="lat-input"
+                                class="panel-input"
+                                type="number"
+                                step="0.000001"
+                                required
+                            />
+                        </fieldset>
 
-                    <button type="submit" class="panel-button">Trigger</button>
-                </form>
+                        <button type="submit" class="panel-button">Trigger</button>
+                    </form>
+                </section>
 
                 <section class="panel-section" aria-label="Accuracy settings">
-                    <h3 class="panel-subtitle">Accuracy</h3>
+                    <h2 class="panel-title">Accuracy</h2>
 
                     <label class="panel-toggle" for="accuracy-toggle">
                         <input

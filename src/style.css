@@ -118,13 +118,6 @@ body {
     color: #1a1a1a;
 }
 
-.panel-subtitle {
-    margin: 0;
-    font-size: 15px;
-    font-weight: 600;
-    color: #1f2933;
-}
-
 .panel-label {
     display: block;
     margin-bottom: 6px;
