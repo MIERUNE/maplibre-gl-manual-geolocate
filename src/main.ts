@@ -138,7 +138,7 @@ map.on("load", () => {
   console.log("  - Blue position marker with white border");
   console.log("  - Semi-transparent accuracy circle");
   console.log("  - Event logs in console");
-  appendConsoleMessage("Map initialised. Ready to mock geolocation events.");
+  appendConsoleMessage("Map initialized. Ready to mock geolocation events.");
 });
 
 function fillInputs({ lng, lat }: { lng: number; lat: number }) {
