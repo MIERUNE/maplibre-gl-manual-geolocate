@@ -1,4 +1,4 @@
-import { beforeAll, vi } from 'vitest';
+import { beforeAll, vi } from "vitest";
 
 /**
  * Test setup for MapLibre GL JS components
@@ -13,7 +13,7 @@ import { beforeAll, vi } from 'vitest';
  */
 
 // Mock URL.createObjectURL for MapLibre GL worker setup
-(globalThis as any).URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+(globalThis as any).URL.createObjectURL = vi.fn(() => "blob:mock-url");
 (globalThis as any).URL.revokeObjectURL = vi.fn();
 
 // Mock Worker for MapLibre GL
@@ -37,16 +37,17 @@ if (!(globalThis as any).ImageData) {
       heightOrWidth: number,
       maybeHeight?: number,
     ) {
-      if (typeof widthOrData === 'number') {
+      if (typeof widthOrData === "number") {
         this.width = widthOrData;
         this.height = heightOrWidth;
         this.data = new Uint8ClampedArray(this.width * this.height * 4);
       } else {
         this.data = widthOrData;
         this.width = heightOrWidth;
-        this.height = typeof maybeHeight === 'number'
-          ? maybeHeight
-          : Math.max(1, Math.floor(this.data.length / 4 / this.width));
+        this.height =
+          typeof maybeHeight === "number"
+            ? maybeHeight
+            : Math.max(1, Math.floor(this.data.length / 4 / this.width));
       }
     }
   };
@@ -67,9 +68,9 @@ if (!(globalThis as any).ImageData) {
 }));
 
 // Mock matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -85,7 +86,7 @@ Object.defineProperty(window, 'matchMedia', {
 beforeAll(() => {
   const webglMock = {
     // Canvas reference
-    canvas: document.createElement('canvas'),
+    canvas: document.createElement("canvas"),
     drawingBufferWidth: 200,
     drawingBufferHeight: 200,
 
@@ -101,7 +102,7 @@ beforeAll(() => {
     shaderSource: vi.fn(),
     compileShader: vi.fn(),
     getShaderParameter: vi.fn(() => true),
-    getShaderInfoLog: vi.fn(() => ''),
+    getShaderInfoLog: vi.fn(() => ""),
     deleteShader: vi.fn(),
 
     // Program operations
@@ -110,7 +111,7 @@ beforeAll(() => {
     linkProgram: vi.fn(),
     useProgram: vi.fn(),
     getProgramParameter: vi.fn(() => true),
-    getProgramInfoLog: vi.fn(() => ''),
+    getProgramInfoLog: vi.fn(() => ""),
     deleteProgram: vi.fn(),
     getUniformLocation: vi.fn(() => ({})),
     getAttribLocation: vi.fn(() => 0),
@@ -134,7 +135,7 @@ beforeAll(() => {
     bindFramebuffer: vi.fn(),
     framebufferTexture2D: vi.fn(),
     deleteFramebuffer: vi.fn(),
-    checkFramebufferStatus: vi.fn(() => 0x8CD5), // GL_FRAMEBUFFER_COMPLETE
+    checkFramebufferStatus: vi.fn(() => 0x8cd5), // GL_FRAMEBUFFER_COMPLETE
 
     // Renderbuffer operations
     createRenderbuffer: vi.fn(() => ({})),
@@ -183,46 +184,48 @@ beforeAll(() => {
     // Query operations
     getParameter: vi.fn((param) => {
       // Return sensible defaults for common parameters
-      if (param === 0x1F02) return 'WebGL 1.0'; // GL_VERSION
-      if (param === 0x1F01) return 'Mock WebGL Renderer'; // GL_RENDERER
-      if (param === 0x1F00) return 'Mock WebGL Vendor'; // GL_VENDOR
-      if (param === 0x8B8C) return 'WebGL GLSL ES 1.0'; // GL_SHADING_LANGUAGE_VERSION
-      if (param === 0x0D33) return 16384; // GL_MAX_TEXTURE_SIZE
+      if (param === 0x1f02) return "WebGL 1.0"; // GL_VERSION
+      if (param === 0x1f01) return "Mock WebGL Renderer"; // GL_RENDERER
+      if (param === 0x1f00) return "Mock WebGL Vendor"; // GL_VENDOR
+      if (param === 0x8b8c) return "WebGL GLSL ES 1.0"; // GL_SHADING_LANGUAGE_VERSION
+      if (param === 0x0d33) return 16384; // GL_MAX_TEXTURE_SIZE
       if (param === 0x8869) return 16; // GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
       if (param === 0x8872) return 16; // GL_MAX_TEXTURE_IMAGE_UNITS
-      if (param === 0x851C) return 16; // GL_MAX_VERTEX_ATTRIBS
-      if (param === 0x8B4C) return 16; // GL_MAX_VARYING_VECTORS
-      if (param === 0x8B4B) return 256; // GL_MAX_VERTEX_UNIFORM_VECTORS
-      if (param === 0x8B49) return 256; // GL_MAX_FRAGMENT_UNIFORM_VECTORS
-      if (param === 0x84E2) return 16; // GL_MAX_RENDERBUFFER_SIZE
-      if (param === 0x8CDF) return 1; // GL_MAX_COLOR_ATTACHMENTS
-      if (param === 0x0D32) return [16384, 16384]; // GL_MAX_VIEWPORT_DIMS
+      if (param === 0x851c) return 16; // GL_MAX_VERTEX_ATTRIBS
+      if (param === 0x8b4c) return 16; // GL_MAX_VARYING_VECTORS
+      if (param === 0x8b4b) return 256; // GL_MAX_VERTEX_UNIFORM_VECTORS
+      if (param === 0x8b49) return 256; // GL_MAX_FRAGMENT_UNIFORM_VECTORS
+      if (param === 0x84e2) return 16; // GL_MAX_RENDERBUFFER_SIZE
+      if (param === 0x8cdf) return 1; // GL_MAX_COLOR_ATTACHMENTS
+      if (param === 0x0d32) return [16384, 16384]; // GL_MAX_VIEWPORT_DIMS
       return 0;
     }),
     getExtension: vi.fn((name) => {
       // Return mock extensions for commonly requested ones
-      if (name === 'WEBGL_depth_texture' ||
-          name === 'OES_texture_float' ||
-          name === 'OES_texture_half_float' ||
-          name === 'OES_element_index_uint' ||
-          name === 'OES_standard_derivatives' ||
-          name === 'EXT_texture_filter_anisotropic' ||
-          name === 'OES_vertex_array_object' ||
-          name === 'ANGLE_instanced_arrays') {
+      if (
+        name === "WEBGL_depth_texture" ||
+        name === "OES_texture_float" ||
+        name === "OES_texture_half_float" ||
+        name === "OES_element_index_uint" ||
+        name === "OES_standard_derivatives" ||
+        name === "EXT_texture_filter_anisotropic" ||
+        name === "OES_vertex_array_object" ||
+        name === "ANGLE_instanced_arrays"
+      ) {
         return {};
       }
       return null;
     }),
     getError: vi.fn(() => 0), // GL_NO_ERROR
     getSupportedExtensions: vi.fn(() => [
-      'WEBGL_depth_texture',
-      'OES_texture_float',
-      'OES_texture_half_float',
-      'OES_element_index_uint',
-      'OES_standard_derivatives',
-      'EXT_texture_filter_anisotropic',
-      'OES_vertex_array_object',
-      'ANGLE_instanced_arrays',
+      "WEBGL_depth_texture",
+      "OES_texture_float",
+      "OES_texture_half_float",
+      "OES_element_index_uint",
+      "OES_standard_derivatives",
+      "EXT_texture_filter_anisotropic",
+      "OES_vertex_array_object",
+      "ANGLE_instanced_arrays",
     ]),
     isContextLost: vi.fn(() => false),
     getShaderPrecisionFormat: vi.fn(() => ({
@@ -236,53 +239,59 @@ beforeAll(() => {
     // Constants
     ARRAY_BUFFER: 0x8892,
     ELEMENT_ARRAY_BUFFER: 0x8893,
-    STATIC_DRAW: 0x88E4,
-    DYNAMIC_DRAW: 0x88E8,
-    VERSION: 0x1F02,
-    VERTEX_SHADER: 0x8B31,
-    FRAGMENT_SHADER: 0x8B30,
-    COMPILE_STATUS: 0x8B81,
-    LINK_STATUS: 0x8B82,
-    TEXTURE_2D: 0x0DE1,
-    TEXTURE0: 0x84C0,
+    STATIC_DRAW: 0x88e4,
+    DYNAMIC_DRAW: 0x88e8,
+    VERSION: 0x1f02,
+    VERTEX_SHADER: 0x8b31,
+    FRAGMENT_SHADER: 0x8b30,
+    COMPILE_STATUS: 0x8b81,
+    LINK_STATUS: 0x8b82,
+    TEXTURE_2D: 0x0de1,
+    TEXTURE0: 0x84c0,
     RGBA: 0x1908,
     UNSIGNED_BYTE: 0x1401,
-    FRAMEBUFFER: 0x8D40,
-    RENDERBUFFER: 0x8D41,
-    DEPTH_COMPONENT16: 0x81A5,
-    COLOR_ATTACHMENT0: 0x8CE0,
-    DEPTH_ATTACHMENT: 0x8D00,
+    FRAMEBUFFER: 0x8d40,
+    RENDERBUFFER: 0x8d41,
+    DEPTH_COMPONENT16: 0x81a5,
+    COLOR_ATTACHMENT0: 0x8ce0,
+    DEPTH_ATTACHMENT: 0x8d00,
   };
 
-  HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((type) => {
-    if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
-      return webglMock;
-    }
-    if (type === '2d') {
-      return {
-        fillRect: vi.fn(),
-        clearRect: vi.fn(),
-        getImageData: vi.fn(() => ({ data: new Uint8ClampedArray(4) })),
-        putImageData: vi.fn(),
-        createImageData: vi.fn(),
-        setTransform: vi.fn(),
-        drawImage: vi.fn(),
-        save: vi.fn(),
-        restore: vi.fn(),
-        fillText: vi.fn(),
-        measureText: vi.fn(() => ({ width: 0 })),
-        scale: vi.fn(),
-        rotate: vi.fn(),
-        translate: vi.fn(),
-        transform: vi.fn(),
-      };
-    }
-    return null;
-  });
+  HTMLCanvasElement.prototype.getContext = vi
+    .fn()
+    .mockImplementation((type) => {
+      if (
+        type === "webgl" ||
+        type === "webgl2" ||
+        type === "experimental-webgl"
+      ) {
+        return webglMock;
+      }
+      if (type === "2d") {
+        return {
+          fillRect: vi.fn(),
+          clearRect: vi.fn(),
+          getImageData: vi.fn(() => ({ data: new Uint8ClampedArray(4) })),
+          putImageData: vi.fn(),
+          createImageData: vi.fn(),
+          setTransform: vi.fn(),
+          drawImage: vi.fn(),
+          save: vi.fn(),
+          restore: vi.fn(),
+          fillText: vi.fn(),
+          measureText: vi.fn(() => ({ width: 0 })),
+          scale: vi.fn(),
+          rotate: vi.fn(),
+          translate: vi.fn(),
+          transform: vi.fn(),
+        };
+      }
+      return null;
+    });
 });
 
 // Mock performance.mark and performance.measure
-if (typeof performance !== 'undefined') {
+if (typeof performance !== "undefined") {
   performance.mark = vi.fn();
   performance.measure = vi.fn();
 }

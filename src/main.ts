@@ -173,21 +173,18 @@ function syncAccuracyUI(accuracy: number) {
 }
 
 function syncFitBoundsUI(options: FitBoundsOptions) {
-  const maxZoomInput = document.querySelector<HTMLInputElement>(
-    "#fitbounds-maxzoom",
-  );
-  const paddingInput = document.querySelector<HTMLInputElement>(
-    "#fitbounds-padding",
-  );
+  const maxZoomInput =
+    document.querySelector<HTMLInputElement>("#fitbounds-maxzoom");
+  const paddingInput =
+    document.querySelector<HTMLInputElement>("#fitbounds-padding");
   const offsetXInput = document.querySelector<HTMLInputElement>(
     "#fitbounds-offset-x",
   );
   const offsetYInput = document.querySelector<HTMLInputElement>(
     "#fitbounds-offset-y",
   );
-  const linearInput = document.querySelector<HTMLInputElement>(
-    "#fitbounds-linear",
-  );
+  const linearInput =
+    document.querySelector<HTMLInputElement>("#fitbounds-linear");
 
   if (maxZoomInput) {
     maxZoomInput.value =
@@ -376,26 +373,20 @@ function setupAccuracyControls() {
 function setupFitBoundsControls() {
   const presetSelect =
     document.querySelector<HTMLSelectElement>("#preset-select");
-  const maxZoomInput = document.querySelector<HTMLInputElement>(
-    "#fitbounds-maxzoom",
-  );
-  const paddingInput = document.querySelector<HTMLInputElement>(
-    "#fitbounds-padding",
-  );
+  const maxZoomInput =
+    document.querySelector<HTMLInputElement>("#fitbounds-maxzoom");
+  const paddingInput =
+    document.querySelector<HTMLInputElement>("#fitbounds-padding");
   const offsetXInput = document.querySelector<HTMLInputElement>(
     "#fitbounds-offset-x",
   );
   const offsetYInput = document.querySelector<HTMLInputElement>(
     "#fitbounds-offset-y",
   );
-  const linearInput = document.querySelector<HTMLInputElement>(
-    "#fitbounds-linear",
-  );
+  const linearInput =
+    document.querySelector<HTMLInputElement>("#fitbounds-linear");
 
-  const commit = (
-    partial: Partial<FitBoundsOptions>,
-    markCustom = false,
-  ) => {
+  const commit = (partial: Partial<FitBoundsOptions>, markCustom = false) => {
     currentFitBoundsOptions = {
       ...currentFitBoundsOptions,
       ...partial,

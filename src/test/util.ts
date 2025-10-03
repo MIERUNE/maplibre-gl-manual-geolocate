@@ -1,5 +1,5 @@
-import { Map } from 'maplibre-gl';
-import { vi } from 'vitest';
+import { Map } from "maplibre-gl";
+import { vi } from "vitest";
 
 /**
  * Creates a test map instance with sensible defaults for testing
@@ -14,9 +14,9 @@ import { vi } from 'vitest';
  * map functionality, not full WebGL rendering capabilities.
  */
 export function createMap(options?: any): Map {
-  const container = document.createElement('div');
-  container.style.width = '200px';
-  container.style.height = '200px';
+  const container = document.createElement("div");
+  container.style.width = "200px";
+  container.style.height = "200px";
   document.body.appendChild(container);
 
   const defaultOptions = {
@@ -56,7 +56,11 @@ export function sleep(ms: number): Promise<void> {
 /**
  * Creates a mock GeolocationPosition object
  */
-export function createMockPosition(lng: number, lat: number, accuracy = 10): GeolocationPosition {
+export function createMockPosition(
+  lng: number,
+  lat: number,
+  accuracy = 10,
+): GeolocationPosition {
   const position = {
     coords: {
       latitude: lat,
@@ -96,7 +100,10 @@ export function createMockPosition(lng: number, lat: number, accuracy = 10): Geo
 /**
  * Creates a mock GeolocationPositionError
  */
-export function createMockPositionError(code: number, message: string): GeolocationPositionError {
+export function createMockPositionError(
+  code: number,
+  message: string,
+): GeolocationPositionError {
   return {
     code,
     message,
@@ -114,10 +121,12 @@ export function cleanupMap(map: Map): void {
     map.remove();
   }
   // Remove any remaining DOM elements
-  const containers = document.querySelectorAll('div');
+  const containers = document.querySelectorAll("div");
   containers.forEach((container) => {
-    if (container.classList.contains('maplibregl-map') ||
-        container.classList.contains('mapboxgl-map')) {
+    if (
+      container.classList.contains("maplibregl-map") ||
+      container.classList.contains("mapboxgl-map")
+    ) {
       container.remove();
     }
   });

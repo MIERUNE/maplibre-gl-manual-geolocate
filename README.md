@@ -443,11 +443,24 @@ pnpm test:coverage # Run tests with coverage report
 
 The project uses [Vitest](https://vitest.dev/) for testing with coverage reporting via `@vitest/coverage-v8`. Current test coverage for the main control is ~85%.
 
+### Code Quality
+
+```bash
+pnpm lint        # Check code for issues (formatting + linting)
+pnpm lint:fix    # Fix auto-fixable issues
+pnpm format      # Check code formatting
+pnpm format:fix  # Format code
+```
+
+The project uses [Biome](https://biomejs.dev/) for fast linting and formatting. Biome provides a unified toolchain that replaces ESLint and Prettier with better performance.
+
 ### Configuration Files
 
 - `vite.config.ts` - Development server configuration
 - `vite.config.lib.ts` - Library build (ES/UMD modules for npm)
 - `vite.config.demo.ts` - Demo site build (GitHub Pages deployment)
+- `biome.json` - Biome linting and formatting configuration
+- `vitest.config.ts` - Vitest testing configuration
 
 ---
 
