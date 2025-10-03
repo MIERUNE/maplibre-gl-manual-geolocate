@@ -156,7 +156,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 16px;
+    min-width: 120px;
+    padding: 8px 14px;
     border-radius: 6px;
     border: 1px solid #d0d5dd;
     background: #f5f7fb;
