@@ -6,7 +6,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { MockGeolocateControl } from "./index";
 
-type LocationPreset = {
+type PositionPreset = {
   id: string;
   label: string;
   lng: number;
@@ -14,7 +14,7 @@ type LocationPreset = {
   accuracy?: number;
 };
 
-const LOCATION_PRESETS: LocationPreset[] = [
+const POSITION_PRESETS: PositionPreset[] = [
   { id: "berlin", label: "Berlin, Germany", lng: 13.405, lat: 52.52 },
   {
     id: "buenos-aires",
@@ -129,14 +129,14 @@ function populatePresetSelect() {
   const select = document.querySelector<HTMLSelectElement>("#preset-select");
   if (!select) return;
 
-  LOCATION_PRESETS.forEach((preset) => {
+  POSITION_PRESETS.forEach((preset) => {
     const option = document.createElement("option");
     option.value = preset.id;
     option.textContent = preset.label;
     select.appendChild(option);
   });
 
-  if (LOCATION_PRESETS.some((preset) => preset.id === "tokyo")) {
+  if (POSITION_PRESETS.some((preset) => preset.id === "tokyo")) {
     select.value = "tokyo";
   }
 
@@ -145,7 +145,7 @@ function populatePresetSelect() {
       return;
     }
 
-    const preset = LOCATION_PRESETS.find((item) => item.id === select.value);
+    const preset = POSITION_PRESETS.find((item) => item.id === select.value);
     if (!preset) {
       return;
     }
