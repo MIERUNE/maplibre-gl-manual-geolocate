@@ -454,6 +454,10 @@ pnpm format:fix  # Format code
 
 The project uses [Biome](https://biomejs.dev/) for fast linting and formatting. Biome provides a unified toolchain that replaces ESLint and Prettier with better performance.
 
+**Pre-commit Hooks**: The project uses [Husky](https://typicode.github.io/husky/) and [lint-staged](https://github.com/lint-staged/lint-staged) to automatically format and lint staged files before each commit. This ensures all committed code follows the project's style guide. The hooks are automatically set up when you run `pnpm install`.
+
+To skip the pre-commit hook (not recommended), use `git commit --no-verify`.
+
 ### Configuration Files
 
 - `vite.config.ts` - Development server configuration
