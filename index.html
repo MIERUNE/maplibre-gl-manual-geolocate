@@ -81,19 +81,20 @@
                             />
                         </fieldset>
 
-                        <button type="submit" class="panel-button">Trigger</button>
+                        <button type="submit" class="panel-button">
+                            Trigger
+                        </button>
                     </form>
                 </section>
 
-                <section class="panel-section panel-section--spaced" aria-label="Accuracy settings">
+                <section
+                    class="panel-section panel-section--spaced"
+                    aria-label="Accuracy settings"
+                >
                     <h2 class="panel-title">Accuracy</h2>
 
                     <label class="panel-toggle" for="accuracy-toggle">
-                        <input
-                            id="accuracy-toggle"
-                            type="checkbox"
-                            checked
-                        />
+                        <input id="accuracy-toggle" type="checkbox" checked />
                         <span>Show accuracy circle</span>
                     </label>
 
@@ -111,17 +112,24 @@
                     />
                 </section>
 
-                <section class="panel-section panel-section--spaced" aria-label="Fit bounds options">
+                <section
+                    class="panel-section panel-section--spaced"
+                    aria-label="Fit bounds options"
+                >
                     <h2 class="panel-title">FitBoundsOptions</h2>
                     <p class="panel-caption">
-                        Updates the auto-zoom behavior options. <a
+                        Updates the auto-zoom behavior options.
+                        <a
                             href="https://github.com/MIERUNE/maplibre-gl-manual-geolocate?tab=readme-ov-file#auto-zoom-configuration"
                             target="_blank"
                             rel="noopener"
-                        >Learn more</a>
+                            >Learn more</a
+                        >
                     </p>
 
-                    <label class="panel-label" for="fitbounds-maxzoom">maxZoom</label>
+                    <label class="panel-label" for="fitbounds-maxzoom"
+                        >maxZoom</label
+                    >
                     <input
                         id="fitbounds-maxzoom"
                         class="panel-input"
@@ -132,7 +140,9 @@
                         value="15"
                     />
 
-                    <label class="panel-label" for="fitbounds-padding">padding (px)</label>
+                    <label class="panel-label" for="fitbounds-padding"
+                        >padding (px)</label
+                    >
                     <input
                         id="fitbounds-padding"
                         class="panel-input"
@@ -145,7 +155,9 @@
 
                     <div class="panel-input-row">
                         <div class="panel-input-col">
-                            <label class="panel-label" for="fitbounds-offset-x">offset X (px)</label>
+                            <label class="panel-label" for="fitbounds-offset-x"
+                                >offset X (px)</label
+                            >
                             <input
                                 id="fitbounds-offset-x"
                                 class="panel-input"
@@ -157,7 +169,9 @@
                             />
                         </div>
                         <div class="panel-input-col">
-                            <label class="panel-label" for="fitbounds-offset-y">offset Y (px)</label>
+                            <label class="panel-label" for="fitbounds-offset-y"
+                                >offset Y (px)</label
+                            >
                             <input
                                 id="fitbounds-offset-y"
                                 class="panel-input"
@@ -173,13 +187,17 @@
                     <label class="panel-toggle" for="fitbounds-linear">
                         <input id="fitbounds-linear" type="checkbox" />
                         <span>
-                            Use <code class="panel-code">easeTo</code> (linear) animation
-                            instead of the default <code class="panel-code">flyTo</code>
+                            Use <code class="panel-code">easeTo</code> (linear)
+                            animation instead of the default
+                            <code class="panel-code">flyTo</code>
                         </span>
                     </label>
                 </section>
 
-                <section class="panel-section panel-section--spaced" aria-label="Console">
+                <section
+                    class="panel-section panel-section--spaced"
+                    aria-label="Console"
+                >
                     <h2 class="panel-title">Console</h2>
                     <p class="panel-caption">
                         Real-time events and control updates.
@@ -192,6 +210,18 @@
                         aria-atomic="false"
                     ></div>
                 </section>
+
+                <footer class="panel-section panel-section--spaced">
+                    <p class="panel-caption">
+                        Map tiles from
+                        <a
+                            href="https://rekichizu.jp/"
+                            target="_blank"
+                            rel="noopener"
+                            >Rekichizu</a
+                        >, a modern-style historical map using OpenStreetMap data.
+                    </p>
+                </footer>
             </aside>
 
             <!-- Map container -->
