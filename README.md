@@ -1,5 +1,7 @@
 # maplibre-gl-manual-geolocate
 
+[![npm version](https://img.shields.io/npm/v/@mierune/maplibre-gl-manual-geolocate.svg)](https://www.npmjs.com/package/@mierune/maplibre-gl-manual-geolocate)
+
 [GitHub Repository](https://github.com/MIERUNE/maplibre-gl-mock-geolocate) | [Live Demo](https://maplibre-gl-manual-geolocate.mierune.dev/)
 
 A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's [geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API). Provides the same visual appearance as the built-in [`GeolocateControl`](https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl/) with complete control over positioning.
