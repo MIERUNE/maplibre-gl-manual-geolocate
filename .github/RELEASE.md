@@ -36,6 +36,7 @@ This document describes how to publish a new version of `@mierune/maplibre-gl-ma
 The GitHub Action will automatically:
 - ✅ Extract version from the tag (e.g., v0.2.0 → 0.2.0)
 - ✅ Update `package.json` with the version
+- ✅ Commit and push the version change back to main
 - ✅ Build the library
 - ✅ Run tests
 - ✅ Publish to npm
