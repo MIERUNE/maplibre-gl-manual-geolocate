@@ -94,8 +94,8 @@ const POSITION_PRESETS: PositionPreset[] = [
   {
     id: "sapporo",
     label: "Sapporo, Japan",
-    lng: 141.3544924,
-    lat: 43.06417397,
+    lng: 141.345661,
+    lat: 43.05907,
   },
   { id: "seoul", label: "Seoul, South Korea", lng: 126.978, lat: 37.5665 },
   { id: "singapore", label: "Singapore", lng: 103.8198, lat: 1.3521 },
@@ -108,14 +108,14 @@ const map = new maplibregl.Map({
   container: "map",
   style:
     "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
-  center: [141.3544924, 43.06417397], // Sapporo
+  center: [141.345661, 43.05907], // Sapporo
   zoom: 4,
   localIdeographFontFamily: false,
 });
 
 // Create manual geolocate control
 const manualGeolocateControl = new ManualGeolocateControl({
-  position: { lng: 141.3544924, lat: 43.06417397 }, // Sapporo
+  position: { lng: 141.345661, lat: 43.05907 }, // Sapporo
   accuracy: DEFAULT_ACCURACY,
   showAccuracyCircle: true,
 });
@@ -495,8 +495,8 @@ function setupFitBoundsControls() {
 
 populatePresetSelect();
 fillInputs({
-  lng: 141.3544924,
-  lat: 43.06417397,
+  lng: 141.345661,
+  lat: 43.05907,
 });
 setupFormHandlers();
 setupAccuracyControls();
