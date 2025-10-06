@@ -49,6 +49,11 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Publishing version: $VERSION"
 
+      - name: Checkout main branch
+        run: |
+          git fetch origin main
+          git checkout main
+
       - name: Update package.json version
         run: |
           # Update version in package.json
@@ -61,7 +66,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add package.json
           git commit -m "chore: bump version to ${{ steps.get_version.outputs.VERSION }}"
-          git push
+          git push origin main
 
       - name: Build library
         run: pnpm build
