@@ -91,6 +91,12 @@ const POSITION_PRESETS: PositionPreset[] = [
     lng: -122.4194,
     lat: 37.7749,
   },
+  {
+    id: "sapporo",
+    label: "Sapporo, Japan",
+    lng: 141.345661,
+    lat: 43.05907,
+  },
   { id: "seoul", label: "Seoul, South Korea", lng: 126.978, lat: 37.5665 },
   { id: "singapore", label: "Singapore", lng: 103.8198, lat: 1.3521 },
   { id: "sydney", label: "Sydney, Australia", lng: 151.2093, lat: -33.8688 },
@@ -102,14 +108,14 @@ const map = new maplibregl.Map({
   container: "map",
   style:
     "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
-  center: [139.74135747, 35.65809922], // Tokyo
+  center: [141.345661, 43.05907], // Sapporo
   zoom: 4,
   localIdeographFontFamily: false,
 });
 
 // Create manual geolocate control
 const manualGeolocateControl = new ManualGeolocateControl({
-  position: { lng: 139.74135747, lat: 35.65809922 }, // Tokyo
+  position: { lng: 141.345661, lat: 43.05907 }, // Sapporo
   accuracy: DEFAULT_ACCURACY,
   showAccuracyCircle: true,
 });
@@ -252,8 +258,8 @@ function populatePresetSelect() {
     select.appendChild(option);
   });
 
-  if (POSITION_PRESETS.some((preset) => preset.id === "tokyo")) {
-    select.value = "tokyo";
+  if (POSITION_PRESETS.some((preset) => preset.id === "sapporo")) {
+    select.value = "sapporo";
   }
 
   select.addEventListener("change", () => {
@@ -489,8 +495,8 @@ function setupFitBoundsControls() {
 
 populatePresetSelect();
 fillInputs({
-  lng: 139.741357,
-  lat: 35.658099,
+  lng: 141.345661,
+  lat: 43.05907,
 });
 setupFormHandlers();
 setupAccuracyControls();
