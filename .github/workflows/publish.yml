@@ -5,7 +5,7 @@ on:
     types: [published]
 
 permissions:
-  contents: read
+  contents: write  # Allow pushing version changes back to repo
 
 jobs:
   publish:
@@ -54,6 +54,14 @@ jobs:
           # Update version in package.json
           npm version ${{ steps.get_version.outputs.VERSION }} --no-git-tag-version
           echo "Updated package.json to version ${{ steps.get_version.outputs.VERSION }}"
+
+      - name: Commit version change
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.get_version.outputs.VERSION }}"
+          git push
 
       - name: Build library
         run: pnpm build
