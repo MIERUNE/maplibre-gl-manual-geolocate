@@ -21,36 +21,21 @@ This document describes how to publish a new version of `@mierune/maplibre-gl-ma
 
 ## Publishing a New Release
 
-### 1. Update Version
-
-Update the version in `package.json`:
-
-```json
-{
-  "version": "0.2.0"  // Change from 0.1.0 to your new version
-}
-```
-
-Commit and push to main:
-
-```bash
-git add package.json
-git commit -m "chore: bump version to 0.2.0"
-git push origin main
-```
-
-### 2. Create GitHub Release
+### 1. Create GitHub Release
 
 1. Go to https://github.com/MIERUNE/maplibre-gl-manual-geolocate/releases/new
-2. Click "Choose a tag" and type the new version (e.g., `v0.2.0`)
+2. Click "Choose a tag" and type the new version with `v` prefix (e.g., `v0.2.0`)
+   - ⚠️ **Important:** Tag must start with `v` (e.g., `v0.2.0`, not `0.2.0`)
 3. Click "Create new tag: v0.2.0 on publish"
 4. Set the release title (e.g., `v0.2.0`)
 5. Add release notes describing changes
 6. Click "Publish release"
 
-### 3. Automatic Publishing
+### 2. Automatic Version Update & Publishing
 
 The GitHub Action will automatically:
+- ✅ Extract version from the tag (e.g., v0.2.0 → 0.2.0)
+- ✅ Update `package.json` with the version
 - ✅ Build the library
 - ✅ Run tests
 - ✅ Publish to npm
@@ -58,7 +43,7 @@ The GitHub Action will automatically:
 You can monitor progress at:
 https://github.com/MIERUNE/maplibre-gl-manual-geolocate/actions
 
-### 4. Verify Publication
+### 3. Verify Publication
 
 After the action completes, verify the new version is live:
 - npm: https://www.npmjs.com/package/@mierune/maplibre-gl-manual-geolocate
@@ -80,8 +65,8 @@ Follow [Semantic Versioning](https://semver.org/):
 - Ensure the token has "Automation" permissions
 
 ### Action fails with "Version already exists"
-- Make sure you bumped the version in `package.json`
-- Check that the git tag matches the package.json version
+- The version from the tag already exists on npm
+- Create a new release with a higher version number
 
 ### Tests fail
 - Fix the failing tests before creating the release

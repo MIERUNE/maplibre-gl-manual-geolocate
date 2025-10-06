@@ -41,6 +41,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          # Remove 'v' prefix from tag (e.g., v0.2.0 -> 0.2.0)
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
+      - name: Update package.json version
+        run: |
+          # Update version in package.json
+          npm version ${{ steps.get_version.outputs.VERSION }} --no-git-tag-version
+          echo "Updated package.json to version ${{ steps.get_version.outputs.VERSION }}"
+
       - name: Build library
         run: pnpm build
 
