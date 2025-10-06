@@ -4,7 +4,9 @@ This document describes how to publish a new version of `@mierune/maplibre-gl-ma
 
 ## Prerequisites
 
-### One-time Setup: NPM Token
+### One-time Setup: Required Tokens
+
+#### 1. NPM Token
 
 1. **Generate an npm access token:**
    - Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens
@@ -17,6 +19,26 @@ This document describes how to publish a new version of `@mierune/maplibre-gl-ma
    - Click "New repository secret"
    - Name: `NPM_TOKEN`
    - Value: Paste your npm token
+   - Click "Add secret"
+
+#### 2. Release PAT (Personal Access Token)
+
+This is needed to bypass branch protection rules when committing version changes.
+
+1. **Generate a Personal Access Token:**
+   - Go to https://github.com/settings/tokens/new
+   - Token name: `Release Automation`
+   - Expiration: Choose your preference (recommend 1 year or no expiration)
+   - Select scopes:
+     - ✅ `repo` (Full control of private repositories)
+   - Click "Generate token"
+   - Copy the token (starts with `ghp_...` or `github_pat_...`)
+
+2. **Add token to GitHub:**
+   - Go to https://github.com/MIERUNE/maplibre-gl-manual-geolocate/settings/secrets/actions
+   - Click "New repository secret"
+   - Name: `RELEASE_PAT`
+   - Value: Paste your personal access token
    - Click "Add secret"
 
 ## Publishing a New Release
