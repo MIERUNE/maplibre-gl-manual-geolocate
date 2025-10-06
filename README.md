@@ -45,7 +45,7 @@ const manualGeolocateControl = new ManualGeolocateControl({
 map.addControl(manualGeolocateControl, "top-right");
 ```
 
-**Try it out:** Click the location button to center the map on Tokyo with automatic zoom-to-accuracy!
+**Try it out:** Check the [Live Demo](https://maplibre-gl-manual-geolocate.mierune.dev/) and click the location button to center the map on Tokyo with automatic zoom-to-accuracy!
 
 ---
 
