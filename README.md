@@ -480,8 +480,13 @@ The project uses GitHub Actions for continuous integration and deployment:
 - **Test** - Runs unit tests with Vitest
 - **Build** - Compiles TypeScript and builds the library
 - **Deploy Demo** - Automatically deploys the demo to GitHub Pages on push to main
+- **Publish** - Automatically publishes to npm when a GitHub Release is created
 
 All workflows run on pull requests to ensure code quality before merging.
+
+### Publishing Releases
+
+See [RELEASE.md](.github/RELEASE.md) for instructions on how to publish new versions to npm.
 
 ---
 
