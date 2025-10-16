@@ -6,9 +6,21 @@ export default defineConfig({
   plugins: [dts({ rollupTypes: true })],
   build: {
     lib: {
-      entry: "src/index.ts",
+      entry: {
+        index: "src/index.ts",
+        "index.ssr": "src/index.ssr.ts",
+      },
       name: "MaplibreGlManualGeolocate",
-      fileName: "maplibre-gl-manual-geolocate",
+      fileName: (format, entryName) => {
+        if (entryName === "index.ssr") {
+          return format === "es"
+            ? "maplibre-gl-manual-geolocate.ssr.js"
+            : "maplibre-gl-manual-geolocate.ssr.cjs";
+        }
+        return format === "es"
+          ? "maplibre-gl-manual-geolocate.js"
+          : "maplibre-gl-manual-geolocate.umd.cjs";
+      },
     },
     rollupOptions: {
       external: ["maplibre-gl"],

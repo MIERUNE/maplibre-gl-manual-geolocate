@@ -29,10 +29,17 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "node": {
+        "import": "./dist/maplibre-gl-manual-geolocate.ssr.js",
+        "require": "./dist/maplibre-gl-manual-geolocate.ssr.cjs"
+      },
+      "browser": "./dist/maplibre-gl-manual-geolocate.js",
       "import": "./dist/maplibre-gl-manual-geolocate.js",
-      "require": "./dist/maplibre-gl-manual-geolocate.umd.cjs"
+      "require": "./dist/maplibre-gl-manual-geolocate.umd.cjs",
+      "default": "./dist/maplibre-gl-manual-geolocate.js"
     }
   },
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build --config vite.config.lib.ts",
