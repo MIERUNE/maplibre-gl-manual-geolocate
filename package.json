@@ -31,11 +31,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/maplibre-gl-manual-geolocate.js",
       "require": "./dist/maplibre-gl-manual-geolocate.umd.cjs"
+    },
+    "./ssr": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/maplibre-gl-manual-geolocate.ssr.js",
+      "require": "./dist/maplibre-gl-manual-geolocate.ssr.umd.cjs"
     }
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build --config vite.config.lib.ts",
+    "build": "tsc --noEmit && vite build --config vite.config.lib.ts && vite build --config vite.config.lib.ssr.ts",
     "build:demo": "vite build --config vite.config.demo.ts",
     "preview": "vite preview",
     "preview:demo": "vite preview --config vite.config.demo.ts",

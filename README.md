@@ -22,6 +22,17 @@ Perfect for scenarios where you need location visualization without actual geolo
 npm install @mierune/maplibre-gl-manual-geolocate
 ```
 
+### SSR Support (SvelteKit, Next.js, Nuxt)
+
+For Server-Side Rendering (SSR) frameworks, use the `/ssr` export path to avoid Node.js compatibility issues:
+
+```typescript
+// For SSR environments (SvelteKit, Next.js, etc.)
+import { ManualGeolocateControl } from "@mierune/maplibre-gl-manual-geolocate/ssr";
+```
+
+See the [SSR Usage Guide](./SSR_USAGE.md) for detailed instructions on using this package with SvelteKit, Next.js, and other SSR frameworks.
+
 ## Quick Start
 
 ```typescript
