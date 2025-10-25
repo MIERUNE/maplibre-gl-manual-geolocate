@@ -107,7 +107,7 @@ const POSITION_PRESETS: PositionPreset[] = [
 const map = new maplibregl.Map({
   container: "map",
   style:
-    "https://mierune.github.io/rekichizu-style/styles/street-omt/style.json",
+    "https://mierune.github.io/rekichizu-style/styles/street-omt/style_en.json",
   center: [141.345661, 43.05907], // Sapporo
   zoom: 4,
   localIdeographFontFamily: false,
