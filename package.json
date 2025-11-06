@@ -1,6 +1,6 @@
 {
   "name": "@mierune/maplibre-gl-manual-geolocate",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A MapLibre GL JS control that displays a user position marker at specified coordinates without requiring the browser's geolocation API",
   "type": "module",
   "license": "MIT OR Apache-2.0",
