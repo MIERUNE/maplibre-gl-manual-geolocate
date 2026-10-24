@@ -1,8 +1,11 @@
-import maplibregl, {
+import {
   type FitBoundsOptions,
   type IControl,
+  LngLat,
+  LngLatBounds,
   type LngLatLike,
   type Map,
+  Marker,
 } from "maplibre-gl";
 import type { EventHandlers, ManualGeolocateControlOptions } from "./types";
 
@@ -29,7 +32,7 @@ export class ManualGeolocateControl implements IControl {
   private _button?: HTMLButtonElement;
 
   // Options (will be used in future steps)
-  private _position: maplibregl.LngLat;
+  private _position: LngLat;
   private _accuracy: number;
   private _showAccuracyCircle: boolean;
   private _fitBoundsOptions: FitBoundsOptions;
@@ -38,8 +41,8 @@ export class ManualGeolocateControl implements IControl {
   private _eventHandlers: EventHandlers = {};
 
   // Markers for position and accuracy
-  private _positionMarker?: maplibregl.Marker;
-  private _accuracyMarker?: maplibregl.Marker;
+  private _positionMarker?: Marker;
+  private _accuracyMarker?: Marker;
 
   // Track if we've set up map event listeners
   private _mapEventListenersSetup = false;
@@ -61,7 +64,7 @@ export class ManualGeolocateControl implements IControl {
     }
 
     // Convert position using MapLibre's built-in converter
-    this._position = maplibregl.LngLat.convert(options.position);
+    this._position = LngLat.convert(options.position);
 
     // Set defaults for optional properties
     this._accuracy = options.accuracy ?? 50;
@@ -147,7 +150,7 @@ export class ManualGeolocateControl implements IControl {
     const accuracyEl = document.createElement("div");
     accuracyEl.className = "maplibregl-user-location-accuracy-circle";
 
-    this._accuracyMarker = new maplibregl.Marker({
+    this._accuracyMarker = new Marker({
       element: accuracyEl,
       pitchAlignment: "map", // Only accuracy circle needs pitch alignment
     }).setLngLat(this._position);
@@ -157,7 +160,7 @@ export class ManualGeolocateControl implements IControl {
     const positionEl = document.createElement("div");
     positionEl.className = "maplibregl-user-location-dot";
 
-    this._positionMarker = new maplibregl.Marker({
+    this._positionMarker = new Marker({
       element: positionEl,
       // No special alignment for dot marker - matches original
     }).setLngLat(this._position);
@@ -270,10 +273,7 @@ export class ManualGeolocateControl implements IControl {
     if (!this._map) return;
 
     // Create bounds from position and accuracy radius
-    const bounds = maplibregl.LngLatBounds.fromLngLat(
-      this._position,
-      this._accuracy,
-    );
+    const bounds = LngLatBounds.fromLngLat(this._position, this._accuracy);
 
     this._map.fitBounds(bounds, {
       ...this._fitBoundsOptions,
@@ -373,7 +373,7 @@ export class ManualGeolocateControl implements IControl {
    * @param coordinates - The new position coordinates
    */
   setPosition(coordinates: LngLatLike): void {
-    this._position = maplibregl.LngLat.convert(coordinates);
+    this._position = LngLat.convert(coordinates);
 
     // Update marker positions if they exist
     this._positionMarker?.setLngLat(this._position);

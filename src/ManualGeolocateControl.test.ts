@@ -143,17 +143,10 @@ vi.mock("maplibre-gl", async (importOriginal) => {
     }
   }
 
-  const mockedModule = {
+  return {
     ...actual,
     Map: FakeMap as any,
     Marker: FakeMarker as any,
-    LngLat: actual.LngLat,
-    LngLatBounds: actual.LngLatBounds,
-  };
-
-  return {
-    ...mockedModule,
-    default: mockedModule, // Support namespace imports (import maplibregl from 'maplibre-gl')
   };
 });
 

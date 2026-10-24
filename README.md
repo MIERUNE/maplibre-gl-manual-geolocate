@@ -22,6 +22,15 @@ Perfect for scenarios where you need location visualization without actual geolo
 npm install @mierune/maplibre-gl-manual-geolocate
 ```
 
+### Compatibility
+
+| maplibre-gl-manual-geolocate | MapLibre GL JS |
+| ---------------------------- | -------------- |
+| 1.x                          | 6.x            |
+| 0.x                          | 5.x            |
+
+Since MapLibre GL JS v6 is ESM-only, v1 of this library is distributed as ESM only (no UMD / CommonJS build). Use 0.x if you are still on MapLibre GL JS v5.
+
 ## Quick Start
 
 ```typescript

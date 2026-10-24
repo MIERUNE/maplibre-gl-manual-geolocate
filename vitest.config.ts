@@ -1,12 +1,13 @@
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     browser: {
-      provider: "playwright", // or 'webdriverio'
+      provider: playwright(),
       enabled: true,
-      name: "chromium", // browser name is required
       headless: true,
+      instances: [{ browser: "chromium" }],
     },
     coverage: {
       reporter: ["text", "json", "html"],
