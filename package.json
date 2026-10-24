@@ -23,14 +23,12 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/maplibre-gl-manual-geolocate.umd.cjs",
   "module": "./dist/maplibre-gl-manual-geolocate.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/maplibre-gl-manual-geolocate.js",
-      "require": "./dist/maplibre-gl-manual-geolocate.umd.cjs"
+      "default": "./dist/maplibre-gl-manual-geolocate.js"
     }
   },
   "scripts": {
@@ -49,7 +47,7 @@
     "prepare": "husky"
   },
   "peerDependencies": {
-    "maplibre-gl": ">=5.0.0"
+    "maplibre-gl": "^6.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",
@@ -58,7 +56,7 @@
     "@vitest/ui": "^3.2.4",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
-    "maplibre-gl": "^5.7.1",
+    "maplibre-gl": "^6.15.0",
     "playwright": "^1.55.1",
     "typescript": "~5.8.3",
     "vite": "^7.1.2",

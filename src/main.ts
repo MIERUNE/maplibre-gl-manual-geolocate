@@ -3,8 +3,13 @@
 // Usage: `pnpm dev` then open http://localhost:5173
 import "./style.css";
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl, { type FitBoundsOptions } from "maplibre-gl";
+import type { FitBoundsOptions } from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { ManualGeolocateControl } from "./index";
+
+// maplibre-gl v6 needs the worker URL when used with a bundler
+maplibregl.setWorkerUrl(workerUrl);
 
 const DEFAULT_ACCURACY = 50;
 const DEFAULT_FIT_BOUNDS: FitBoundsOptions = {

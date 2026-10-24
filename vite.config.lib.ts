@@ -7,16 +7,12 @@ export default defineConfig({
   build: {
     lib: {
       entry: "src/index.ts",
-      name: "MaplibreGlManualGeolocate",
+      // maplibre-gl v6 is ESM-only, so this library ships ESM only as well
+      formats: ["es"],
       fileName: "maplibre-gl-manual-geolocate",
     },
     rollupOptions: {
       external: ["maplibre-gl"],
-      output: {
-        globals: {
-          "maplibre-gl": "maplibregl",
-        },
-      },
     },
   },
 });
