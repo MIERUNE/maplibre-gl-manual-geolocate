@@ -4,64 +4,38 @@ This document describes how to publish a new version of `@mierune/maplibre-gl-ma
 
 ## Prerequisites
 
-### One-time Setup: Required Tokens
+### One-time Setup: npm Trusted Publishing (OIDC)
 
-#### 1. NPM Token
+Publishing uses [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers), so no npm token or PAT is required.
 
-1. **Generate an npm access token:**
-   - Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens
-   - Click "Generate New Token" → "Classic Token"
-   - Select "Automation" type (for CI/CD publishing)
-   - Copy the token (starts with `npm_...`)
-
-2. **Add token to GitHub:**
-   - Go to https://github.com/MIERUNE/maplibre-gl-manual-geolocate/settings/secrets/actions
-   - Click "New repository secret"
-   - Name: `NPM_TOKEN`
-   - Value: Paste your npm token
-   - Click "Add secret"
-
-#### 2. Release PAT (Personal Access Token)
-
-This is needed to bypass branch protection rules when committing version changes.
-
-1. **Generate a Personal Access Token:**
-   - Go to https://github.com/settings/tokens/new
-   - Token name: `Release Automation`
-   - Expiration: Choose your preference (recommend 1 year or no expiration)
-   - Select scopes:
-     - ✅ `repo` (Full control of private repositories)
-   - Click "Generate token"
-   - Copy the token (starts with `ghp_...` or `github_pat_...`)
-
-2. **Add token to GitHub:**
-   - Go to https://github.com/MIERUNE/maplibre-gl-manual-geolocate/settings/secrets/actions
-   - Click "New repository secret"
-   - Name: `RELEASE_PAT`
-   - Value: Paste your personal access token
-   - Click "Add secret"
+1. Go to https://www.npmjs.com/package/@mierune/maplibre-gl-manual-geolocate/access
+2. Under "Trusted Publisher", select "GitHub Actions" and enter:
+   - Organization or user: `MIERUNE`
+   - Repository: `maplibre-gl-manual-geolocate`
+   - Workflow filename: `publish.yml`
+   - Environment name: `npm`
+3. Save. Optionally set "Publishing access" to "Require two-factor authentication and disallow tokens".
 
 ## Publishing a New Release
 
-### 1. Create GitHub Release
+### 1. Bump the Version
+
+Open a PR that updates `version` in `package.json` (e.g., `pnpm version 0.2.0 --no-git-tag-version`) and merge it into main.
+
+### 2. Create GitHub Release
 
 1. Go to https://github.com/MIERUNE/maplibre-gl-manual-geolocate/releases/new
-2. Click "Choose a tag" and type the new version with `v` prefix (e.g., `v0.2.0`)
-   - ⚠️ **Important:** Tag must start with `v` (e.g., `v0.2.0`, not `0.2.0`)
-3. Click "Create new tag: v0.2.0 on publish"
-4. Set the release title (e.g., `v0.2.0`)
-5. Add release notes describing changes
-6. Click "Publish release"
-
-### 2. Automatic Version Update & Publishing
+2. Click "Choose a tag" and type the new version with `v` prefix (e.g., `v0.2.0`), targeting main
+   - ⚠️ **Important:** Tag must start with `v` and match `package.json` (e.g., `v0.2.0` for `0.2.0`)
+3. Set the release title (e.g., `v0.2.0`)
+4. Add release notes describing changes
+5. Click "Publish release"
 
 The GitHub Action will automatically:
-- ✅ Extract version from the tag (e.g., v0.2.0 → 0.2.0)
-- ✅ Update `package.json` with the version
-- ✅ Commit and push the version change back to main
+- ✅ Verify the tag matches `package.json` version
 - ✅ Build the library
 - ✅ Run tests
-- ✅ Publish to npm
+- ✅ Publish to npm with provenance
 
 You can monitor progress at:
 https://github.com/MIERUNE/maplibre-gl-manual-geolocate/actions
@@ -82,10 +56,11 @@ Follow [Semantic Versioning](https://semver.org/):
 
 ## Troubleshooting
 
-### Action fails with "401 Unauthorized"
-- Check that `NPM_TOKEN` secret is set correctly
-- Verify the token hasn't expired
-- Ensure the token has "Automation" permissions
+### Action fails with "404 Not Found" / "401 Unauthorized" on publish
+- Check the Trusted Publisher settings on npmjs.com (workflow filename `publish.yml`, environment `npm`)
+
+### Action fails with "Tag ... does not match package.json version"
+- Bump `package.json` on main first, then delete and recreate the release/tag
 
 ### Action fails with "Version already exists"
 - The version from the tag already exists on npm
