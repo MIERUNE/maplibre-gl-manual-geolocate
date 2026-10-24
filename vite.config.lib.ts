@@ -3,7 +3,7 @@ import dts from "vite-plugin-dts";
 
 // Library build configuration
 export default defineConfig({
-  plugins: [dts({ rollupTypes: true })],
+  plugins: [dts({ bundleTypes: true })],
   build: {
     lib: {
       entry: "src/index.ts",
